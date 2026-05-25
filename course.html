@@ -2600,59 +2600,6 @@ ${(() => {
             }
         });
 
-        const GALLERY_IMAGES = [
-            '图例/0434490cca64ccd44183a5cdfe9e443c.jpg',
-            '图例/10ca8b2d9886742d85ed098d1bce109c.jpg',
-            '图例/2027f5c5504ee61c48457c06d0e0b458.jpg',
-            '图例/2b4b7d36a54149db500f81e780eaf50b.jpg',
-            '图例/356600dbe88984c12feb38d7c8bd608e.jpg',
-            '图例/4181ed16213158eb0e5dc30f5e76161f.jpg',
-            '图例/4ba0bc2e1a1b3ffec9d8f48ca1c1f264.jpg',
-            '图例/4e31d5616457a79f4d840e3269529a7f.jpg',
-            '图例/59d710e0a6a0d1cd4304fbfd41e696a8.jpg',
-            '图例/74017363ffd2b1611243c9d83000323f.jpg',
-            '图例/83023f864d9cc48bc4d9c57a28add95b.jpg',
-            '图例/83f0b7258fd550563a19ffc07a6c4e89.jpg',
-            '图例/b98859d8ca87595ff9b95cf7cbcaa54d.jpg',
-            '图例/c72f2a03e05b421cd5186293e34caec1.jpg',
-            '图例/e71060f965e577109afb726fbe0e5c50.jpg'
-        ];
-
-        let currentGalleryImage = '';
-
-        function shuffleArray(arr) {
-            var a = arr.slice();
-            for (var i = a.length - 1; i > 0; i--) {
-                var j = Math.floor(Math.random() * (i + 1));
-                var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
-            }
-            return a;
-        }
-
-        function shuffleGalleryImage() {
-            var img = document.getElementById('randomGalleryImg');
-            if (!img) return;
-            var shuffled = shuffleArray(GALLERY_IMAGES);
-            currentGalleryImage = shuffled[0];
-            img.src = currentGalleryImage;
-        }
-
-        function useImageForQuestion() {
-            if (!currentGalleryImage) return;
-            var iframe = document.querySelector('iframe[src*="multimodal.html"]');
-            if (iframe && iframe.contentWindow) {
-                iframe.contentWindow.postMessage({ type: 'setImage', imageUrl: currentGalleryImage }, '*');
-            }
-        }
-
-        function initImageGallery() {
-            var img = document.getElementById('randomGalleryImg');
-            if (!img) return;
-            if (!img.src || img.src === '' || img.src === window.location.href) {
-                shuffleGalleryImage();
-            }
-        }
-
         document.addEventListener('courseContentLoaded', function() {
             setTimeout(() => {
                 robotGameInitialized = false;
@@ -2660,7 +2607,6 @@ ${(() => {
                 if (document.getElementById('newsCarousel')) {
                     initCarousel();
                 }
-                initImageGallery();
             }, 200);
         });
     </script>
