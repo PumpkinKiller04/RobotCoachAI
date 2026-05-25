@@ -126,8 +126,6 @@
     ];
 
     var uploadedImage = null;
-    var imageCache = {};   // url -> base64
-    var currentGalleryUrl = null;
 
     function shuffleArray(arr) {
       var a = arr.slice();
@@ -142,24 +140,6 @@
       var shuffled = shuffleArray(GALLERY_IMAGES);
       var img = document.getElementById('galleryImg');
       img.src = shuffled[0];
-      currentGalleryUrl = img.src;
-    }
-
-    // pre-load a URL into base64 cache
-    function cacheImage(url) {
-      return new Promise(function(resolve, reject) {
-        if (!url) { resolve(); return; }
-        if (imageCache[url]) { resolve(imageCache[url]); return; }
-        fetch(url).then(function(res) { return res.blob(); }).then(function(blob) {
-          var reader = new FileReader();
-          reader.onload = function(ev) {
-            imageCache[url] = ev.target.result;
-            resolve(ev.target.result);
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        }).catch(reject);
-      });
     }
 
     function activateUpload() {
@@ -170,56 +150,20 @@
 
     function activateGallery() {
       var galleryPanel = document.getElementById('galleryPanel');
-      var url = currentGalleryUrl;
+      var galleryImg = document.getElementById('galleryImg');
 
-      if (galleryPanel.classList.contains('active')) {
-        // already active: shuffle to new image
-        shuffleGalleryImage();
-        url = currentGalleryUrl;
-        if (imageCache[url]) {
-          uploadedImage = imageCache[url];
-        } else {
-          setGalleryLoading(true);
-          cacheImage(url).then(function(b64) {
-            uploadedImage = b64;
-            setGalleryLoading(false);
-          });
-        }
-        return;
-      }
-
-      // switch to gallery mode: deselect upload
+      // deselect upload
       document.getElementById('uploadPanel').classList.remove('active');
       document.getElementById('uploadPreview').classList.add('hidden');
       document.getElementById('uploadPreview').innerHTML = '';
 
       galleryPanel.classList.add('active');
 
-      if (imageCache[url]) {
-        uploadedImage = imageCache[url];
-      } else {
-        setGalleryLoading(true);
-        cacheImage(url).then(function(b64) {
-          uploadedImage = b64;
-          setGalleryLoading(false);
-        });
+      // 直接用图片 URL，不需要转 base64，零延迟
+      if (galleryPanel.classList.contains('active')) {
+        shuffleGalleryImage();
       }
-    }
-
-    function setGalleryLoading(loading) {
-      var img = document.getElementById('galleryImg');
-      var hint = document.getElementById('galleryHint');
-      var link = document.getElementById('refreshLink');
-      if (loading) {
-        img.style.opacity = '0.4';
-        hint.style.display = 'block';
-        hint.textContent = '加载中...';
-        link.style.display = 'none';
-      } else {
-        img.style.opacity = '1';
-        hint.style.display = 'none';
-        link.style.display = 'inline';
-      }
+      uploadedImage = galleryImg.src;
     }
 
     function handleFileSelect(e){
