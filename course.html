@@ -2600,6 +2600,70 @@ ${(() => {
             }
         });
 
+        const GALLERY_IMAGES = [
+            '图例/0434490cca64ccd44183a5cdfe9e443c.jpg',
+            '图例/10ca8b2d9886742d85ed098d1bce109c.jpg',
+            '图例/2027f5c5504ee61c48457c06d0e0b458.jpg',
+            '图例/2b4b7d36a54149db500f81e780eaf50b.jpg',
+            '图例/356600dbe88984c12feb38d7c8bd608e.jpg',
+            '图例/4181ed16213158eb0e5dc30f5e76161f.jpg',
+            '图例/4ba0bc2e1a1b3ffec9d8f48ca1c1f264.jpg',
+            '图例/4e31d5616457a79f4d840e3269529a7f.jpg',
+            '图例/59d710e0a6a0d1cd4304fbfd41e696a8.jpg',
+            '图例/74017363ffd2b1611243c9d83000323f.jpg',
+            '图例/83023f864d9cc48bc4d9c57a28add95b.jpg',
+            '图例/83f0b7258fd550563a19ffc07a6c4e89.jpg',
+            '图例/b98859d8ca87595ff9b95cf7cbcaa54d.jpg',
+            '图例/c72f2a03e05b421cd5186293e34caec1.jpg',
+            '图例/e71060f965e577109afb726fbe0e5c50.jpg'
+        ];
+
+        function shuffleArray(arr) {
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function handleDragStart(e) {
+            e.target.style.opacity = '0.5';
+            e.dataTransfer.setData('text/plain', e.target.src);
+        }
+
+        function handleDragEnd(e) {
+            e.target.style.opacity = '1';
+        }
+
+        function initImageGallery() {
+            const gallery = document.getElementById('imageGallery');
+            if (!gallery) return;
+            const shuffled = shuffleArray(GALLERY_IMAGES);
+            gallery.innerHTML = shuffled.map(src =>
+                '<img src="' + src + '" class="gallery-img" draggable="true" ondragstart="handleDragStart(event)" ondragend="handleDragEnd(event)">'
+            ).join('');
+
+            const dropZone = document.getElementById('dropZone');
+            if (!dropZone || dropZone.dataset.initialized) return;
+            dropZone.dataset.initialized = 'true';
+            dropZone.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                dropZone.classList.add('active');
+            });
+            dropZone.addEventListener('dragleave', function() {
+                dropZone.classList.remove('active');
+            });
+            dropZone.addEventListener('drop', function(e) {
+                e.preventDefault();
+                dropZone.classList.remove('active');
+                const imgSrc = e.dataTransfer.getData('text/plain');
+                if (imgSrc) {
+                    dropZone.innerHTML = '<img src="' + imgSrc + '" alt="已上传图片"><p style="margin-top:8px;color:#2e7d32;font-weight:bold;">图片已上传成功！</p>';
+                }
+            });
+        }
+
         document.addEventListener('courseContentLoaded', function() {
             setTimeout(() => {
                 robotGameInitialized = false;
@@ -2607,6 +2671,7 @@ ${(() => {
                 if (document.getElementById('newsCarousel')) {
                     initCarousel();
                 }
+                initImageGallery();
             }, 200);
         });
     </script>
