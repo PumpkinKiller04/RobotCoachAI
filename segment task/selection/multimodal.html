@@ -332,7 +332,6 @@
         var decoder = new TextDecoder();
         var textEl = document.getElementById('responseText');
         var fullText = '';
-        var MAX_LENGTH = 150;
 
         loadingArea.classList.add('hidden');
 
@@ -353,12 +352,8 @@
                 var json = JSON.parse(data);
                 var delta = json.choices && json.choices[0] && json.choices[0].delta && json.choices[0].delta.content;
                 if (delta) {
-                  if (fullText.length < MAX_LENGTH) {
-                    var remaining = MAX_LENGTH - fullText.length;
-                    var addText = delta.slice(0, remaining);
-                    fullText += addText;
-                    textEl.innerHTML = renderMarkdown(fullText);
-                  }
+                  fullText += delta;
+                  textEl.innerHTML = renderMarkdown(fullText);
                 }
               } catch (e) {
                 console.warn('解析响应失败:', e);
