@@ -24,12 +24,20 @@
     .text-sm{font-size:.875rem}.text-xs{font-size:.75rem}.font-medium{font-weight:500}.font-semibold{font-weight:600}
     .text-muted{color:var(--muted-fg)}
     .w-full{width:100%}
-    .upload-split{display:flex;gap:.75rem}
-    .upload-split>*{flex:1;min-width:0}
-    .upload-zone{border:2px dashed var(--border);border-radius:.5rem;padding:1rem;text-align:center;cursor:pointer;transition:all .2s;overflow:hidden;background:var(--bg);min-height:140px;display:flex;align-items:center;justify-content:center}
-    .upload-zone:hover{border-color:var(--primary);background:rgba(74,144,217,0.03)}
-    .upload-zone.has-image{border-color:var(--primary);border-style:solid;background:var(--bg)}
-    .upload-zone img{max-width:100%;max-height:130px;object-fit:contain;border-radius:.375rem}
+    .source-split{display:flex;gap:.75rem}
+    .source-split>*{flex:1;min-width:0}
+    .source-panel{border:2px solid var(--border);border-radius:.5rem;padding:.75rem;text-align:center;transition:all .2s;cursor:pointer;background:var(--bg);min-height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .source-panel:hover{border-color:var(--primary)}
+    .source-panel.active{border-color:var(--success);background:rgba(82,196,26,0.04)}
+    .source-panel .panel-icon{font-size:1.5rem;margin-bottom:.25rem}
+    .source-panel .panel-title{font-size:.8rem;font-weight:600;margin-bottom:.375rem}
+    .source-panel .panel-hint{font-size:.7rem;color:var(--muted-fg)}
+    .source-panel img{max-width:100%;max-height:90px;object-fit:contain;border-radius:.375rem;margin-bottom:.375rem}
+    .source-panel .check-mark{display:none;position:absolute;top:6px;right:8px;color:var(--success);font-size:.8rem;font-weight:700}
+    .source-panel.active .check-mark{display:block}
+    .source-panel{position:relative}
+    .refresh-link{font-size:.7rem;color:var(--primary);cursor:pointer;text-decoration:underline;margin-top:.25rem}
+    .refresh-link:hover{color:#3a7fc5}
     textarea{width:100%;min-height:5rem;padding:.625rem;border:1px solid var(--border);border-radius:.375rem;background:var(--bg);color:var(--fg);font-family:inherit;resize:vertical;font-size:.875rem;transition:border-color .2s}
     textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(74,144,217,0.15)}
     textarea::placeholder{color:var(--muted-fg)}
@@ -41,18 +49,8 @@
     .chip{display:inline-flex;align-items:center;gap:.25rem;padding:.375rem .75rem;border-radius:9999px;font-size:.75rem;font-weight:500;border:1px solid var(--border);background:var(--bg);margin-bottom:.375rem;transition:all .2s}
     .chip:hover{border-color:var(--primary);color:var(--primary)}
     .section-title{display:flex;align-items:center;gap:.5rem;font-size:1rem;font-weight:600;color:var(--fg);margin-bottom:.75rem}
-    .preview-container{display:flex;align-items:center;justify-content:center;min-height:100px}
-    .gallery-main{text-align:center;margin-bottom:.5rem}
-    .gallery-main img{max-width:100%;max-height:100px;object-fit:contain;border-radius:.375rem;border:2px solid var(--border)}
-    .gallery-thumbs{display:flex;flex-wrap:wrap;gap:4px;max-height:120px;overflow-y:auto}
-    .gallery-thumb{width:48px;height:48px;object-fit:cover;border-radius:4px;cursor:pointer;border:2px solid transparent;transition:all .15s;flex-shrink:0}
-    .gallery-thumb:hover{border-color:var(--primary);transform:scale(1.1)}
-    .gallery-thumb.selected{border-color:var(--success);box-shadow:0 0 0 2px rgba(82,196,26,0.3)}
-    .refresh-btn{padding:4px 12px;background:var(--muted);border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:.75rem;color:var(--fg);margin-top:4px}
-    .refresh-btn:hover{background:var(--border)}
-    .panel-label{font-size:.75rem;color:var(--muted-fg);margin-bottom:.375rem;font-weight:500}
     @media (max-width:500px){
-      .upload-split{flex-direction:column}
+      .source-split{flex-direction:column}
     }
   </style>
 </head>
@@ -60,28 +58,25 @@
   <div class="container">
     <div class="card">
       <div class="card-body">
-        <div class="section-title">上传图片</div>
-        <div class="upload-split">
-          <div>
-            <p class="panel-label">网上上传</p>
-            <div id="uploadZone" class="upload-zone" onclick="document.getElementById('fileInput').click()" ondrop="handleDrop(event)" ondragover="event.preventDefault()">
-              <div id="uploadPreview" class="hidden preview-container"></div>
-              <div id="uploadPlaceholder">
-                <div style="font-size:1.5rem;margin-bottom:.25rem">+</div>
-                <p class="text-xs">点击或拖拽上传</p>
-              </div>
-            </div>
-            <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event)">
+        <div class="section-title">选择图片来源</div>
+        <div class="source-split">
+          <div id="uploadPanel" class="source-panel" onclick="activateUpload()">
+            <span class="check-mark">&#10003;</span>
+            <span class="panel-icon">&#128193;</span>
+            <span class="panel-title">上传图片</span>
+            <span class="panel-hint">点击此处选择本地图片</span>
+            <div id="uploadPreview" class="hidden" style="margin-top:.375rem;"></div>
           </div>
-          <div>
-            <p class="panel-label">图例图片 <span class="text-muted">(点击缩略图选中)</span></p>
-            <div class="gallery-main" id="galleryMain">
-              <img id="galleryMainImg" src="" alt="随机图片">
-            </div>
-            <button class="refresh-btn w-full" onclick="shuffleMainImage()">换一换</button>
-            <div class="gallery-thumbs" id="galleryThumbs" style="margin-top:.5rem;"></div>
+          <div id="galleryPanel" class="source-panel" onclick="activateGallery()">
+            <span class="check-mark">&#10003;</span>
+            <span class="panel-icon">&#127912;</span>
+            <span class="panel-title">使用示例图片</span>
+            <img id="galleryImg" src="" alt="示例图片" style="display:none;">
+            <span class="panel-hint" id="galleryHint">点击此处使用示例图片</span>
+            <span class="refresh-link" id="refreshLink" style="display:none;" onclick="event.stopPropagation();shuffleGalleryImage();">换一张</span>
           </div>
         </div>
+        <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event)">
       </div>
     </div>
 
@@ -131,7 +126,6 @@
     ];
 
     var uploadedImage = null;
-    var selectedThumbSrc = null;
 
     function shuffleArray(arr) {
       var a = arr.slice();
@@ -142,20 +136,48 @@
       return a;
     }
 
-    function shuffleMainImage() {
+    function shuffleGalleryImage() {
       var shuffled = shuffleArray(GALLERY_IMAGES);
-      document.getElementById('galleryMainImg').src = shuffled[0];
+      var img = document.getElementById('galleryImg');
+      img.src = shuffled[0];
+    }
+
+    function activateUpload() {
+      // deselect gallery
+      document.getElementById('galleryPanel').classList.remove('active');
+      // select upload
+      document.getElementById('uploadPanel').classList.add('active');
+      // trigger file dialog
+      document.getElementById('fileInput').click();
+    }
+
+    function activateGallery() {
+      var galleryPanel = document.getElementById('galleryPanel');
+      var galleryImg = document.getElementById('galleryImg');
+
+      if (galleryPanel.classList.contains('active')) {
+        // clicking again on the same panel = shuffle
+        shuffleGalleryImage();
+        loadImageFromUrl(galleryImg.src);
+        return;
+      }
+
+      // deselect upload
+      document.getElementById('uploadPanel').classList.remove('active');
+      document.getElementById('uploadPreview').classList.add('hidden');
+      document.getElementById('uploadPreview').innerHTML = '';
+
+      // select gallery
+      galleryPanel.classList.add('active');
+      loadImageFromUrl(galleryImg.src);
     }
 
     function loadImageFromUrl(url) {
+      if (!url) return;
       fetch(url).then(function(res) { return res.blob(); }).then(function(blob) {
         var reader = new FileReader();
         reader.onload = function(ev) {
           uploadedImage = ev.target.result;
-          document.getElementById('uploadPreview').innerHTML = '<img src="' + uploadedImage + '" alt="预览">';
-          document.getElementById('uploadPreview').classList.remove('hidden');
-          document.getElementById('uploadPlaceholder').classList.add('hidden');
-          document.getElementById('uploadZone').classList.add('has-image');
         };
         reader.readAsDataURL(blob);
       }).catch(function(e) {
@@ -163,69 +185,34 @@
       });
     }
 
-    function selectGalleryThumb(src, thumbEl) {
-      var thumbs = document.querySelectorAll('.gallery-thumb');
-      // if clicking the already-selected thumb, deselect
-      if (thumbEl.classList.contains('selected')) {
-        thumbEl.classList.remove('selected');
-        selectedThumbSrc = null;
-        uploadedImage = null;
-        document.getElementById('uploadPreview').classList.add('hidden');
-        document.getElementById('uploadPlaceholder').classList.remove('hidden');
-        document.getElementById('uploadZone').classList.remove('has-image');
-        return;
-      }
-      // deselect all
-      thumbs.forEach(function(t) { t.classList.remove('selected'); });
-      // select this one
-      thumbEl.classList.add('selected');
-      selectedThumbSrc = src;
-      loadImageFromUrl(src);
-    }
-
-    function initGallery() {
-      var mainImg = document.getElementById('galleryMainImg');
-      var thumbsContainer = document.getElementById('galleryThumbs');
-      if (!mainImg || !thumbsContainer) return;
-
-      // shuffle and show random main image
-      shuffleMainImage();
-
-      // build thumbnail grid
-      var shuffled = shuffleArray(GALLERY_IMAGES);
-      var html = '';
-      shuffled.forEach(function(src) {
-        html += '<img src="' + src + '" class="gallery-thumb" onclick="selectGalleryThumb(\'' + src + '\', this)" title="点击选中此图片">';
-      });
-      thumbsContainer.innerHTML = html;
-    }
-
     function handleFileSelect(e){
       var file = e.target.files[0];
-      if (file) loadUserImage(file);
-    }
-
-    function handleDrop(e){
-      e.preventDefault();
-      var file = e.dataTransfer.files[0];
-      if (file && file.type.startsWith('image/')) loadUserImage(file);
+      if (!file) return;
+      // deselect gallery
+      document.getElementById('galleryPanel').classList.remove('active');
+      // select upload
+      document.getElementById('uploadPanel').classList.add('active');
+      loadUserImage(file);
     }
 
     function loadUserImage(file){
-      // clear gallery selection when user uploads own image
-      var thumbs = document.querySelectorAll('.gallery-thumb');
-      thumbs.forEach(function(t) { t.classList.remove('selected'); });
-      selectedThumbSrc = null;
-
       var reader = new FileReader();
       reader.onload = function(ev){
         uploadedImage = ev.target.result;
-        document.getElementById('uploadPreview').innerHTML = '<img src="' + uploadedImage + '" alt="预览">';
-        document.getElementById('uploadPreview').classList.remove('hidden');
-        document.getElementById('uploadPlaceholder').classList.add('hidden');
-        document.getElementById('uploadZone').classList.add('has-image');
+        var preview = document.getElementById('uploadPreview');
+        preview.innerHTML = '<img src="' + uploadedImage + '" style="max-width:100%;max-height:80px;object-fit:contain;border-radius:.375rem;">';
+        preview.classList.remove('hidden');
       };
       reader.readAsDataURL(file);
+    }
+
+    function initGallery() {
+      var img = document.getElementById('galleryImg');
+      if (!img) return;
+      shuffleGalleryImage();
+      img.style.display = 'block';
+      document.getElementById('galleryHint').style.display = 'none';
+      document.getElementById('refreshLink').style.display = 'inline';
     }
 
     function setQuestion(q){document.getElementById('questionInput').value=q}
@@ -344,7 +331,6 @@
       }
     }
 
-    // 初始化
     initGallery();
   </script>
 </body>
