@@ -21,7 +21,8 @@
       "Bash(ssh-keygen -t ed25519 -C \"shiyishentu@gmail.com\" -f ~/.ssh/id_ed25519 -N \"\")",
       "Bash(git rm *)",
       "Bash(where git *)",
-      "Bash(where bash *)"
+      "Bash(where bash *)",
+      "Read(//c/Program Files/Git/usr/bin/**)"
     ]
   }
 }
