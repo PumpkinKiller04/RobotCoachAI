@@ -22,7 +22,8 @@
       "Bash(git rm *)",
       "Bash(where git *)",
       "Bash(where bash *)",
-      "Read(//c/Program Files/Git/usr/bin/**)"
+      "Read(//c/Program Files/Git/usr/bin/**)",
+      "Bash(xxd multimodal.html)"
     ]
   }
 }
