@@ -126,6 +126,8 @@
     ];
 
     var uploadedImage = null;
+    var imageCache = {};   // url -> base64
+    var currentGalleryUrl = null;
 
     function shuffleArray(arr) {
       var a = arr.slice();
@@ -140,42 +142,58 @@
       var shuffled = shuffleArray(GALLERY_IMAGES);
       var img = document.getElementById('galleryImg');
       img.src = shuffled[0];
+      currentGalleryUrl = img.src;
+    }
+
+    // pre-load a URL into base64 cache
+    function cacheImage(url) {
+      return new Promise(function(resolve, reject) {
+        if (!url) { resolve(); return; }
+        if (imageCache[url]) { resolve(imageCache[url]); return; }
+        fetch(url).then(function(res) { return res.blob(); }).then(function(blob) {
+          var reader = new FileReader();
+          reader.onload = function(ev) {
+            imageCache[url] = ev.target.result;
+            resolve(ev.target.result);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        }).catch(reject);
+      });
     }
 
     function activateUpload() {
-      // deselect gallery
       document.getElementById('galleryPanel').classList.remove('active');
-      // select upload
       document.getElementById('uploadPanel').classList.add('active');
-      // trigger file dialog
       document.getElementById('fileInput').click();
     }
 
     function activateGallery() {
       var galleryPanel = document.getElementById('galleryPanel');
-      var galleryImg = document.getElementById('galleryImg');
+      var url = currentGalleryUrl;
 
       if (galleryPanel.classList.contains('active')) {
-        // clicking again on the same panel = shuffle
+        // already active: shuffle to new image
         shuffleGalleryImage();
-        setGalleryLoading(true);
-        loadImageFromUrl(galleryImg.src).then(function() {
-          setGalleryLoading(false);
-        });
+        url = currentGalleryUrl;
+        // use old uploadedImage until new one is cached
+        cacheImage(url);
         return;
       }
 
-      // deselect upload
+      // switch to gallery mode: deselect upload
       document.getElementById('uploadPanel').classList.remove('active');
       document.getElementById('uploadPreview').classList.add('hidden');
       document.getElementById('uploadPreview').innerHTML = '';
 
-      setGalleryLoading(true);
       galleryPanel.classList.add('active');
-      var url = galleryImg.src;
-      if (url) {
-        loadImageFromUrl(url).then(function() {
-          setGalleryLoading(false);
+
+      // instantly use cached image, or load if not cached
+      if (imageCache[url]) {
+        uploadedImage = imageCache[url];
+      } else {
+        cacheImage(url).then(function(b64) {
+          uploadedImage = b64;
         });
       }
     }
@@ -195,18 +213,6 @@
         link.style.display = 'inline';
       }
     }
-
-    function loadImageFromUrl(url) {
-      return new Promise(function(resolve, reject) {
-        if (!url) { resolve(); return; }
-        uploadedImage = null;
-        fetch(url).then(function(res) { return res.blob(); }).then(function(blob) {
-          var reader = new FileReader();
-          reader.onload = function(ev) {
-            uploadedImage = ev.target.result;
-            resolve();
-          };
-          reader.onerror = reject;
           reader.readAsDataURL(blob);
         }).catch(function(e) {
           console.error('加载图片失败:', e);
