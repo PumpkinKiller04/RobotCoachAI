@@ -312,13 +312,10 @@
           },
           body: JSON.stringify({
             model: API_CONFIG.model,
-            messages: [
-              { role: 'system', content: '你是一个简洁的AI助手。回答必须控制在150字以内，直接给核心信息，不要铺垫和展开。' },
-              { role: 'user', content: content }
-            ],
+            messages: [{ role: 'user', content: content }],
             stream: true,
             temperature: 0.1,
-            max_tokens: 300,
+            max_tokens: 200,
             top_p: 0.7
           })
         });
@@ -332,6 +329,7 @@
         var decoder = new TextDecoder();
         var textEl = document.getElementById('responseText');
         var fullText = '';
+        var MAX_LENGTH = 150;
 
         loadingArea.classList.add('hidden');
 
@@ -352,8 +350,12 @@
                 var json = JSON.parse(data);
                 var delta = json.choices && json.choices[0] && json.choices[0].delta && json.choices[0].delta.content;
                 if (delta) {
-                  fullText += delta;
-                  textEl.innerHTML = renderMarkdown(fullText);
+                  if (fullText.length < MAX_LENGTH) {
+                    var remaining = MAX_LENGTH - fullText.length;
+                    var addText = delta.slice(0, remaining);
+                    fullText += addText;
+                    textEl.innerHTML = renderMarkdown(fullText);
+                  }
                 }
               } catch (e) {
                 console.warn('解析响应失败:', e);
