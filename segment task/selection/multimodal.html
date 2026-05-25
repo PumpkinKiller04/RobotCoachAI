@@ -176,8 +176,15 @@
         // already active: shuffle to new image
         shuffleGalleryImage();
         url = currentGalleryUrl;
-        // use old uploadedImage until new one is cached
-        cacheImage(url);
+        if (imageCache[url]) {
+          uploadedImage = imageCache[url];
+        } else {
+          setGalleryLoading(true);
+          cacheImage(url).then(function(b64) {
+            uploadedImage = b64;
+            setGalleryLoading(false);
+          });
+        }
         return;
       }
 
@@ -188,12 +195,13 @@
 
       galleryPanel.classList.add('active');
 
-      // instantly use cached image, or load if not cached
       if (imageCache[url]) {
         uploadedImage = imageCache[url];
       } else {
+        setGalleryLoading(true);
         cacheImage(url).then(function(b64) {
           uploadedImage = b64;
+          setGalleryLoading(false);
         });
       }
     }
