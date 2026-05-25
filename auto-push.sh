@@ -1,7 +1,8 @@
 #!/bin/bash
 # 自动监控文件变化，一旦有修改就自动 commit 并 push 到 GitHub
-# 使用方法：在终端运行 bash auto-push.sh
+# 使用方法：双击 开始自动同步.bat
 
+export PATH="/usr/bin:$PATH"
 cd "$(dirname "$0")"
 
 echo "[auto-push] 开始监控文件变化..."
