@@ -247,6 +247,30 @@
 
     function setQuestion(q){document.getElementById('questionInput').value=q}
 
+    function renderMarkdown(text) {
+      var html = text;
+      // bold
+      html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      // italic
+      html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+      // headings
+      html = html.replace(/^### (.+)$/gm, '<h4 style="margin:.5rem 0 .25rem;font-size:.95rem">$1</h4>');
+      html = html.replace(/^## (.+)$/gm, '<h3 style="margin:.6rem 0 .3rem;font-size:1rem">$1</h3>');
+      html = html.replace(/^# (.+)$/gm, '<h3 style="margin:.6rem 0 .3rem;font-size:1.05rem">$1</h3>');
+      // unordered list items
+      html = html.replace(/^- (.+)$/gm, '<li style="margin-left:1.2rem">$1</li>');
+      // ordered list items
+      html = html.replace(/^\d+\. (.+)$/gm, '<li style="margin-left:1.2rem">$1</li>');
+      // inline code
+      html = html.replace(/`([^`]+)`/g, '<code style="background:rgba(0,0,0,.06);padding:1px 4px;border-radius:3px;font-size:.85em">$1</code>');
+      // blockquote
+      html = html.replace(/^> (.+)$/gm, '<blockquote style="border-left:3px solid #ddd;margin:.4rem 0;padding:.2rem .6rem;color:#666">$1</blockquote>');
+      // line breaks
+      html = html.replace(/\n\n/g, '<br><br>');
+      html = html.replace(/\n/g, '<br>');
+      return html;
+    }
+
     var API_CONFIG = {
       apiKey: 'sk-kjvosjvznxanenujhcqtissgycaolpwtkxbebntcxlokucji',
       baseUrl: 'https://api.siliconflow.cn/v1',
@@ -330,7 +354,7 @@
                     var remaining = MAX_LENGTH - fullText.length;
                     var addText = delta.slice(0, remaining);
                     fullText += addText;
-                    textEl.textContent = fullText;
+                    textEl.innerHTML = renderMarkdown(fullText);
                   }
                 }
               } catch (e) {
