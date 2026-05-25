@@ -89,6 +89,30 @@
   <script>
     let uploadedImage=null;
 
+    window.addEventListener('message', function(event) {
+      if (event.data && event.data.type === 'setImage' && event.data.imageUrl) {
+        fetchAndLoadImage(event.data.imageUrl);
+      }
+    });
+
+    async function fetchAndLoadImage(url) {
+      try {
+        var response = await fetch(url);
+        var blob = await response.blob();
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          uploadedImage = ev.target.result;
+          document.getElementById('uploadPreview').innerHTML = '<img src="' + uploadedImage + '" alt="预览">';
+          document.getElementById('uploadPreview').classList.remove('hidden');
+          document.getElementById('uploadPlaceholder').classList.add('hidden');
+          document.getElementById('uploadZone').classList.add('has-image');
+        };
+        reader.readAsDataURL(blob);
+      } catch(e) {
+        console.error('加载图片失败:', e);
+      }
+    }
+
     function handleFileSelect(e){
       const file=e.target.files[0];
       if(file)loadImage(file);
