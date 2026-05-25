@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -c workshop.html)",
+      "Bash(awk '/<script>/,/<\\\\/script>/' workshop.html)",
+      "Bash(node -c _check.js)",
+      "Bash(node -e \"const fs=require\\('fs'\\);const html=fs.readFileSync\\('c:/Users/13241/Desktop/导学单网站/segment task/selection/workshop.html','utf8'\\);const m=html.match\\(/<script>\\([\\\\s\\\\S]*?\\)<\\\\/script>/\\);const js=m[1].replace\\(/<\\\\/script>/g,''\\);new Function\\(js\\);console.log\\('OK'\\)\")",
+      "Bash(node -e \"const fs=require\\('fs'\\);const html=fs.readFileSync\\('c:/Users/13241/Desktop/导学单网站/course.html','utf8'\\);const scripts=html.match\\(/<script>\\([\\\\s\\\\S]*?\\)<\\\\/script>/g\\);if\\(scripts\\){scripts.forEach\\(s=>{const js=s.replace\\(/<\\\\/?script>/g,''\\);new Function\\(js\\);}\\);console.log\\('OK'\\)}\")",
+      "Bash(node -e \"const fs=require\\('fs'\\);const html=fs.readFileSync\\('c:/Users/13241/Desktop/导学单网站/course.html','utf8'\\);const scripts=html.match\\(/<script>\\([\\\\s\\\\S]*?\\)<\\\\/script>/g\\);if\\(scripts\\){scripts.forEach\\(s=>{const js=s.replace\\(/<\\\\/?script>/g,''\\);new Function\\(js\\);}\\);console.log\\('course.html OK'\\)}\")",
+      "Bash(node -e \"const fs=require\\('fs'\\);const html=fs.readFileSync\\('c:/Users/13241/Desktop/导学单网站/segment task/selection/workshop.html','utf8'\\);const m=html.match\\(/<script>\\([\\\\s\\\\S]*?\\)<\\\\/script>/\\);const js=m[1].replace\\(/<\\\\/script>/g,''\\);new Function\\(js\\);console.log\\('workshop.html OK'\\)\")",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ]
+  }
+}

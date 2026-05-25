@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>机器人总教练请就位 - 首页</title>
+    <link rel="preconnect" href="https://fonts.googleapis.cn">
+    <link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin>
+    <link href="https://fonts.googleapis.cn/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(180deg, 
+                #87ceeb 0%, 
+                #add8e6 30%,
+                #b0e0e6 50%,
+                #98d8c8 65%,
+                #7cb342 85%,
+                #558b2f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .book-container {
+            background: linear-gradient(135deg, 
+                #fff8e7 0%, 
+                #ffefd5 25%,
+                #ffe4c4 50%,
+                #fff8e7 75%,
+                #ffefd5 100%
+            );
+            border-radius: 8px;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.3),
+                -8px 0 20px rgba(139, 90, 43, 0.2),
+                8px 0 20px rgba(139, 90, 43, 0.2);
+            width: 95%;
+            max-width: 1400px;
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .book-header {
+            background: linear-gradient(90deg, #8b5a2b 0%, #a0522d 20%, #8b5a2b 35%, #6b4423 50%, #8b5a2b 65%, #a0522d 80%, #8b5a2b 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .book-title {
+            font-size: 22px;
+            color: #fff8e7;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .home-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-welcome {
+            font-size: 14px;
+            color: #fff8e7;
+        }
+        .logout-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #dc143c 0%, #8b0000 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+        .logout-btn:hover { transform: scale(1.05); }
+        .book-content {
+            flex: 1;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .canvas-area {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 0;
+        }
+        .canvas-title {
+            font-size: 28px;
+            color: #8b5a2b;
+            margin-bottom: 40px;
+            text-align: center;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .cards-container {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        .episode-card {
+            width: 280px;
+            height: 380px;
+            background: linear-gradient(145deg, #fff9c4 0%, #fff176 50%, #ffeb3b 100%);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 3px solid #d4a574;
+            position: relative;
+            overflow: hidden;
+            padding-top: 20px;
+        }
+        .episode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(90deg, #8b5a2b, #a0522d, #8b5a2b);
+        }
+        .episode-card:hover {
+            transform: translateY(-15px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        }
+        .episode-number {
+            font-size: 48px;
+            font-weight: 700;
+            color: #8b5a2b;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .episode-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #6b4423;
+            text-align: center;
+            padding: 0 15px;
+            line-height: 1.4;
+        }
+        .episode-card-1 {
+            background: linear-gradient(145deg, #e3f2fd 0%, #bbdefb 50%, #90caf9 100%);
+            border-color: #64b5f6;
+        }
+        .episode-card-1 .episode-number {
+            color: #1565c0;
+        }
+        .episode-card-1 .episode-title {
+            color: #0d47a1;
+        }
+        .episode-card-2 {
+            background: linear-gradient(145deg, #fff9c4 0%, #fff176 50%, #ffeb3b 100%);
+            border-color: #d4a574;
+        }
+        .episode-card-2 .episode-number {
+            color: #8b5a2b;
+        }
+        .episode-card-2 .episode-title {
+            color: #6b4423;
+        }
+        .episode-card-3 {
+            background: linear-gradient(145deg, #ffebee 0%, #ffcdd2 50%, #ef9a9a 100%);
+            border-color: #e57373;
+        }
+        .episode-card-3 .episode-number {
+            color: #c62828;
+        }
+        .episode-card-3 .episode-title {
+            color: #b71c1c;
+        }
+        .episode-cover {
+            width: 240px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="book-container">
+        <div class="book-header">
+            <div class="header-left">
+                <button class="home-btn" onclick="location.href='home.html'">首页</button>
+                <div class="book-title">机器人总教练请就位</div>
+            </div>
+            <div class="user-info">
+                <span class="user-welcome" id="userWelcome">欢迎</span>
+                <button class="logout-btn" onclick="logout()">退出登录</button>
+            </div>
+        </div>
+        <div class="book-content">
+            <div class="main-content">
+                <div class="canvas-area">
+                    <div class="canvas-title">选择学习章节</div>
+                    <div class="cards-container">
+                        <div class="episode-card episode-card-1" onclick="goToCourse(0)">
+                            <div class="episode-number">1</div>
+                            <div class="episode-title">运动员选拔</div>
+                            <img src="resource/视频一封面.png" alt="视频一封面" class="episode-cover">
+                        </div>
+                        <div class="episode-card episode-card-2" onclick="goToCourse(1)">
+                            <div class="episode-number">2</div>
+                            <div class="episode-title">训练营</div>
+                            <img src="resource/视频二封面.png" alt="视频二封面" class="episode-cover">
+                        </div>
+                        <div class="episode-card episode-card-3" onclick="goToCourse(2)">
+                            <div class="episode-number">3</div>
+                            <div class="episode-title">总决赛</div>
+                            <img src="resource/视频三封面.png" alt="视频三封面" class="episode-cover">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loggedIn = localStorage.getItem('loggedIn');
+            const currentUser = localStorage.getItem('username');
+            
+            if (loggedIn === 'true' && currentUser && currentUser.trim() !== '') {
+                document.getElementById('userWelcome').textContent = '欢迎 ' + currentUser;
+            } else {
+                // 清除可能的无效登录状态
+                localStorage.removeItem('loggedIn');
+                localStorage.removeItem('username');
+                location.href = 'index.html';
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('loggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('currentCourse');
+            localStorage.removeItem('currentPage');
+            localStorage.removeItem('selectedModule');
+            location.href = 'index.html';
+        }
+
+        function goToCourse(moduleIndex) {
+            localStorage.removeItem('currentModule');
+            localStorage.removeItem('currentCourse');
+            localStorage.removeItem('currentPage');
+            localStorage.setItem('selectedModule', moduleIndex);
+            location.href = 'course.html';
+        }
+    </script>
+</body>
+</html>

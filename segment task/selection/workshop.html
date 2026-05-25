@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>教练改装车间 - 传感器安装</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#f8fafc;--fg:#0f172a;--card:#fff;--border:#e2e8f0;
+      --primary:#3b82f6;--primary-fg:#fff;
+      --muted:#f1f5f9;--muted-fg:#64748b;
+      --success:#22c55e;--warning:#f59e0b;--danger:#ef4444;
+    }
+    @media(prefers-color-scheme:dark){
+      :root{
+        --bg:#0f172a;--fg:#f8fafc;--card:#1e293b;--border:#334155;
+        --muted:#1e293b;--muted-fg:#94a3b8;
+      }
+    }
+    body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--fg)}
+    .container{max-width:1200px;margin:0 auto;padding:.25rem}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.625rem 1.25rem;border-radius:.5rem;font-weight:500;cursor:pointer;border:none;transition:all .2s}
+    .btn-primary{background:var(--primary);color:var(--primary-fg)}
+    .btn-primary:hover{opacity:.9}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:.75rem;overflow:hidden}
+    .card-body{padding:.5rem}
+    .text-sm{font-size:.875rem}.text-xs{font-size:.75rem}.font-medium{font-weight:500}
+    .text-muted{color:var(--muted-fg)}
+    .grid{display:grid}.gap-4{gap:1rem}
+    .hidden{display:none!important}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .fade-in{animation:fadeIn .3s}@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+    /* 装备卡片 */
+    .equip-cards{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin:1rem 0}
+    .equip-card{
+      flex:1;min-width:130px;max-width:160px;
+      padding:1rem .75rem;border-radius:.75rem;border:2px solid var(--border);
+      background:var(--card);cursor:pointer;text-align:center;
+      transition:all .25s;user-select:none;
+    }
+    .equip-card:hover{transform:translateY(-4px);box-shadow:0 8px 20px rgba(0,0,0,.12)}
+    .equip-card.selected{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+    .equip-card .equip-emoji{font-size:2.2rem;display:block;margin-bottom:.4rem}
+    .equip-card .equip-name{font-weight:600;font-size:.9rem;margin-bottom:.2rem}
+    .equip-card .equip-desc{font-size:.72rem;color:var(--muted-fg);line-height:1.3}
+    .equip-card.card-lidar{border-color:#3b82f6;background:#eff6ff}
+    .equip-card.card-lidar:hover:not(.selected){box-shadow:0 8px 20px rgba(59,130,246,.25)}
+    .equip-card.card-imu{border-color:#8b5cf6;background:#f5f3ff}
+    .equip-card.card-imu:hover:not(.selected){box-shadow:0 8px 20px rgba(139,92,246,.25)}
+    .equip-card.card-force{border-color:#22c55e;background:#f0fdf4}
+    .equip-card.card-force:hover:not(.selected){box-shadow:0 8px 20px rgba(34,197,94,.25)}
+
+    /* 弹窗 */
+    .overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.55);
+      display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem;
+    }
+    .overlay-box{
+      background:var(--card);border-radius:1rem;padding:2rem 1.8rem;
+      max-width:620px;width:100%;text-align:center;animation:fadeIn .3s;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section id="workshop">
+      <div style="position:relative;margin-bottom:.25rem">
+        <div style="display:grid;grid-template-columns:1fr;gap:.75rem" id="trackPanels">
+          <div class="card">
+            <div class="card-body" style="text-align:center">
+              <h3 style="font-size:.9rem;font-weight:600;margin-bottom:.25rem;color:#c0392b">第三视角 · 俯瞰赛道</h3>
+              <div id="equipTags" style="display:flex;gap:.3rem;justify-content:center;flex-wrap:wrap;margin-bottom:.3rem;min-height:1.5rem">
+                <span style="display:inline-flex;align-items:center;gap:.2rem;padding:.15rem .5rem;border-radius:9999px;font-size:.7rem;font-weight:500;background:rgba(59,130,246,.1);color:#3b82f6">📷 摄像头</span>
+              </div>
+              <canvas id="tpvCanvas" width="520" height="340" style="width:100%;border-radius:.5rem;background:#000"></canvas>
+              <button id="runBtn" class="btn btn-primary" style="padding:.75rem 2.5rem;font-size:1.05rem;font-weight:700;margin-top:.4rem">开始试跑</button>
+              <p id="statusText" style="margin-top:.25rem;font-size:.75rem;color:#64748b">点击按钮，观察机器人在赛道上的表现</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 装备选择弹窗 -->
+    <div id="equipOverlay" class="overlay hidden">
+      <div class="overlay-box" id="equipOverlayContent"></div>
+    </div>
+  </main>
+
+  <script>
+    // ========== Canvas & 状态 ==========
+    const tpvCanvas = document.getElementById('tpvCanvas');
+    const tpvCtx = tpvCanvas.getContext('2d');
+    const runBtn = document.getElementById('runBtn');
+    const statusText = document.getElementById('statusText');
+    const equipOverlay = document.getElementById('equipOverlay');
+    const equipOverlayContent = document.getElementById('equipOverlayContent');
+    const equipTags = document.getElementById('equipTags');
+
+    // 赛道参数（与profile.html一致）
+    const T = {
+      cx: 260, cy: 190,
+      leftX: 155, rightX: 365,
+      curveR: 90, halfW: 24,
+      get outerTop()    { return this.cy - this.curveR - this.halfW; },
+      get outerBottom() { return this.cy + this.curveR + this.halfW; },
+      get innerTop()    { return this.cy - this.curveR + this.halfW; },
+      get innerBottom() { return this.cy + this.curveR - this.halfW; },
+      get outerR()      { return this.curveR + this.halfW; },
+      get innerR()      { return this.curveR - this.halfW; }
+    };
+
+    let sensors = { lidar: false, imu: false, force: false };
+    let animState = 'idle';
+    let robot = { x: T.rightX - 20, y: T.outerBottom - 22 };
+    let phase = 0;                // 0=下直道, 1=左弯道, 2=上直道, 3=右弯道, 4=完成
+    let curveT = 0;
+    let fpvCurve = 0;
+    let fpvOfftrack = 0;
+    let fpvScroll = 0;
+    let frame = 0;
+    let animId = null;
+    let running = false;
+    let hadCurveFail = false;     // 左弯道是否冲出过
+    let hadBumpIssue = false;     // 右弯道是否颠簸滑出过
+    let bumpShake = 0;            // 颠簸路段FPV上下抖动
+    let bumpWarned = false;       // 是否已弹过颠簸警告
+    const TIME_LIMIT = 750;
+
+    function isOnTrack(x, y) {
+      if (x >= T.leftX && x <= T.rightX) {
+        return (y >= T.outerTop && y <= T.innerTop) ||
+               (y >= T.innerBottom && y <= T.outerBottom);
+      } else if (x < T.leftX) {
+        const dx = x - T.leftX, dy = y - T.cy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        return dist >= T.innerR && dist <= T.outerR;
+      } else {
+        const dx = x - T.rightX, dy = y - T.cy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        return dist >= T.innerR && dist <= T.outerR;
+      }
+    }
+
+    // ========== 绘制第三视角 ==========
+    function drawTPV() {
+      const ctx = tpvCtx;
+      const W = tpvCanvas.width, H = tpvCanvas.height;
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = '#7cb342';
+      ctx.fillRect(0, 0, W, H);
+
+      // 跑道外轮廓
+      ctx.beginPath();
+      ctx.moveTo(T.leftX, T.outerTop); ctx.lineTo(T.rightX, T.outerTop);
+      ctx.arc(T.rightX, T.cy, T.outerR, -Math.PI/2, Math.PI/2);
+      ctx.lineTo(T.leftX, T.outerBottom);
+      ctx.arc(T.leftX, T.cy, T.outerR, Math.PI/2, -Math.PI/2);
+      ctx.closePath();
+      ctx.moveTo(T.leftX, T.innerTop); ctx.lineTo(T.rightX, T.innerTop);
+      ctx.arc(T.rightX, T.cy, T.innerR, -Math.PI/2, Math.PI/2, true);
+      ctx.lineTo(T.leftX, T.innerBottom);
+      ctx.arc(T.leftX, T.cy, T.innerR, Math.PI/2, -Math.PI/2, true);
+      ctx.closePath();
+      ctx.fillStyle = '#c0392b';
+      ctx.fill('evenodd');
+
+      // 颗粒纹理
+      ctx.fillStyle = 'rgba(180,60,40,0.2)';
+      for (let i = 0; i < 200; i++) {
+        let px, py;
+        const sec = Math.random();
+        if (sec < 0.35) {
+          px = T.leftX + Math.random() * (T.rightX - T.leftX);
+          py = T.outerTop + Math.random() * (T.innerTop - T.outerTop);
+        } else if (sec < 0.7) {
+          px = T.leftX + Math.random() * (T.rightX - T.leftX);
+          py = T.innerBottom + Math.random() * (T.outerBottom - T.innerBottom);
+        } else if (sec < 0.85) {
+          const a = -Math.PI/2 + Math.random() * Math.PI;
+          const r = T.innerR + Math.random() * (T.outerR - T.innerR);
+          px = T.rightX + r * Math.cos(a); py = T.cy + r * Math.sin(a);
+        } else {
+          const a = Math.PI/2 + Math.random() * Math.PI;
+          const r = T.innerR + Math.random() * (T.outerR - T.innerR);
+          px = T.leftX + r * Math.cos(a); py = T.cy + r * Math.sin(a);
+        }
+        ctx.beginPath(); ctx.arc(px, py, 1.2, 0, Math.PI*2); ctx.fill();
+      }
+
+      // 分道线
+      ctx.strokeStyle = 'rgba(255,255,255,0.6)'; ctx.lineWidth = 1.2;
+      ctx.setLineDash([6, 10]);
+      for (let lane = 1; lane <= 3; lane++) {
+        const t = lane / 4;
+        const topY = T.outerTop + (T.innerTop - T.outerTop) * t;
+        const btmY = T.innerBottom + (T.outerBottom - T.innerBottom) * t;
+        const r = T.innerR + (T.outerR - T.innerR) * t;
+        ctx.beginPath(); ctx.moveTo(T.leftX, topY); ctx.lineTo(T.rightX, topY); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(T.leftX, btmY); ctx.lineTo(T.rightX, btmY); ctx.stroke();
+        ctx.beginPath(); ctx.arc(T.rightX, T.cy, r, -Math.PI/2, Math.PI/2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(T.leftX, T.cy, r, Math.PI/2, -Math.PI/2); ctx.stroke();
+      }
+      ctx.setLineDash([]);
+
+      // 跑道边缘
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(T.leftX, T.outerTop); ctx.lineTo(T.rightX, T.outerTop);
+      ctx.arc(T.rightX, T.cy, T.outerR, -Math.PI/2, Math.PI/2);
+      ctx.lineTo(T.leftX, T.outerBottom);
+      ctx.arc(T.leftX, T.cy, T.outerR, Math.PI/2, -Math.PI/2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(T.leftX, T.innerTop); ctx.lineTo(T.rightX, T.innerTop);
+      ctx.arc(T.rightX, T.cy, T.innerR, -Math.PI/2, Math.PI/2);
+      ctx.lineTo(T.leftX, T.innerBottom);
+      ctx.arc(T.leftX, T.cy, T.innerR, Math.PI/2, -Math.PI/2);
+      ctx.stroke();
+
+      // 中心草坪
+      const grassGrad = ctx.createLinearGradient(0, T.outerTop, 0, T.outerBottom);
+      grassGrad.addColorStop(0, '#66bb6a'); grassGrad.addColorStop(0.5, '#4caf50'); grassGrad.addColorStop(1, '#388e3c');
+      ctx.fillStyle = grassGrad;
+      ctx.beginPath();
+      ctx.moveTo(T.leftX, T.innerTop); ctx.lineTo(T.rightX, T.innerTop);
+      ctx.arc(T.rightX, T.cy, T.innerR, -Math.PI/2, Math.PI/2);
+      ctx.lineTo(T.leftX, T.innerBottom);
+      ctx.arc(T.leftX, T.cy, T.innerR, Math.PI/2, -Math.PI/2);
+      ctx.closePath(); ctx.fill();
+
+      // 中线+中圈
+      ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 1;
+      ctx.setLineDash([3, 6]);
+      ctx.beginPath(); ctx.moveTo(T.leftX + 10, T.cy); ctx.lineTo(T.rightX - 10, T.cy); ctx.stroke();
+      ctx.beginPath(); ctx.arc((T.leftX+T.rightX)/2, T.cy, 28, 0, Math.PI*2); ctx.stroke();
+      ctx.setLineDash([]);
+
+      // 颠簸路段标记（右弯道区域，无力觉传感器时触发）
+      if (!sensors.force && sensors.lidar && sensors.imu) {
+        ctx.fillStyle = 'rgba(255,152,0,0.25)';
+        ctx.beginPath();
+        ctx.arc(T.rightX, T.cy, T.outerR + 6, -Math.PI/2 + 0.3, Math.PI/2 - 0.3);
+        ctx.arc(T.rightX, T.cy, T.innerR - 6, Math.PI/2 - 0.3, -Math.PI/2 + 0.3, true);
+        ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#e65100'; ctx.font = 'bold 14px system-ui'; ctx.textAlign = 'center';
+        ctx.fillText('颠簸路段', T.rightX + 48, T.cy + 5);
+      }
+
+      // 起/终点
+      ctx.fillStyle = '#fff';
+      const startX = T.rightX - 40;
+      ctx.fillRect(startX, T.innerBottom, 36, T.outerBottom - T.innerBottom);
+      ctx.fillStyle = '#333'; ctx.font = 'bold 9px system-ui'; ctx.textAlign = 'center';
+      ctx.fillText('起/终点', startX + 18, T.innerBottom - 5);
+
+      // 机器人
+      if (animState !== 'idle') {
+        const rx = robot.x, ry = robot.y;
+        ctx.fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.beginPath(); ctx.arc(rx, ry + 2, 9, 0, Math.PI*2); ctx.fill();
+        const bg = ctx.createRadialGradient(rx - 2, ry - 2, 1, rx, ry, 9);
+        bg.addColorStop(0, '#64b5f6'); bg.addColorStop(1, '#1565c0');
+        ctx.fillStyle = bg;
+        ctx.beginPath(); ctx.arc(rx, ry, 9, 0, Math.PI*2); ctx.fill();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+        ctx.fillStyle = '#fff';
+        ctx.beginPath(); ctx.arc(rx - 4, ry, 3, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#111';
+        ctx.beginPath(); ctx.arc(rx - 4, ry, 1.5, 0, Math.PI*2); ctx.fill();
+        ctx.strokeStyle = '#ffeb3b'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(rx - 9, ry); ctx.lineTo(rx - 18, ry); ctx.stroke();
+        if (animState === 'offtrack' || animState === 'done') {
+          ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.moveTo(rx-7, ry-7); ctx.lineTo(rx+7, ry+7);
+          ctx.moveTo(rx+7, ry-7); ctx.lineTo(rx-7, ry+7); ctx.stroke();
+        }
+      }
+      ctx.fillStyle = '#fff'; ctx.font = '10px system-ui'; ctx.textAlign = 'left';
+      ctx.fillText('标准操场 · 红色橡胶跑道', 10, H - 8);
+    }
+
+    // ========== 绘制第一视角 ==========
+    // ========== 装备标签更新 ==========
+    function updateEquipTags() {
+      let html = '<span style="display:inline-flex;align-items:center;gap:.2rem;padding:.15rem .5rem;border-radius:9999px;font-size:.7rem;font-weight:500;background:rgba(59,130,246,.1);color:#3b82f6">📷 摄像头</span>';
+      if (sensors.lidar) html += '<span style="display:inline-flex;align-items:center;gap:.2rem;padding:.15rem .5rem;border-radius:9999px;font-size:.7rem;font-weight:500;background:rgba(59,130,246,.1);color:#3b82f6">📡 激光雷达</span>';
+      if (sensors.imu) html += '<span style="display:inline-flex;align-items:center;gap:.2rem;padding:.15rem .5rem;border-radius:9999px;font-size:.7rem;font-weight:500;background:rgba(139,92,246,.1);color:#8b5cf6">🧭 IMU</span>';
+      if (sensors.force) html += '<span style="display:inline-flex;align-items:center;gap:.2rem;padding:.15rem .5rem;border-radius:9999px;font-size:.7rem;font-weight:500;background:rgba(34,197,94,.1);color:#22c55e">🦶 力觉传感器</span>';
+      equipTags.innerHTML = html;
+    }
+
+    function sensorCount() {
+      return Object.values(sensors).filter(v => v).length;
+    }
+
+    function availableSensors() {
+      return Object.entries(sensors).filter(([,v]) => !v).map(([k]) => k);
+    }
+
+    // ========== 装备选择弹窗 ==========
+    function showEquipOverlay(title, subtitle, onSelect, onSkip, skipLabel) {
+      const remaining = availableSensors();
+      const cardDefs = {
+        lidar:   { emoji:'📡', name:'激光雷达', desc:'发射激光束测量距离，看清弯道远近', cls:'card-lidar' },
+        imu:     { emoji:'🧭', name:'IMU惯性测量', desc:'感知身体倾斜角度，保持平衡不摇晃', cls:'card-imu' },
+        force:   { emoji:'🦶', name:'力觉传感器', desc:'感知脚底触地力度，适应颠簸路面', cls:'card-force' }
+      };
+
+      let cardsHtml = '';
+      for (const [key, def] of Object.entries(cardDefs)) {
+        const isInstalled = sensors[key];
+        cardsHtml += `
+          <div class="equip-card ${def.cls}${isInstalled ? ' selected' : ''}" data-sensor="${key}" style="${isInstalled ? 'pointer-events:none' : ''}">
+            <span class="equip-emoji">${def.emoji}</span>
+            <div class="equip-name">${def.name}</div>
+            <div class="equip-desc">${def.desc}</div>
+            ${isInstalled ? '<div style="margin-top:.3rem;font-size:.7rem;color:#22c55e;font-weight:600">✓ 已安装</div>' : ''}
+          </div>`;
+      }
+
+      equipOverlayContent.innerHTML = `
+        <div style="font-size:2.2rem;margin-bottom:.5rem">🔧</div>
+        <h3 style="font-weight:700;font-size:1.25rem;margin-bottom:.25rem;color:var(--fg)">${title}</h3>
+        <p style="font-size:.85rem;color:var(--muted-fg);margin-bottom:.5rem">${subtitle}</p>
+        <div class="equip-cards">${cardsHtml}</div>
+        <button id="equipSkipBtn" class="btn btn-outline" style="margin-top:.5rem;font-size:.85rem">${skipLabel || '暂不添加，直接试跑'}</button>
+      `;
+
+      equipOverlay.classList.remove('hidden');
+
+      // 卡片点击
+      equipOverlayContent.querySelectorAll('.equip-card:not(.selected)').forEach(card => {
+        card.addEventListener('click', () => {
+          const key = card.dataset.sensor;
+          equipOverlay.classList.add('hidden');
+          if (onSelect) onSelect(key);
+        });
+      });
+
+      // 跳过按钮
+      document.getElementById('equipSkipBtn').addEventListener('click', () => {
+        equipOverlay.classList.add('hidden');
+        if (onSkip) onSkip();
+      });
+    }
+
+    // ========== 结果弹窗 ==========
+    function showResultOverlay(icon, title, msg, hint, color, showEquipSelection, nextTitle, nextSubtitle) {
+      equipOverlayContent.innerHTML = `
+        <div style="font-size:3.5rem;margin-bottom:.75rem">${icon}</div>
+        <h3 style="color:${color};font-weight:700;font-size:1.4rem;margin-bottom:.5rem">${title}</h3>
+        <p style="color:#64748b;line-height:1.8;font-size:.95rem;margin-bottom:.5rem">${msg}</p>
+        <p style="color:#94a3b8;font-size:.85rem;margin-bottom:1rem">${hint}</p>
+        <div id="resultActions"></div>
+      `;
+
+      const actionsDiv = document.getElementById('resultActions');
+
+      if (showEquipSelection && availableSensors().length > 0) {
+        // 显示剩余装备卡片
+        const cardDefs = {
+          lidar:   { emoji:'📡', name:'激光雷达', desc:'发射激光束测量距离，看清弯道远近', cls:'card-lidar' },
+          imu:     { emoji:'🧭', name:'IMU惯性测量', desc:'感知身体倾斜角度，保持平衡不摇晃', cls:'card-imu' },
+          force:   { emoji:'🦶', name:'力觉传感器', desc:'感知脚底触地力度，适应颠簸路面', cls:'card-force' }
+        };
+
+        let cardsHtml = '';
+        for (const [key, def] of Object.entries(cardDefs)) {
+          if (sensors[key]) continue;
+          cardsHtml += `
+            <div class="equip-card ${def.cls}" data-sensor="${key}">
+              <span class="equip-emoji">${def.emoji}</span>
+              <div class="equip-name">${def.name}</div>
+              <div class="equip-desc">${def.desc}</div>
+            </div>`;
+        }
+
+        actionsDiv.innerHTML = `
+          <p style="font-size:.85rem;color:var(--muted-fg);margin-bottom:.5rem">${nextTitle || '选择要安装的新装备：'}</p>
+          <div class="equip-cards">${cardsHtml}</div>
+          <button id="resultSkipBtn" class="btn btn-outline" style="margin-top:.5rem;font-size:.85rem">暂不添加</button>
+        `;
+
+        actionsDiv.querySelectorAll('.equip-card').forEach(card => {
+          card.addEventListener('click', () => {
+            const key = card.dataset.sensor;
+            sensors[key] = true;
+            updateEquipTags();
+            equipOverlay.classList.add('hidden');
+            statusText.textContent = '已安装 ' + sensorCount() + ' 个传感器，点击试跑';
+            statusText.style.color = '#64748b';
+            setTimeout(() => startRun(), 400);
+          });
+        });
+
+        document.getElementById('resultSkipBtn').addEventListener('click', () => {
+          equipOverlay.classList.add('hidden');
+          setTimeout(() => startRun(), 400);
+        });
+      } else if (availableSensors().length === 0 && sensors.lidar && sensors.imu && sensors.force && animState === 'done' && phase === 4) {
+        // 全部装备且成功
+        actionsDiv.innerHTML = `
+          <button id="resultDoneBtn" class="btn btn-primary" style="min-width:140px;font-size:1rem">太好了，通过选拔！</button>
+        `;
+        document.getElementById('resultDoneBtn').addEventListener('click', () => {
+          equipOverlay.classList.add('hidden');
+          resetSim();
+        });
+      } else {
+        actionsDiv.innerHTML = `
+          <button id="resultRetryBtn" class="btn btn-primary" style="min-width:140px">知道了，重试</button>
+        `;
+        document.getElementById('resultRetryBtn').addEventListener('click', () => {
+          equipOverlay.classList.add('hidden');
+          resetSim();
+        });
+      }
+
+      equipOverlay.classList.remove('hidden');
+    }
+
+    // ========== 模拟逻辑 ==========
+    function resetSim() {
+      if (animId) { cancelAnimationFrame(animId); animId = null; }
+      animState = 'idle'; phase = 0; curveT = 0; fpvCurve = 0; fpvOfftrack = 0; fpvScroll = 0; frame = 0;
+      hadCurveFail = false; hadBumpIssue = false; bumpShake = 0; bumpWarned = false;
+      robot = { x: T.rightX - 20, y: T.outerBottom - 22 };
+      running = false;
+      runBtn.disabled = false;
+      runBtn.textContent = '开始试跑';
+      const cnt = sensorCount();
+      statusText.textContent = cnt === 0 ? '点击按钮，观察机器人在赛道上的表现' : '已安装 ' + cnt + ' 个传感器，点击试跑';
+      statusText.style.color = '#64748b';
+      drawTPV();
+    }
+
+    function startRun() {
+      if (running) return;
+      if (animId) { cancelAnimationFrame(animId); animId = null; }
+      animState = 'straight1'; phase = 0; curveT = 0; fpvCurve = 0; fpvOfftrack = 0; fpvScroll = 0; frame = 0;
+      hadCurveFail = false; hadBumpIssue = false; bumpShake = 0; bumpWarned = false;
+      robot = { x: T.rightX - 20, y: T.outerBottom - 22 };
+      running = true;
+      equipOverlay.classList.add('hidden');
+      runBtn.disabled = true; runBtn.textContent = '试跑中...';
+      statusText.textContent = '下直道…';
+      statusText.style.color = '#3b82f6';
+      loop();
+    }
+
+    function loop() {
+      frame++;
+      fpvScroll += sensors.lidar && !sensors.imu ? 1.6 : 2.5;
+
+      if (phase === 0) {
+        // 下直道：从右往左
+        robot.x -= sensors.lidar && !sensors.imu ? 0.38 : 0.55;
+        if (!sensors.imu) {
+          robot.y += Math.sin(frame * 0.12) * (sensors.lidar ? 1.0 : 0.6);
+        }
+        fpvCurve = 0; fpvOfftrack = 0;
+        if (robot.x <= (sensors.lidar ? T.leftX + 5 : T.leftX + 45)) {
+          phase = 1;
+          curveT = 0;
+          robot.x = T.leftX;
+          robot.y = T.outerBottom - 22;
+          statusText.textContent = '进入左弯道...';
+          statusText.style.color = '#f59e0b';
+        }
+      } else if (phase === 1) {
+        // 左弯道：绕左侧圆心逆时针走半圆
+        if (!sensors.lidar) {
+          // 无LiDAR：沿弯道但严重偏离跑道
+          const speed = 0.025;
+          curveT += speed;
+          const theta = Math.PI / 2 + curveT;
+          const r = T.curveR;
+          robot.x = T.leftX + r * Math.cos(theta) + Math.sin(frame * 0.15) * 10;
+          robot.y = T.cy + r * Math.sin(theta) + Math.cos(frame * 0.12) * 8;
+          fpvCurve = Math.min(1, fpvCurve + 0.022);
+          fpvOfftrack = Math.min(1, fpvOfftrack + 0.015);
+          if (!isOnTrack(robot.x, robot.y) && !hadCurveFail) {
+            hadCurveFail = true;
+          }
+          if (curveT >= Math.PI) {
+            phase = 2;
+            robot.x = T.leftX;
+            robot.y = T.cy - T.curveR;
+            statusText.textContent = '上直道行驶中...';
+            statusText.style.color = '#3b82f6';
+          }
+        } else {
+          const speed = sensors.lidar && !sensors.imu ? 0.022 : 0.028;
+          curveT += speed;
+          const theta = Math.PI / 2 + curveT;
+          const r = T.curveR;
+          robot.x = T.leftX + r * Math.cos(theta);
+          robot.y = T.cy + r * Math.sin(theta);
+          fpvCurve = Math.min(1, fpvCurve + 0.02);
+          fpvOfftrack = 0;
+          if (!sensors.imu) {
+            robot.y += Math.sin(frame * 0.1) * 0.5;
+          }
+          if (curveT >= Math.PI) {
+            phase = 2;
+            robot.x = T.leftX;
+            robot.y = T.cy - T.curveR;
+            statusText.textContent = '上直道行驶中...';
+            statusText.style.color = '#3b82f6';
+          }
+        }
+      } else if (phase === 2) {
+        // 上直道：从左往右
+        robot.x += sensors.lidar && !sensors.imu ? 0.38 : 0.55;
+        if (!sensors.imu) {
+          robot.y += Math.sin(frame * 0.12) * (sensors.lidar ? 1.2 : 0.6);
+        }
+        fpvCurve = Math.max(0, fpvCurve - 0.02);
+        fpvOfftrack = 0;
+        if (robot.x >= T.rightX - 5) {
+          phase = 3;
+          curveT = 0;
+          robot.x = T.rightX;
+          robot.y = T.cy - T.curveR;
+          statusText.textContent = '进入右弯道...';
+          statusText.style.color = '#f59e0b';
+          // 颠簸路段警告
+          if (!sensors.force && sensors.lidar && sensors.imu && !bumpWarned) {
+            bumpWarned = true;
+            equipOverlayContent.innerHTML = '<div style="font-size:2.5rem;margin-bottom:.5rem">⚠️</div><h3 style="color:#e65100;font-weight:700;font-size:1.2rem;margin-bottom:.4rem">颠簸路段</h3><p style="color:#64748b;font-size:.9rem;margin-bottom:.8rem">右弯道路面颠簸，可能导致滑出赛道</p><button id="bumpContinueBtn" class="btn btn-primary" style="min-width:120px" disabled>继续 <span id="bumpCountdown">(3s)</span></button>';
+            equipOverlay.classList.remove('hidden');
+            let bumpSec = 3;
+            const cdInterval = setInterval(() => {
+              bumpSec--;
+              const cdEl = document.getElementById('bumpCountdown');
+              if (cdEl) cdEl.textContent = '(' + bumpSec + 's)';
+              if (bumpSec <= 0) {
+                clearInterval(cdInterval);
+                const btn = document.getElementById('bumpContinueBtn');
+                if (btn) { btn.disabled = false; btn.textContent = '继续'; }
+              }
+            }, 1000);
+            setTimeout(() => {
+              const btn = document.getElementById('bumpContinueBtn');
+              if (btn) btn.addEventListener('click', () => {
+                clearInterval(cdInterval);
+                equipOverlay.classList.add('hidden');
+              });
+            }, 100);
+          }
+        }
+      } else if (phase === 3) {
+        // 右弯道：绕右侧圆心从顶部走到底部
+        if (!sensors.force && sensors.lidar && sensors.imu) {
+          // LiDAR+IMU但无力觉传感器 → 颠簸
+          const speed = 0.028;
+          curveT += speed;
+          const theta = -Math.PI / 2 + curveT;
+          const r = T.curveR;
+          robot.x = T.rightX + r * Math.cos(theta);
+          robot.y = T.cy + r * Math.sin(theta);
+          robot.y += Math.sin(frame * 0.3) * 1.8;
+          bumpShake = Math.sin(frame * 0.5) * 4;
+          fpvOfftrack = Math.min(1, fpvOfftrack + 0.03);
+          fpvCurve = Math.max(0, fpvCurve - 0.015);
+          if (!isOnTrack(robot.x, robot.y) && !hadBumpIssue) {
+            hadBumpIssue = true;
+          }
+          if (curveT >= Math.PI) {
+            phase = 4;
+            robot.x = T.rightX;
+            robot.y = T.cy + T.curveR;
+          }
+        } else if (sensors.lidar) {
+          const speed = sensors.force ? 0.028 : 0.02;
+          curveT += speed;
+          const theta = -Math.PI / 2 + curveT;  // -π/2→0→π/2
+          const r = T.curveR;
+          robot.x = T.rightX + r * Math.cos(theta);
+          robot.y = T.cy + r * Math.sin(theta);
+          if (!sensors.imu) {
+            robot.y += Math.sin(frame * 0.25) * 0.7;
+          }
+          fpvCurve = Math.max(0, fpvCurve - 0.015);
+          fpvOfftrack = sensors.force ? 0 : Math.min(0.3, fpvOfftrack + 0.008);
+          if (curveT >= Math.PI) {
+            phase = 4;
+            robot.x = T.rightX;
+            robot.y = T.cy + T.curveR;
+          }
+        } else {
+          // 无LiDAR：右弯道偏离跑道
+          const speed = 0.025;
+          curveT += speed;
+          const theta = -Math.PI / 2 + curveT;
+          const r = T.curveR;
+          robot.x = T.rightX + r * Math.cos(theta) + Math.sin(frame * 0.15) * 10;
+          robot.y = T.cy + r * Math.sin(theta) + Math.cos(frame * 0.12) * 8;
+          fpvOfftrack = Math.min(1, fpvOfftrack + 0.015);
+          fpvCurve = Math.max(0, fpvCurve - 0.01);
+          if (!isOnTrack(robot.x, robot.y) && !hadBumpIssue) {
+            hadBumpIssue = true;
+          }
+          if (curveT >= Math.PI) {
+            phase = 4;
+            robot.x = T.rightX;
+            robot.y = T.cy + T.curveR;
+          }
+        }
+      } else if (phase === 4) {
+        // 完成一圈
+        animState = 'done';
+        endRun('finish');
+        return;
+      }
+
+      drawTPV();
+      if (animState !== 'offtrack' && animState !== 'done') {
+        animId = requestAnimationFrame(loop);
+      }
+    }
+
+    function endRun(reason) {
+      running = false;
+      if (animId) { cancelAnimationFrame(animId); animId = null; }
+      runBtn.disabled = false;
+      runBtn.textContent = '重新试跑';
+      drawTPV();
+
+      // 根据传感器缺失和途中事件判断结果
+      if (!sensors.lidar && hadCurveFail) {
+        statusText.textContent = '左弯道冲出 — 缺少激光雷达';
+        statusText.style.color = '#ef4444';
+        showResultOverlay('⚠️', '弯道冲出！',
+          '摄像头无法测距，左弯道冲出跑道',
+          '安装<strong>激光雷达</strong>测量弯道距离',
+          '#dc2626', true);
+      } else if (sensors.lidar && !sensors.imu) {
+        const lapTime = frame;
+        statusText.textContent = '完成一圈，用时 ' + lapTime + ' 帧（规定' + TIME_LIMIT + '帧）— 超时';
+        statusText.style.color = '#f59e0b';
+        showResultOverlay('⏱️', '超时！',
+          '车身摇晃导致速度太慢，超时未完成',
+          '安装<strong>IMU</strong>消除车身摇晃',
+          '#d97706', true);
+      } else if (sensors.lidar && sensors.imu && !sensors.force && hadBumpIssue) {
+        statusText.textContent = '颠簸路段滑出 — 缺少力觉传感器';
+        statusText.style.color = '#ef4444';
+        showResultOverlay('🦶', '颠簸滑出！',
+          '右弯道路面颠簸，脚底打滑冲出跑道',
+          '安装<strong>力觉传感器</strong>感知触地力度',
+          '#d97706', true);
+      } else if (sensors.lidar && sensors.imu && sensors.force && !hadCurveFail && !hadBumpIssue) {
+        statusText.textContent = '完美通过！全部传感器协同工作';
+        statusText.style.color = '#22c55e';
+        showResultOverlay('🎉', '通过选拔！',
+          '四种传感器协同工作，稳定快速完成',
+          '📷 视觉 + 📡 测距 + 🧭 平衡 + 🦶 触地 → 多模态感知',
+          '#16a34a', false);
+      } else {
+        // 兜底：有部分问题
+        statusText.textContent = '未通过 — 检查传感器配置';
+        statusText.style.color = '#ef4444';
+        showResultOverlay('🔧', '还需要调整',
+          '当前装备不足以应对全部赛道',
+          '',
+          '#d97706', true);
+      }
+    }
+
+    // ========== 按钮事件 ==========
+    runBtn.addEventListener('click', () => {
+      if (running) return;
+      if (animState === 'done' || animState === 'offtrack') {
+        resetSim();
+      }
+
+      // 弹出装备选择或直接试跑
+      if (sensorCount() === 0) {
+        showEquipOverlay(
+          '初代机只有摄像头',
+          '要添加新装备吗？',
+          (key) => {
+            sensors[key] = true;
+            updateEquipTags();
+            statusText.textContent = '已安装 ' + sensorCount() + ' 个传感器，点击试跑';
+            statusText.style.color = '#64748b';
+            setTimeout(() => startRun(), 400);
+          },
+          () => { setTimeout(() => startRun(), 400); },
+          '暂不添加'
+        );
+      } else if (availableSensors().length > 0) {
+        showEquipOverlay(
+          '当前装备：📷' + (sensors.lidar ? '+📡' : '') + (sensors.imu ? '+🧭' : '') + (sensors.force ? '+🦶' : ''),
+          '还要添加新装备吗？',
+          (key) => {
+            sensors[key] = true;
+            updateEquipTags();
+            statusText.textContent = '已安装 ' + sensorCount() + ' 个传感器，点击试跑';
+            statusText.style.color = '#64748b';
+            setTimeout(() => startRun(), 400);
+          },
+          () => { setTimeout(() => startRun(), 400); },
+          '暂不添加'
+        );
+      } else {
+        startRun();
+      }
+    });
+
+    // ========== 初始绘制 ==========
+    drawTPV();
+  </script>
+</body>
+</html>

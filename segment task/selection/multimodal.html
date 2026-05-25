@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>多模态体验站</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#ffffff;--fg:#333333;--card:#fafafa;--border:#e0e0e0;
+      --primary:#4a90d9;--primary-fg:#ffffff;
+      --muted:#f5f5f5;--muted-fg:#888888;
+      --success:#52c41a;--warning:#faad14;--danger:#ff4d4f;
+    }
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--fg);min-height:100vh;padding:.75rem}
+    .container{max-width:100%;margin:0 auto}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.5rem 1.25rem;border-radius:.375rem;font-weight:500;cursor:pointer;border:none;transition:all .2s;font-size:.875rem}
+    .btn-primary{background:var(--primary);color:var(--primary-fg);box-shadow:0 2px 8px rgba(74,144,217,0.3)}
+    .btn-primary:hover{background:#3a7fc5;box-shadow:0 4px 12px rgba(74,144,217,0.4)}
+    .btn-outline{border:1px solid var(--border);background:var(--bg);color:var(--fg)}
+    .btn-outline:hover{border-color:var(--primary);color:var(--primary);background:rgba(74,144,217,0.05)}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:.75rem;overflow:hidden;margin-bottom:.75rem}
+    .card-body{padding:1rem}
+    .text-sm{font-size:.875rem}.text-xs{font-size:.75rem}.font-medium{font-weight:500}.font-semibold{font-weight:600}
+    .text-muted{color:var(--muted-fg)}
+    .w-full{width:100%}
+    .upload-zone{border:2px dashed var(--border);border-radius:.5rem;padding:1rem;text-align:center;cursor:pointer;transition:all .2s;max-height:180px;overflow:hidden;background:var(--bg)}
+    .upload-zone:hover{border-color:var(--primary);background:rgba(74,144,217,0.03)}
+    .upload-zone.has-image{border-color:var(--primary);border-style:solid;background:var(--bg)}
+    .upload-zone img{max-width:100%;max-height:140px;object-fit:contain;border-radius:.375rem}
+    textarea{width:100%;min-height:5rem;padding:.625rem;border:1px solid var(--border);border-radius:.375rem;background:var(--bg);color:var(--fg);font-family:inherit;resize:vertical;font-size:.875rem;transition:border-color .2s}
+    textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 2px rgba(74,144,217,0.15)}
+    textarea::placeholder{color:var(--muted-fg)}
+    .typing-cursor{animation:blink 1s infinite}@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .hidden{display:none!important}
+    .response-area{min-height:5rem;padding:.75rem;background:var(--muted);border-radius:.375rem;font-size:.875rem;line-height:1.5}
+    .loading-area{padding:.75rem;background:var(--muted);border-radius:.375rem}
+    .chip{display:inline-flex;align-items:center;gap:.25rem;padding:.375rem .75rem;border-radius:9999px;font-size:.75rem;font-weight:500;border:1px solid var(--border);background:var(--bg);margin-bottom:.375rem;transition:all .2s}
+    .chip:hover{border-color:var(--primary);color:var(--primary)}
+    .section-title{display:flex;align-items:center;gap:.5rem;font-size:1rem;font-weight:600;color:var(--fg);margin-bottom:.75rem}
+    .preview-container{display:flex;align-items:center;justify-content:center;min-height:120px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="card-body">
+        <div class="section-title">📸 上传图片</div>
+        <p class="text-xs text-muted mb-3" style="margin-bottom:.5rem">拖拽或点击上传图片（可选）</p>
+        <div id="uploadZone" class="upload-zone" onclick="document.getElementById('fileInput').click()" ondrop="handleDrop(event)" ondragover="event.preventDefault()">
+          <div id="uploadPreview" class="hidden preview-container"></div>
+          <div id="uploadPlaceholder">
+            <div style="font-size:2rem;margin-bottom:.375rem">🖼️</div>
+            <p class="text-xs">点击或拖拽上传图片</p>
+            <p class="text-xs text-muted" style="margin-top:.125rem">支持 JPG, PNG, GIF 等格式</p>
+          </div>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event)">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="section-title">💬 向AI提问</div>
+        <textarea id="questionInput" placeholder="例如：这张图片里有什么？" rows="2"></textarea>
+        <div style="display:flex;flex-wrap:wrap;gap:.375rem;margin-top:.5rem">
+          <span class="chip" onclick="setQuestion('这张图片里有什么？')">这张图片里有什么？</span>
+          <span class="chip" onclick="setQuestion('描述一下这个场景')">描述一下这个场景</span>
+          <span class="chip" onclick="setQuestion('有什么特别之处？')">有什么特别之处？</span>
+        </div>
+        <button id="submitBtn" class="btn btn-primary w-full" style="margin-top:.75rem" onclick="submitQuestion()">提交问题</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="section-title">🤖 AI回答</div>
+        <div id="responseArea" class="response-area">
+          <p class="text-sm text-muted" id="responsePlaceholder">AI的回答将显示在这里...</p>
+        </div>
+        <div id="loadingArea" class="hidden loading-area">
+          <p class="text-sm">AI正在思考中<span class="typing-cursor">...</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    let uploadedImage=null;
+
+    function handleFileSelect(e){
+      const file=e.target.files[0];
+      if(file)loadImage(file);
+    }
+
+    function handleDrop(e){
+      e.preventDefault();
+      const file=e.dataTransfer.files[0];
+      if(file&&file.type.startsWith('image/'))loadImage(file);
+    }
+
+    function loadImage(file){
+      const reader=new FileReader();
+      reader.onload=function(ev){
+        uploadedImage=ev.target.result;
+        document.getElementById('uploadPreview').innerHTML=`<img src="${uploadedImage}" alt="预览">`;
+        document.getElementById('uploadPreview').classList.remove('hidden');
+        document.getElementById('uploadPlaceholder').classList.add('hidden');
+        document.getElementById('uploadZone').classList.add('has-image');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function setQuestion(q){document.getElementById('questionInput').value=q}
+
+    const API_CONFIG = {
+      apiKey: 'sk-kjvosjvznxanenujhcqtissgycaolpwtkxbebntcxlokucji',
+      baseUrl: 'https://api.siliconflow.cn/v1',
+      model: 'Pro/moonshotai/Kimi-K2.6',
+      timeout: 60000
+    };
+
+    async function submitQuestion(){
+      const q = document.getElementById('questionInput').value.trim();
+      if(!q) return;
+      
+      const responseArea = document.getElementById('responseArea');
+      const loadingArea = document.getElementById('loadingArea');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      responseArea.innerHTML = '<p class="text-sm" id="responseText"></p>';
+      document.getElementById('responsePlaceholder')?.remove();
+      loadingArea?.classList.remove('hidden');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '思考中...';
+      
+      try {
+        let content;
+        if (uploadedImage) {
+          content = [
+            { type: 'text', text: q },
+            { type: 'image_url', image_url: { url: uploadedImage } }
+          ];
+        } else {
+          content = q;
+        }
+        
+        const response = await fetch(`${API_CONFIG.baseUrl}/chat/completions`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${API_CONFIG.apiKey}`
+          },
+          body: JSON.stringify({
+            model: API_CONFIG.model,
+            messages: [{ role: 'user', content: content }],
+            stream: true,
+            temperature: 0.1,
+            max_tokens: 200,
+            top_p: 0.7
+          })
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => null);
+          throw new Error(`请求失败: ${response.status} - ${errorData?.error?.message || response.statusText}`);
+        }
+        
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        const textEl = document.getElementById('responseText');
+        let fullText = '';
+        const MAX_LENGTH = 150;
+        
+        loadingArea?.classList.add('hidden');
+        
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+          
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = line.slice(6);
+              if (data === '[DONE]') continue;
+              
+              try {
+                const json = JSON.parse(data);
+                const delta = json.choices?.[0]?.delta?.content;
+                if (delta) {
+                  if (fullText.length < MAX_LENGTH) {
+                    const remaining = MAX_LENGTH - fullText.length;
+                    const addText = delta.slice(0, remaining);
+                    fullText += addText;
+                    textEl.textContent = fullText;
+                  }
+                }
+              } catch (e) {
+                console.warn('解析响应失败:', e);
+              }
+            }
+          }
+        }
+        
+        if (!fullText) {
+          textEl.textContent = 'AI未返回有效响应，请重试。';
+          textEl.classList.add('text-muted');
+        }
+        
+      } catch (error) {
+        console.error('API调用失败:', error);
+        loadingArea?.classList.add('hidden');
+        const textEl = document.getElementById('responseText') || document.createElement('p');
+        textEl.textContent = `请求失败: ${error.message}。请检查网络连接后重试。`;
+        textEl.classList.add('text-muted');
+        if (!document.getElementById('responseText')) {
+          responseArea.innerHTML = '';
+          responseArea.appendChild(textEl);
+        }
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '提交问题';
+      }
+    }
+  </script>
+</body>
+</html>

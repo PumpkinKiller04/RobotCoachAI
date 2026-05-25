@@ -1,0 +1,2569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>机器人总教练请就位 - 学习中心</title>
+    <link rel="preconnect" href="https://fonts.googleapis.cn">
+    <link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin>
+    <link href="https://fonts.googleapis.cn/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(180deg, 
+                #87ceeb 0%, 
+                #add8e6 30%,
+                #b0e0e6 50%,
+                #98d8c8 65%,
+                #7cb342 85%,
+                #558b2f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .book-container {
+            background: linear-gradient(135deg, 
+                #fff8e7 0%, 
+                #ffefd5 25%,
+                #ffe4c4 50%,
+                #fff8e7 75%,
+                #ffefd5 100%
+            );
+            border-radius: 8px;
+            box-shadow: 
+                0 20px 60px rgba(0,0,0,0.3),
+                -8px 0 20px rgba(139, 90, 43, 0.2),
+                8px 0 20px rgba(139, 90, 43, 0.2);
+            width: 95%;
+            max-width: 1400px;
+            min-height: 85vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .book-header {
+            background: linear-gradient(90deg, #8b5a2b 0%, #a0522d 20%, #8b5a2b 35%, #6b4423 50%, #8b5a2b 65%, #a0522d 80%, #8b5a2b 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .book-title {
+            font-size: 22px;
+            color: #fff8e7;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .next-lesson-btn, .lesson-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin: 0 4px;
+        }
+        .home-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
+        }
+        .next-lesson-btn:hover, .lesson-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
+        }
+        .lesson-nav {
+            display: flex;
+            gap: 8px;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-welcome {
+            font-size: 14px;
+            color: #fff8e7;
+        }
+        .logout-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #dc143c 0%, #8b0000 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+        .logout-btn:hover { transform: scale(1.05); }
+        .book-content {
+            flex: 1;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .intro-section {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .intro-section h2 {
+            font-size: 22px;
+            color: #8b5a2b;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #d4a574;
+        }
+        .intro-section h3 {
+            font-size: 18px;
+            color: #6b4423;
+            margin: 18px 0 12px;
+        }
+        .intro-section p {
+            font-size: 15px;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+        .intro-section ul, .intro-section ol {
+            margin-left: 25px;
+            margin-bottom: 12px;
+        }
+        .intro-section li {
+            font-size: 15px;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 6px;
+        }
+        .intro-section strong { color: #8b5a2b; }
+        .course-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .course-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            justify-content: space-around;
+        }
+        .course-selector button {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #e8d5b5 0%, #d4c4a8 100%);
+            color: #6b4423;
+            border: 2px solid #d4a574;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .course-selector button:hover {
+            background: linear-gradient(135deg, #d4c4a8 0%, #c4b498 100%);
+            transform: translateY(-2px);
+        }
+        .course-selector button.active {
+            background: linear-gradient(135deg, #8b5a2b 0%, #6b4423 100%);
+            color: white;
+            border-color: #5a3d1a;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+            font-weight: 600;
+        }
+        .page-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            min-height: 0;
+        }
+        .page-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            overflow-y: auto;
+            max-height: 50vh;
+        }
+        .page-content h3 {
+            font-size: 20px;
+            color: #6b4423;
+            margin: 20px 0 15px;
+        }
+        .page-content h4 {
+            font-size: 18px;
+            color: #8b5a2b;
+            margin: 15px 0 10px;
+        }
+        .page-content p {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+        .page-content ul, .page-content ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+        .page-content li {
+            font-size: 16px;
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+        .page-content strong { color: #8b5a2b; }
+        .worksheet-input, .worksheet-textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #d4a574;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        .worksheet-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        .multiple-choice {
+            margin: 12px 0;
+            display: block;
+            gap: 10px;
+        }
+        .multiple-choice label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+            padding: 8px 12px;
+            background: #fff8e7;
+            border-radius: 5px;
+            border: 1px solid #d4a574;
+            transition: all 0.2s;
+        }
+        .multiple-choice label:hover { background: #ffe4b5; }
+        .multiple-choice input[type="radio"], .multiple-choice input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .checkbox-inline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .observation-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 13px;
+        }
+        .observation-table th, .observation-table td {
+            border: 1px solid #d4a574;
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+        .observation-table th {
+            background: linear-gradient(135deg, #8b5a2b 0%, #a0522d 100%);
+            color: white;
+            font-weight: bold;
+        }
+        .observation-table tr:nth-child(even) { background: rgba(255, 248, 231, 0.5); }
+        .observation-table tr:nth-child(odd) { background: rgba(255, 255, 255, 0.8); }
+        .link-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin: 10px 0;
+        }
+        .link-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+        }
+        .submit-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 15px;
+        }
+        .submit-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.4);
+        }
+        .feedback-correct { color: #2e7d32; font-weight: bold; }
+        .feedback-wrong { color: #dc143c; font-weight: bold; }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #d4a574;
+        }
+        .nav-btn {
+            padding: 10px 25px;
+            background: linear-gradient(135deg, #b8860b 0%, #6b4423 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .nav-btn:hover { transform: translateY(-2px); }
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .page-indicator {
+            font-size: 14px;
+            color: #6b4423;
+            font-weight: 500;
+        }
+        .hidden { display: none !important; }
+        #introSection { display: none; }
+        #courseSection { display: flex; flex-direction: column; }
+        #introCourseSelector, #dynamicCourseButtons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .markdown h1 { font-size: 1.5rem; font-weight: 700; margin: 1rem 0; color: #8b5a2b; }
+        .markdown h2 { font-size: 1.25rem; font-weight: 600; margin: 0.875rem 0; color: #6b4423; }
+        .markdown h3 { font-size: 1.1rem; font-weight: 600; margin: 0.75rem 0; color: #8b5a2b; }
+        .markdown p { margin: 0.5rem 0; line-height: 1.7; }
+        .markdown ul, .markdown ol { margin: 0.5rem 0 0.5rem 1.5rem; }
+        .markdown li { margin: 0.25rem 0; line-height: 1.6; }
+        .markdown strong { color: #8b5a2b; font-weight: 600; }
+        .markdown em { font-style: italic; }
+        .markdown blockquote { 
+            border-left: 4px solid #8b5a2b; 
+            padding: 0.5rem 1rem; 
+            margin: 0.75rem 0; 
+            background: rgba(139, 90, 43, 0.1); 
+            border-radius: 0 4px 4px 0; 
+        }
+        @media (max-width: 900px) {
+            .page-container { grid-template-columns: 1fr; }
+            .course-selector { justify-content: center; }
+            .module-btn { padding: 12px 20px; font-size: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loadingOverlay" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(139,90,43,0.9); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999;">
+        <div style="color: #fff8e7; font-size: 24px; font-weight: bold; margin-bottom: 20px;">正在加载学习数据...</div>
+        <div style="color: #fff8e7; font-size: 14px;">请稍候</div>
+    </div>
+    <div class="book-container">
+        <div class="book-header">
+            <div class="header-left">
+                <button class="home-btn" onclick="location.href='home.html'">首页</button>
+                <div class="book-title" id="bookTitle">导学单一：多模态AI的感知与应用</div>
+                <div class="lesson-nav">
+                    <button class="lesson-btn" id="prevLessonBtn" onclick="prevLesson()">← 上一课</button>
+                    <button class="lesson-btn" onclick="nextLesson()">下一课 →</button>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="user-welcome" id="userWelcome"></div>
+                <button class="logout-btn" onclick="logout()">退出登录</button>
+            </div>
+        </div>
+        <div class="book-content">
+            <div class="main-content">
+                <div class="intro-section" id="introSection">
+                    <h2 id="moduleTitle">学习主题</h2>
+                    <h3>学习意义</h3>
+                    <p id="moduleMeaning"></p>
+                    <h3>学习目标</h3>
+                    <ol id="moduleGoals"></ol>
+                    <h3>评价要求</h3>
+                    <ul id="moduleEval"></ul>
+                    <p style="color: #dc143c; font-weight: bold; margin-top: 15px;" id="moduleScore"></p>
+                    <div class="course-selector" id="introCourseSelector" style="margin-top: 20px;"></div>
+                </div>
+                <div class="course-section" id="courseSection">
+                    <div class="course-selector" id="courseSelector">
+                        <div id="dynamicCourseButtons"></div>
+                    </div>
+                    <div class="page-container">
+                        <div class="page-content" id="leftContent"></div>
+                        <div class="page-content" id="rightContent"></div>
+                    </div>
+                    <div class="nav-buttons">
+                        <button class="nav-btn" id="prevBtn" onclick="previousPage()">上一页</button>
+                        <div class="page-indicator" id="pageIndicator"></div>
+                        <button class="nav-btn" id="nextBtn" onclick="nextPage()">下一页</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const modules = [
+            {
+                id: 1,
+                title: '导学单一：多模态AI的感知与应用',
+                meaning: '为什么机器人只看摄像头会摔跤？为什么AI能听懂你的话，还能画出你想象的画面？答案是多模态。本节课，你将化身为AI总教练，从单模态到多模态，揭开AI如何像人类一样协同多种感官。',
+                goals: [
+                    '能区分单模态和多模态，知道不同信息模态（视觉、听觉、触觉等）',
+                    '能说出激光雷达、IMU、力觉传感器的作用，以及它们如何弥补单一视觉的不足',
+                    '能体验多模态AI工具，感受跨模态应用（如图文互搜、文生图）'
+                ],
+                eval: [
+                    '学习知识（20分）：完整阅读每个环节的知识点',
+                    '动手求证（40分）：认真完成每个体验环节并记录',
+                    '分析解释（40分）：回答每环节测试题，数据通过QuickForm收集'
+                ],
+                score: '满分100分可以让教练勋章升一级！',
+                courses: [
+                    {
+                        title: '环节一：翻车现场 & 初代机',
+                        pages: [
+                            {
+                                left: { type: 'embed', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节一：翻车现场 & 初代机——认识"单模态"的局限</h3><h4>1. 学习知识</h4><ul><li><strong>初代机档案</strong>：只有摄像头，只能获取视觉信息 → 这叫"单模态"。</li><li><strong>关键术语</strong>：模态 = 信息类型（图像、声音、文字、触感...）。单模态 = 只靠一种信息判断。</li></ul><h4>2. 动手求证</h4><p><strong>预测：</strong>初代机只靠摄像头跑步，在弯道会遇到什么麻烦？</p><input type="text" name="t1a" placeholder="我的预测：" class="worksheet-input"><div style="margin-top:1rem;border:2px solid #c0392b;border-radius:.5rem;overflow:hidden;width:100%;height:320px"><iframe src="segment task/selection/profile.html" style="width:100%;height:100%;border:none;display:block" scrolling="auto"></iframe></div>' },
+                                right: { type: 'activity', content: '<h4>诊断报告</h4><div style="display: flex; gap: 2rem;"><div style="flex: 1;"><p>直道：</p><div class="multiple-choice"><label><input type="checkbox" name="cb1" value="顺利"> 顺利通过</label><label><input type="checkbox" name="cb1" value="摇晃"> 有点摇晃</label><label><input type="checkbox" name="cb1" value="摔倒"> 直接摔倒</label></div></div><div style="flex: 1;"><p>弯道：</p><div class="multiple-choice"><label><input type="checkbox" name="cb2" value="顺利"> 顺利通过</label><label><input type="checkbox" name="cb2" value="转向"> 提前转向</label><label><input type="checkbox" name="cb2" value="冲出"> 冲出赛道</label></div></div></div><p><strong>摔倒主因：</strong></p><div class="multiple-choice"><label><input type="checkbox" name="cb3" value="像素"> 摄像头像素低</label><label><input type="checkbox" name="cb3" value="电量"> 电量不够</label><label><input type="checkbox" name="cb3" value="距离"> 缺少距离感和身体平衡感</label><label><input type="checkbox" name="cb3" value="赛道"> 赛道太滑</label></div><p><strong>指令挑战：</strong>你会对初代机发出什么改进指令？</p><input type="text" name="ta1" placeholder="我的指令：" class="worksheet-input">' }
+                            },
+                            {
+                                left: { type: 'analysis', content: '<h3 style="font-size: 1.5em; margin-top: 0;">3. 分析解释</h3><h4 style="font-size: 1.2em; margin-top: 1.5rem; line-height: 1.6;"><strong>题目一：AI只通过摄像头看路况，属于什么感知？</strong></h4><div class="multiple-choice" style="font-size: 1.5em; margin-top: 1rem; line-height: 2;"><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q1a" value="a"> A. 多模态</label><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q1a" value="b"> B. 单模态</label><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q1a" value="c"> C. 混合模态</label><label style="display: block;"><input type="radio" name="q1a" value="d"> D. 超级感知</label></div>' },
+                                right: { type: 'analysis', content: '<h4 style="font-size: 1.2em; margin-top: 1.5rem; line-height: 1.6;"><strong>题目二：初代机摔倒的主要原因？</strong></h4><div class="multiple-choice" style="font-size: 1.5em; margin-top: 1rem; line-height: 2;"><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q1b" value="a"> A. 摄像头像素低</label><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q1b" value="b"> B. 缺乏距离和自身姿态信息</label><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q1b" value="c"> C. 跑太快</label><label style="display: block;"><input type="radio" name="q1b" value="d"> D. 赛道设计不合理</label></div><div style="margin-top: 2rem; text-align: center;"><button class="submit-btn" style="font-size: 1.2em; padding: 0.8rem 2rem;" onclick="submitAnswers(1)">提交答案</button></div>' }
+                            }
+                        ]
+                    },
+                    {
+                        title: '环节二：感官升级——探索"多模态感知"的力量',
+                        pages: [
+                            {
+                                left: { type: 'knowledge', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节二：感官升级——探索"多模态感知"的力量</h3><h4>1. 学习知识</h4><p><strong>核心逻辑：</strong>单模态（只有视觉）→ 缺距离、姿态、触地感 → 摔倒。单一信息不足，多种信息互补才可靠。</p><h4>三种新感官</h4><ul><li><strong>激光雷达</strong> → 测距离 → 解决"看不清远近"</li><li><strong>IMU</strong> → 感知身体倾斜 → 解决"不知道自己歪了"</li><li><strong>力觉传感器</strong> → 感知脚底触地力度 → 解决"脚底没感觉"</li></ul><p><strong>关键结论：</strong>使用≥2种信息类型=多模态感知，信息越丰富，判断越可靠。</p><h4>2. 动手求证</h4><div style="margin-top:1rem;border:2px solid #c0392b;border-radius:.5rem;overflow:hidden;width:100%;height:500px"><iframe src="segment task/selection/workshop.html" style="width:111.2%;height:111.2%;border:none;display:block;transform:scale(0.9);transform-origin:0 0" scrolling="no"></iframe></div>' },
+                                right: { type: 'activity', content: '<h4>观察记录</h4><table class="observation-table"><thead><tr><th style="font-size: 1.3em; vertical-align: middle;">阶段</th><th style="font-size: 1.3em; vertical-align: middle;">已安装的传感器</th><th>观察与判断</th></tr></thead><tbody><tr><td style="font-size: 1.3em; vertical-align: middle;">阶段1</td><td style="font-size: 1.3em; vertical-align: middle;">摄像头+激光雷达</td><td><p>加入激光雷达后，最大改变是？</p><div class="multiple-choice"><label><input type="radio" name="tb1" value="a"> A. 过弯不再冲出</label><label><input type="radio" name="tb1" value="b"> B. 身体不再摇晃</label><label><input type="radio" name="tb1" value="c"> C. 速度加快</label><label><input type="radio" name="tb1" value="d"> D. 更美观</label></div></td></tr><tr><td style="font-size: 1.3em; vertical-align: middle;">阶段2</td><td style="font-size: 1.3em; vertical-align: middle;">摄像头+激光雷达+IMU</td><td><p>IMU提供了什么信息？</p><div class="multiple-choice"><label><input type="radio" name="tb2" value="a"> A. 障碍物距离</label><label><input type="radio" name="tb2" value="b"> B. 身体倾斜角度</label><label><input type="radio" name="tb2" value="c"> C. 脚踩压力</label><label><input type="radio" name="tb2" value="d"> D. 温度</label></div></td></tr><tr><td style="font-size: 1.3em; vertical-align: middle;">阶段3</td><td style="font-size: 1.3em; vertical-align: middle;">全部传感器</td><td><p>力觉传感器的作用是？</p><div class="multiple-choice"><label><input type="radio" name="tb3" value="a"> A. 测距</label><label><input type="radio" name="tb3" value="b"> B. 感知脚底触地力度</label><label><input type="radio" name="tb3" value="c"> C. 调整身体平衡</label><label><input type="radio" name="tb3" value="d"> D. 看清颜色</label></div></td></tr></tbody></table>' }
+                            },
+                            {
+                                left: { type: 'analysis', content: '<h3 style="font-size: 1.5em; margin-top: 0;">3. 分析解释</h3><h4 style="font-size: 1.2em; margin-top: 1.5rem; line-height: 1.6;"><strong>题目一：以下哪个体现了"多模态感知"的原理？</strong></h4><div class="multiple-choice" style="font-size: 1.5em; margin-top: 1rem; line-height: 2;"><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q2a" value="a"> A. 只看苹果的颜色就判断它好不好吃</label><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q2a" value="b"> B. 吃苹果时，同时感受它的颜色、香气、口感和味道</label><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q2a" value="c"> C. 只听汽车引擎声判断它有没有故障</label><label style="display: block;"><input type="radio" name="q2a" value="d"> D. 只通过触摸判断一块布料的材质</label></div>' },
+                                right: { type: 'analysis', content: '<h4 style="font-size: 1.2em; margin-top: 1.5rem; line-height: 1.6;"><strong>题目二：如果只安装摄像头和IMU（没有激光雷达），会面临什么主要问题？</strong></h4><div class="multiple-choice" style="font-size: 1.5em; margin-top: 1rem; line-height: 2;"><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q2b" value="a"> A. 无法感知倾斜</label><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q2b" value="b"> B. 无法测距，弯道易冲出</label><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q2b" value="c"> C. 无法感知脚底，无法控制</label><label style="display: block;"><input type="radio" name="q2b" value="d"> D. 无法开机</label></div><div style="margin-top: 2rem; text-align: center;"><button class="submit-btn" style="font-size: 1.2em; padding: 0.8rem 2rem;" onclick="submitAnswers(2)">提交答案</button></div>' }
+                            }
+                        ]
+                    },
+                    {
+                        title: '环节三：多模态体验站 & 前沿应用——感受AI的跨模态能力',
+                        pages: [
+                            {
+                                left: { type: 'knowledge', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节三：多模态体验站 & 前沿应用——感受AI的跨模态能力</h3><h4>1. 学习知识</h4><ul><li><strong>多模态问答：</strong>拍一张照片，问AI一个关于照片的问题，它能图文结合给出答案。</li><li><strong>多模态生成：</strong>输入一段文字描述，AI能立刻生成一张对应的图片。</li></ul><h4>2. 动手求证</h4><p><strong>活动一：多模态问答体验</strong></p><iframe src="segment task/selection/multimodal.html" width="100%" height="700px" frameborder="0" style="border-radius: 8px; overflow: hidden;"></iframe>' },
+                                right: { type: 'activity', content: '<h4>活动二：前沿应用观察</h4><div style="display: flex; gap: 1rem; margin-top: 1rem;"><div style="flex: 1; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; background: #fff; text-align: center; cursor: pointer;" onclick="openModal(this)"><img src="resource/多模态问答.png" alt="多模态问答" style="width: 100%; display: block;"><div style="padding: 0.5rem;"><p style="font-weight: 600;">多模态问答：</p><p style="font-weight: 600;">看图提问智能解答</p></div></div><div style="flex: 1; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; background: #fff; text-align: center; cursor: pointer;" onclick="openModal(this)"><img src="resource/多模态生成.png" alt="多模态生成" style="width: 100%; display: block;"><div style="padding: 0.5rem;"><p style="font-weight: 600;">多模态生成：</p><p style="font-weight: 600;">文字秒变创意图画</p></div></div><div style="flex: 1; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; background: #fff; text-align: center; cursor: pointer;" onclick="openModal(this)"><img src="resource/多模态融合.PNG" alt="多模态融合" style="width: 100%; display: block;"><div style="padding: 0.5rem;"><p style="font-weight: 600;">多模态融合：</p><p style="font-weight: 600;">人脸语音手势控制家居</p></div></div></div><div id="imgModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;" onclick="closeModal()"><img id="modalImg" src="" style="max-width: 90%; max-height: 90%; border-radius: 8px;"></div><div style="margin-top: 1rem;"><h4 style="font-size: 1.1em; margin-bottom: 0.75rem;">📰 多模态应用案例轮播</h4><div id="newsCarousel" style="position: relative; border-radius: 8px; overflow: hidden; height: 280px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"><div id="carouselInner" style="height: 100%; width: 100%; position: absolute; top: 0; left: 0;"></div><div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 4px;" id="carouselDots"></div></div></div>' }
+                            },
+                            {
+                                left: { type: 'analysis', content: '<h3 style="font-size: 1.5em; margin-top: 0;">3. 分析解释</h3><h4 style="font-size: 1.2em; margin-top: 1.5rem; line-height: 1.6;"><strong>题目一：想让AI生成"嫦娥在空间站吃月饼"的图片，主要用了AI的什么能力？</strong></h4><div class="multiple-choice" style="font-size: 1.5em; margin-top: 1rem; line-height: 2;"><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q3a" value="a"> A. 图像分类</label><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q3a" value="b"> B. 语音识别</label><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q3a" value="c"> C. 多模态生成</label><label style="display: block;"><input type="radio" name="q3a" value="d"> D. 目标检测</label></div>' },
+                                right: { type: 'analysis', content: '<h4 style="font-size: 1.2em; margin-top: 1.5rem; line-height: 1.6;"><strong>题目二：哪个生活场景主要应用了"多模态"技术？</strong></h4><div class="multiple-choice" style="font-size: 1.5em; margin-top: 1rem; line-height: 2;"><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q3b" value="a"> A. 计算器算数</label><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q3b" value="b"> B. 智能音箱播放音乐</label><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q3b" value="c"> C. 拍照购物+查看介绍</label><label style="display: block;"><input type="radio" name="q3b" value="d"> D. Word写作文</label></div><div style="margin-top: 2rem; text-align: center;"><button class="submit-btn" style="font-size: 1.2em; padding: 0.8rem 2rem;" onclick="submitAnswers(3)">提交答案</button></div>' }
+                            }
+                        ]
+                    },
+                    {
+                        title: '环节四：智能小结 & 本课总结',
+                        pages: [
+                            {
+                                left: { type: 'summary', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节四：智能小结 & 本课总结</h3><h4>1. 智能小结（AI生成）</h4><p>你的答题数据已收集。</p><button class="submit-btn" id="generateBtn" onclick="generateReport()">[点击查看专属学习报告和勋章进度]</button><div id="reportContainer" style="display:none; margin-top: 20px;"><div class="markdown" id="reportContent"></div></div><div id="loadingIndicator" style="display:none; margin-top: 15px; padding: 15px; background: #fff8e7; border-radius: 8px;"><p style="color: #8b5a2b;">AI正在分析你的学习数据，请稍候...</p></div>' },
+                                right: { type: 'conclusion', content: '<h4>2. 本课总结</h4><ul><li><strong>单模态：</strong>信息类型单一，就像只用一种感官，判断容易出错。</li><li><strong>多模态感知：</strong>整合多种感官信息（视觉、距离、姿态、触觉等），让AI对世界的理解更完整、判断更可靠。</li><li><strong>多模态应用：</strong>AI不仅能综合理解图文信息（问答），还能进行跨模态创作（文生图、图生文），极大拓展了AI的用途。</li></ul><p style="color: #dc143c; font-weight: bold; margin-top: 15px;"><strong>下一环节预告：</strong>机器人现在已经拥有了完整的感官，但它还只是个"新手"。真正的赛场充满意外，它还需要经历无数次跌倒和爬起，直到肌肉记忆刻入"骨髓"。这就是我们下一讲的主题——强化学习。</p>' }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: '导学单二：强化学习——AI的试错与奖励',
+                meaning: '上一集，你给机器人配备了感官（多模态感知）。但有了完整的感官，不等于会跑步。真正的本领，是在无数次摔倒和尝试中"自己悟出来"的。本节课，你将扮演"总教练"，设计奖励规则，让AI从菜鸟练成健将。',
+                goals: [
+                    '能说出"行为克隆"的局限（教过的会做，没教过的不会应变）',
+                    '能理解强化学习的核心：试错 + 奖励 → 自己学会最优策略',
+                    '能设计简单的奖励规则，并解释奖励函数如何影响AI的学习方向'
+                ],
+                eval: [
+                    '学习知识（20分）：完整阅读每个环节的知识点',
+                    '动手求证（40分）：认真完成每个体验环节并记录',
+                    '分析解释（40分）：回答每环节测试题，数据通过QuickForm收集'
+                ],
+                score: '满分100分可以让教练勋章升一级！',
+                courses: [
+                    {
+                        title: '环节一：行为克隆——为什么"照抄"不行？',
+                        pages: [
+                            {
+                                left: { type: 'knowledge', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节一：行为克隆——为什么"照抄"不行？</h3><h4 style="font-size: 1.4em;">1. 学习知识</h4><ul style="font-size: 1.3em;"><li><strong>行为克隆：</strong>让机器人观看人类专家跑一遍，把每一步数据录下来，然后照着做。</li><li><strong>局限：</strong>赛道上有积水、阴影、新障碍物时，数据包里没有，机器人就不会应变。</li></ul>' },
+                                right: { type: 'activity', content: '<h4 style="font-size: 1.2em;">2. 动手求证</h4><p style="font-size: 1.1em;"><strong>观看微课片段：人类示范 → 机器人模仿 → 遇到新情况（积水）摔倒。</strong></p><p style="font-size: 1.1em;"><strong>我的记录：</strong></p><p style="font-size: 1.1em;">机器人摔倒时因为它没见过 <input type="text" name="t2_1a" placeholder="填入内容" class="worksheet-input" style="width:150px;">。</p><p style="font-size: 1.1em;">这说明：只靠模仿，缺少 <input type="text" name="t2_1b" placeholder="填入内容" class="worksheet-input" style="width:80px;"> 能力。</p><h4 style="font-size: 1.4em;">3. 分析解释</h4><p style="font-size: 1.3em;"><strong>行为克隆最大的问题是什么？</strong></p><div class="multiple-choice"><label><input type="radio" name="q2_1a" value="a"> A. 学习速度太慢</label><label><input type="radio" name="q2_1a" value="b"> B. 无法应对没教过的情况</label><label><input type="radio" name="q2_1a" value="c"> C. 需要太多传感器</label><label><input type="radio" name="q2_1a" value="d"> D. 机器人记不住</label></div><button class="submit-btn" onclick="submitAnswers(4)">提交环节一答案</button>' }
+                            }
+                        ]
+                    },
+                    {
+                        title: '环节二：手控驾驶——人的反应够快吗？',
+                        pages: [
+                            {
+                                left: { type: 'knowledge', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节二：手控驾驶——人的反应够快吗？</h3><h4 style="font-size: 1.4em;">1. 学习知识</h4><ul style="font-size: 1.3em;"><li><strong>如果让人类遥控机器人，能行吗？</strong></li><li>赛道障碍物多、变快时，人会手忙脚乱，疲劳和分心会让机器人撞墙。</li></ul><h4 style="font-size: 1.4em;">2. 动手求证</h4><p style="font-size: 1.3em;"><strong>体验：手动控制机器人跳跃跨障碍，坚持越久得分越高。</strong></p><iframe src="segment task/robot/player.html" width="100%" height="280" frameborder="0" style="border: none; background: transparent; overflow: hidden;"></iframe>' },
+                                right: { type: 'activity', content: '<h4 style="font-size: 1.4em;">3. 我的记录</h4><p style="font-size: 1.3em;"><strong>记录我的最好成绩：</strong> <input type="text" name="t2_2a" placeholder="得分" class="worksheet-input" style="width:60px; font-size: 1.2em;"> 分</p><p style="font-size: 1.3em;"><strong>我的感受（累？手忙脚乱？）：</strong></p><textarea name="ta2_2b" placeholder="我的感受" class="worksheet-textarea" style="height:100px; font-size: 1.2em;"></textarea><button class="submit-btn" onclick="submitAnswers(5)">提交环节二答案</button>' }
+                            }
+                        ]
+                    },
+                    {
+                        title: '环节三：AI试错——从菜鸟到健将',
+                        pages: [
+                            {
+                                left: { type: 'knowledge', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节三：AI试错——从菜鸟到健将</h3><h4 style="font-size: 1.4em;">1. 学习知识</h4><ul style="font-size: 1.3em;"><li><strong>试错学习：</strong>机器人自己不断尝试跑赛道 → 撞到障碍就重新开始 → 每次重来都会记住之前的经验 → 慢慢找到正确的跑法。</li><li><strong>关键：</strong>没有老师教，没有遥控，全靠自己反复练。做对了继续跑，做错了重来。</li></ul><h4 style="font-size: 1.4em;">2. 动手求证</h4><p style="font-size: 1.3em;"><strong>体验：观察AI训练机器人跳跃跨障碍</strong></p><iframe src="segment task/robot/ai-training.html" width="100%" height="320" frameborder="0" style="border: none; background: transparent; overflow: hidden;"></iframe>' },
+                                right: { type: 'activity', content: '<p style="font-size: 1.1em;"><strong>【试错学习观察记录】</strong>（观看时注意以下现象，在□打√或简要记录）</p><table class="observation-table"><thead><tr><th>观察点</th><th>你的发现</th></tr></thead><tbody><tr><td>1. 最初3次尝试，机器人一般能跑多远？</td><td><div class="multiple-choice"><label><input type="radio" name="obs1" value="a"> 刚起步就撞</label><label><input type="radio" name="obs1" value="b"> 能过1-2个障碍</label><label><input type="radio" name="obs1" value="c"> 能过半程</label><label><input type="radio" name="obs1" value="d"> 其他：<input type="text" name="obs1_other" placeholder="请说明" class="worksheet-input" style="width:80px;"></label></div></td></tr><tr><td>2. 成功跳过几次后，它是否逐渐稳定重复这个动作？</td><td><div class="multiple-choice"><label><input type="radio" name="obs2" value="a"> 仍然是运气</label><label><input type="radio" name="obs2" value="b"> 开始稳定重复动作</label></div></td></tr></tbody></table>' }
+                            },
+                            {
+                                left: { type: 'analysis', content: '<h4 style="font-size: 1.2em;">3. 核心发现</h4><p style="font-size: 1.1em;"><strong>机器人没有记路线，也没有人教它。它是靠什么一点点变强的？</strong></p><textarea name="t2_3a" placeholder="我的回答：" class="worksheet-textarea" style="height:80px;"></textarea>' },
+                                right: { type: 'analysis', content: '<h4 style="font-size: 1.4em;">4. 分析解释</h4><p style="font-size: 1.1em;"><strong>1. 在环节三的训练中，机器人怎么知道自己的动作是"好"还是"坏"？</strong></p><div class="multiple-choice"><label><input type="radio" name="q2_3a" value="a"> A. 有人告诉它</label><label><input type="radio" name="q2_3a" value="b"> B. 屏幕上显示分数</label><label><input type="radio" name="q2_3a" value="c"> C. 撞到障碍就得重来，没撞就继续跑</label><label><input type="radio" name="q2_3a" value="d"> D. 它自己猜的</label></div><p style="font-size: 1.1em;"><strong>2. 强化学习中，AI是怎么学会的？</strong></p><div class="multiple-choice"><label><input type="radio" name="q2_3b" value="a"> A. 人类一步步教它</label><label><input type="radio" name="q2_3b" value="b"> B. 靠大量试错</label><label><input type="radio" name="q2_3b" value="c"> C. 直接复制高手的动作</label><label><input type="radio" name="q2_3b" value="d"> D. 看书学会的</label></div><button class="submit-btn" onclick="submitAnswers(6)">提交环节三答案</button>' }
+                            }
+                        ]
+                    },
+                    {
+                        title: '环节四：智能小结 & 本课总结',
+                        pages: [
+                            {
+                                left: { type: 'summary', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节四：智能小结 & 本课总结</h3><h4>1. 智能小结（AI生成）</h4><p>你的答题数据已收集。</p><button class="submit-btn" id="generateBtn" onclick="generateReport()">[点击查看专属学习报告和勋章进度]</button><div id="reportContainer" style="display:none; margin-top: 20px;"><div class="markdown" id="reportContent"></div></div><div id="loadingIndicator" style="display:none; margin-top: 15px; padding: 15px; background: #fff8e7; border-radius: 8px;"><p style="color: #8b5a2b;">AI正在分析你的学习数据，请稍候...</p></div>' },
+                                right: { type: 'conclusion', content: '<h4>2. 本课核心</h4><ul><li><strong>行为克隆：</strong>照抄示范，不会应变。</li><li><strong>强化学习：</strong>通过试错，自己学会最优策略。</li></ul><p style="color: #dc143c; font-weight: bold; margin-top: 15px;"><strong>下一环节预告：</strong>机器人学会了感知（多模态）和决策（强化学习），下一步它要真的动起来了！第三集——感知·决策·行动闭环，敬请期待！</p>' }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: '导学单三：感知、决策、行动、再感知——认识AI的闭环',
+                meaning: '赛场上躲开失控对手、果园里护住青青苹果——背后是同一套闭环逻辑。本节课，你将化身"战术分析师"，见证闭环运转，亲手拆解并补全闭环，最后设计自己的智能机器人。',
+                goals: [
+                    '说出闭环的四个环节，理解"再感知"为什么是关键',
+                    '结合第一、二集，说明多模态感知和强化学习在闭环中的位置',
+                    '给出综合方案，说明多模态感知和强化学习设计方案',
+                    '将闭环逻辑迁移到新场景，完成机器人设计方案'
+                ],
+                eval: [
+                    '学习知识（20分）：完整阅读每个环节的知识点',
+                    '动手求证（40分）：完整完成每个环节的体验环节并记录',
+                    '分析解释（40分）：回答每环节测试题，数据通过QuickForm收集，完成即可得满分'
+                ],
+                score: '三集满分将获得"AI总教练"称号！',
+                courses: [
+                    {
+                        title: '环节一：见证闭环',
+                        pages: [
+                            {
+                                left: { type: 'knowledge', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节一：赛事直播 & 回放——见证闭环、拆解闭环</h3><h4 style="font-size: 1.2em;">1. 学习知识</h4><ul style="font-size: 1.1em;"><li><strong>闭环四环节：</strong>感知 → 决策 → 行动 → 再感知。每步执行后需反馈验证，据此调整下一步。</li><li><strong>多模态感知（第一集）：</strong>提供信息输入。</li><li><strong>强化学习（第二集）：</strong>训练决策能力。</li><li><strong>再感知（第三集）：</strong>闭环关键——执行后不检查，前期积累失效。</li></ul><h4 style="font-size: 1.2em;">2. 动手求证</h4><p style="font-size: 1.1em;"><strong>赛事观察员：记录机器人在各阶段的行为。</strong></p><table class="observation-table" style="width:100%;"><thead><tr><th>阶段</th><th>感知</th><th>决策</th><th>行动</th><th>再感知</th></tr></thead><tbody><tr><td>起跑</td><td>视觉检测发令灯</td><td>灯变绿瞬间启动</td><td>起跑</td><td>-</td></tr><tr><td>弯道</td><td>摄像头+激光雷达识别弯道</td><td>减速并转向</td><td>调整步伐，过弯道</td><td>-</td></tr><tr><td>突发事件</td><td>激光雷达+摄像头确认左侧失控对手</td><td>判断避让风险，紧急减速</td><td>减速、左转</td><td>确认对方偏移、空隙可行、姿态稳、抓地正常</td></tr></tbody></table>' },
+                                right: { type: 'activity', content: '<h4 style="font-size: 1.2em;">复盘分析：观看赛事回放中的三个复盘动画，回答以下问题。</h4><p style="font-size: 1.1em;"><strong>复盘1（感知）：</strong>初代机摔倒，现在却躲开——根本原因是什么？</p><textarea name="t3_1a" placeholder="我的回答：" class="worksheet-textarea" style="height:60px;"></textarea><p style="font-size: 1.1em;"><strong>复盘2（决策）：</strong>没学过躲开失控机器人，AI为何知道要躲？它学到了什么？</p><textarea name="t3_1b" placeholder="我的回答：" class="worksheet-textarea" style="height:60px;"></textarea><p style="font-size: 1.1em;"><strong>复盘3（行动与再感知）：</strong>穿过空隙后，左右两侧机器人的结果有什么不同？</p><textarea name="t3_1c" placeholder="我的回答：" class="worksheet-textarea" style="height:60px;"></textarea>' }
+                            },
+                            {
+                                left: { type: 'analysis', content: '<h4 style="font-size: 1.4em;">3. 分析解释</h4><p style="font-size: 1.3em;"><strong>1. 初代机摔倒而现在成功避让，根本原因是（）</strong></p><div class="multiple-choice"><label><input type="radio" name="q3_1a" value="a"> A. 弯道更难躲</label><label><input type="radio" name="q3_1a" value="b"> B. 初代机仅一个摄像头，现在四种感官同时工作</label><label><input type="radio" name="q3_1a" value="c"> C. 现在跑得慢</label><label><input type="radio" name="q3_1a" value="d"> D. 赛道变宽了</label></div><p style="font-size: 1.3em;"><strong>2. 训练能力可迁移到新赛场，因为（）</strong></p><div class="multiple-choice"><label><input type="radio" name="q3_1b" value="a"> A. 两个场地的地板颜色一样</label><label><input type="radio" name="q3_1b" value="b"> B. 对学会的是"判断危险"的通用能力</label><label><input type="radio" name="q3_1b" value="c"> C. 障碍物一模一样</label></div>' },
+                                right: { type: 'analysis', content: '<p style="font-size: 1.3em;"><strong>3. 穿过空隙后回头确认一圈，这一步叫什么？少了它会怎样？（）</strong></p><div class="multiple-choice"><label><input type="radio" name="q3_1c" value="a"> A.多跑然后回头确认一圈</label><label><input type="radio" name="q3_1c" value="b"> B.强化学习，学不会躲</label><label><input type="radio" name="q3_1c" value="c"> C.再感知，可能二次碰撞</label><label><input type="radio" name="q3_1c" value="d"> D.起跑检测，跑不起来</label></div><button class="submit-btn" onclick="submitAnswers(8)">提交环节一答案</button>' }
+                            }
+                        ]
+                    },
+                    {
+                        title: '环节二：闭环实验',
+                        pages: [
+                            {
+                                left: { type: 'knowledge', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节二：闭环实验——少一个环节会怎样？</h3><h4 style="font-size: 1.2em;">1. 学习知识</h4><ul style="font-size: 1.1em;"><li><strong>闭环的完整性：</strong>感知、决策、行动、再感知环环相扣。任意环节断裂，整个链条失效。</li></ul><h4 style="font-size: 1.2em;">2. 动手求证</h4><p style="font-size: 1.1em;"><strong>观看微课内容，思考翻车结果。</strong></p><p style="font-size: 1.1em;"><strong>采摘机器人（只摘红苹果，不碰青苹果）——看到、规划、伸手，青苹果仍被碰掉。</strong></p><p style="font-size: 1.1em;"><strong>诊断问题：为什么青苹果被碰掉？</strong></p><div class="multiple-choice"><label><input type="radio" name="q3_2a" value="a"> A.没看到青苹果</label><label><input type="radio" name="q3_2a" value="b"> B.机械臂动作不准</label><label><input type="radio" name="q3_2a" value="c"> C.摘完后没检查结果</label></div><p style="font-size: 1.1em;"><strong>补全闭环：摘完后应检查什么？（多选）</strong></p><p style="font-size: 1.1em;"><label><input type="checkbox" name="t3_2b" value="a"> 红苹果摘下了吗</label> <label><input type="checkbox" name="t3_2c" value="a"> 青苹果还在枝头吗</label> <label><input type="checkbox" name="t3_2d" value="a"> 机械臂归位了吗</label></p>' },
+                                right: { type: 'analysis', content: '<h4 style="font-size: 1.4em;">3. 分析解释</h4><p style="font-size: 1.3em;"><strong>1. 在环节一中关掉"再感知"后，机器人发生了什么？（）</strong></p><div class="multiple-choice"><label><input type="radio" name="q3_2e" value="a"> A.看不见障碍</label><label><input type="radio" name="q3_2e" value="b"> B.穿过空隙后不再检查，被二次绊倒</label><label><input type="radio" name="q3_2e" value="c"> C.手脚不听使唤</label><label><input type="radio" name="q3_2e" value="d"> D.跑得更快</label></div><p style="font-size: 1.3em;"><strong>2. 果园机器人碰掉青苹果的根本原因是？（）</strong></p><div class="multiple-choice"><label><input type="radio" name="q3_2f" value="a"> A.没有多模态</label><label><input type="radio" name="q3_2f" value="b"> B.没有强化学习</label><label><input type="radio" name="q3_2f" value="c"> C.缺了再感知，闭环断了</label><label><input type="radio" name="q3_2f" value="d"> D.青苹果长得太像红苹果</label></div><button class="submit-btn" onclick="submitAnswers(9)">提交环节二答案</button>' }
+                            }
+                        ]
+                    },
+                    {
+                        title: '环节三：迁移与创作',
+                        pages: [
+                            {
+                                left: { type: 'knowledge', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节三：迁移与创作——把你的闭环带到真实世界</h3><h4 style="font-size: 1.2em;">1. 学习知识</h4><ul style="font-size: 1.1em;"><li><strong>闭环普适性：</strong>可从赛场迁移到果园、火场、工厂、深海等任何需要"做完再确认"的场景。</li><li><strong>火场案例：</strong>浓烟挡摄像头，热成像顶上（多模态）；训练经验算时间（强化学习）；抱出人后回头确认安全（再感知）。</li></ul><h4 style="font-size: 1.2em;">2. 动手求证</h4><p style="font-size: 1.1em;"><strong>创作你的机器人：进入"AI能力迁移工坊"，分五步设计：</strong></p><p style="font-size: 1.1em;">a. 选场景: 超市/酒店/工厂/家庭/果园/深海/火场/太空/其他</p><p style="font-size: 1.1em;">b. 写任务</p><p style="font-size: 1.1em;">c. 选传感器: 摄像头/激光雷达/IMU/力觉传感器/其他</p><p style="font-size: 1.1em;">d. 选训练规则: 学霸型/躺平型/平衡型</p><p style="font-size: 1.1em;">e. 选反馈检查项</p>' },
+                                right: { type: 'activity', content: '<p style="font-size: 1.1em;"><strong>我的设计方案</strong></p><p style="font-size: 1.1em;">场景: <input type="text" name="t3_3a" placeholder="填入场景" class="worksheet-input" style="width:150px;"></p><p style="font-size: 1.1em;">任务: <input type="text" name="t3_3b" placeholder="填入任务" class="worksheet-input" style="width:150px;"></p><p style="font-size: 1.1em;">传感器: <input type="text" name="t3_3c" placeholder="填入传感器" class="worksheet-input" style="width:150px;"></p><p style="font-size: 1.1em;">训练规则: <input type="text" name="t3_3d" placeholder="填入训练规则" class="worksheet-input" style="width:150px;"></p><p style="font-size: 1.1em;">反馈检查项: <input type="text" name="t3_3e" placeholder="填入检查项" class="worksheet-input" style="width:150px;"></p>' }
+                            },
+                            {
+                                left: { type: 'analysis', content: '<h4 style="font-size: 1.4em;">3. 分析解释</h4><p style="font-size: 1.3em;"><strong>1. 深海采样机器人抓住矿石后浮出水面滑落了，最可能缺少哪一步？（）</strong></p><div class="multiple-choice"><label><input type="radio" name="q3_3a" value="a"> A.感知</label><label><input type="radio" name="q3_3a" value="b"> B.决策</label><label><input type="radio" name="q3_3a" value="c"> C.行动</label><label><input type="radio" name="q3_3a" value="d"> D.再感知：抓住后未检查</label></div>' },
+                                right: { type: 'analysis', content: '<p style="font-size: 1.3em;"><strong>2. 从三集微课装感官、训练避障、验证闭环，共同说明了什么？（）</strong></p><div class="multiple-choice"><label><input type="radio" name="q3_3b" value="a"> A.传感器越多越好</label><label><input type="radio" name="q3_3b" value="b"> B.训练越多越好</label><label><input type="radio" name="q3_3b" value="c"> C.感知、学习、行动、再感知环环相扣，缺一不可</label><label><input type="radio" name="q3_3b" value="d"> D.跑得快就行</label></div><button class="submit-btn" onclick="submitAnswers(10)">提交环节三答案</button>' }
+                            }
+                        ]
+                    },
+                    {
+                        title: '环节四：探索广场',
+                        pages: [
+                            {
+                                left: { type: 'knowledge', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节四：探索广场——看看全国总教练的创意</h3><button onclick="window.open(\'segment task/guangchang/index.html\', \'_blank\')" style="background: linear-gradient(135deg, #8b5a2b 0%, #a0522d 100%); color: white; border: none; padding: 12px 24px; border-radius: 25px; font-size: 14px; font-weight: 600; cursor: pointer; margin: 15px 0; box-shadow: 0 4px 15px rgba(139, 90, 43, 0.4); transition: transform 0.3s;">&nbsp;&nbsp;🎨 进入创意广场&nbsp;&nbsp;</button><h4 style="font-size: 1.2em;">1. 学习知识</h4><ul style="font-size: 1.1em;"><li><strong>创意碰撞：</strong>同一套闭环逻辑可创造出不同应用。浏览他人作品，发现闭环的更多可能。</li></ul><h4 style="font-size: 1.2em;">2. 动手求证</h4><p style="font-size: 1.1em;"><strong>找到三个感兴趣的作品，记录场景、传感器、训练方式、反馈检查项。</strong></p><table class="observation-table" style="width:100%;"><thead><tr><th>作品</th><th>场景</th><th>用了哪些传感器</th><th>训练方式</th><th>检查了哪些反馈项</th></tr></thead><tbody><tr><td>作品1</td><td><input type="text" name="t3_4a" placeholder="场景" class="worksheet-input" style="width:80px;"></td><td><input type="text" name="t3_4b" placeholder="传感器" class="worksheet-input" style="width:100px;"></td><td><input type="text" name="t3_4c" placeholder="训练方式" class="worksheet-input" style="width:80px;"></td><td><input type="text" name="t3_4d" placeholder="反馈项" class="worksheet-input" style="width:100px;"></td></tr><tr><td>作品2</td><td><input type="text" name="t3_4e" placeholder="场景" class="worksheet-input" style="width:80px;"></td><td><input type="text" name="t3_4f" placeholder="传感器" class="worksheet-input" style="width:100px;"></td><td><input type="text" name="t3_4g" placeholder="训练方式" class="worksheet-input" style="width:80px;"></td><td><input type="text" name="t3_4h" placeholder="反馈项" class="worksheet-input" style="width:100px;"></td></tr><tr><td>作品3</td><td><input type="text" name="t3_4i" placeholder="场景" class="worksheet-input" style="width:80px;"></td><td><input type="text" name="t3_4j" placeholder="传感器" class="worksheet-input" style="width:100px;"></td><td><input type="text" name="t3_4k" placeholder="训练方式" class="worksheet-input" style="width:80px;"></td><td><input type="text" name="t3_4l" placeholder="反馈项" class="worksheet-input" style="width:100px;"></td></tr></tbody></table>' },
+                                right: { type: 'activity', content: '<p style="font-size: 1.1em;"><strong>为最欣赏的作品留言（提示："我发现你用了____，让我想起____"）。</strong></p><p style="font-size: 1.1em;">我的留言: <textarea name="t3_4m" placeholder="输入留言" class="worksheet-textarea" style="height:60px;"></textarea></p><button class="submit-btn" onclick="submitAnswers(11)">提交环节四答案</button>' }
+                            }
+                        ]
+                    },
+                    {
+                        title: '环节五：智能小结 & 本课总结',
+                        pages: [
+                            {
+                                left: { type: 'summary', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节五：智能小结 & 本课总结</h3><h4>1. 智能小结（AI生成）</h4><p>你的答题数据已收集。</p><button class="submit-btn" id="generateBtn" onclick="generateReport()">[点击查看专属学习报告和勋章进度]</button><div id="reportContainer" style="display:none; margin-top: 20px;"><div class="markdown" id="reportContent"></div></div><div id="loadingIndicator" style="display:none; margin-top: 15px; padding: 15px; background: #fff8e7; border-radius: 8px;"><p style="color: #8b5a2b;">AI正在分析你的学习数据，请稍候...</p></div>' },
+                                right: { type: 'conclusion', content: '<h4>2. 本课核心</h4><ul><li><strong>闭环四环节：</strong>感知 → 决策 → 行动 → 再感知，环环相扣。</li><li><strong>再感知关键：</strong>执行后必须检查，否则前期积累失效。</li><li><strong>迁移应用：</strong>同一套闭环逻辑可迁移到不同场景。</li></ul><p style="color: #dc143c; font-weight: bold; margin-top: 15px;">🎉 恭喜完成全部三集课程！如果你在所有环节都获得满分，将获得"AI总教练"称号！</p>' }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        let currentModule = parseInt(localStorage.getItem('currentModule')) || parseInt(localStorage.getItem('selectedModule')) || 0;
+        let currentCourse = parseInt(localStorage.getItem('currentCourse')) || 0;
+        let currentPage = parseInt(localStorage.getItem('currentPage')) || 0;
+        const API_URLS = {
+            section1: 'https://quickform.cn/api/hn79b9cbyy',
+            section2: 'https://quickform.cn/api/ls3925kbkc',
+            section3: 'https://quickform.cn/api/c9nt3a7ewh',
+            section4: 'https://quickform.cn/api/r0hkzu8kgr',
+            section5: 'https://quickform.cn/api/i1g8holxds',
+            section6: 'https://quickform.cn/api/15ec15f0rz',
+            section7: 'https://quickform.cn/api/tyx1gj4ysv',
+            section8: 'https://quickform.cn/api/b423trgztz',
+            section9: 'https://quickform.cn/api/9rw8pk0obh',
+            section10: 'https://quickform.cn/api/kzw1h47nrm',
+            section11: 'https://quickform.cn/api/ulivfp6xfo'
+        };
+        const API_READ_URLS = {
+            section1: 'https://quickform.cn/api/hn79b9cbyy/all',
+            section2: 'https://quickform.cn/api/ls3925kbkc/all',
+            section3: 'https://quickform.cn/api/c9nt3a7ewh/all',
+            section4: 'https://quickform.cn/api/r0hkzu8kgr/all',
+            section5: 'https://quickform.cn/api/i1g8holxds/all',
+            section6: 'https://quickform.cn/api/15ec15f0rz/all',
+            section7: 'https://quickform.cn/api/tyx1gj4ysv/all',
+            section8: 'https://quickform.cn/api/b423trgztz/all',
+            section9: 'https://quickform.cn/api/9rw8pk0obh/all',
+            section10: 'https://quickform.cn/api/kzw1h47nrm/all',
+            section11: 'https://quickform.cn/api/ulivfp6xfo/all'
+        };
+        const correctAnswers = {
+            section1: { q1a: 'b', q1b: 'b' },
+            section2: { q2a: 'b', q2b: 'b' },
+            section3: { q3a: 'c', q3b: 'c' },
+            section4: { q2_1a: 'b' },
+            section5: {},
+            section6: { q2_3a: 'c', q2_3b: 'b' },
+            section7: { q2_4a: 'b' },
+            section8: { q3_1a: 'b', q3_1b: 'b', q3_1c: 'c' },
+            section9: { q3_2e: 'b', q3_2f: 'c' },
+            section10: { q3_3a: 'd', q3_3b: 'c' },
+            section11: {}
+        };
+
+        function updateModuleInfo() {
+            const mod = modules[currentModule];
+            document.getElementById('moduleTitle').textContent = '学习主题';
+            document.getElementById('moduleMeaning').textContent = mod.meaning;
+            document.getElementById('moduleScore').textContent = mod.score;
+            
+            const goalsList = document.getElementById('moduleGoals');
+            goalsList.innerHTML = mod.goals.map((g, i) => '<li>' + g + '</li>').join('');
+            
+            const evalList = document.getElementById('moduleEval');
+            evalList.innerHTML = mod.eval.map((e, i) => '<li>' + e + '</li>').join('');
+            
+            updateCourseSelector();
+        }
+        
+        function updateCourseSelector() {
+            const mod = modules[currentModule];
+            const introSelector = document.getElementById('introCourseSelector');
+            const dynamicButtons = document.getElementById('dynamicCourseButtons');
+            
+            let introButtons = '';
+            let courseButtons = '';
+            
+            mod.courses.forEach((course, index) => {
+                let displayTitle = course.title;
+                const dashIndex = displayTitle.indexOf('——');
+                if (dashIndex !== -1) {
+                    displayTitle = displayTitle.substring(0, dashIndex);
+                }
+                introButtons += `<button id="btn${index+1}" onclick="switchCourse(${index})">${displayTitle}</button>`;
+                courseButtons += `<button id="btn${index+1}c" onclick="switchCourse(${index})">${displayTitle}</button>`;
+            });
+            
+            introSelector.innerHTML = introButtons;
+            dynamicButtons.innerHTML = courseButtons;
+        }
+
+        function updatePage() {
+            const mod = modules[currentModule];
+            const course = mod.courses[currentCourse];
+            const page = course.pages[currentPage];
+            
+            document.getElementById('leftContent').innerHTML = page.left.content;
+            document.getElementById('rightContent').innerHTML = page.right.content;
+            document.dispatchEvent(new CustomEvent('courseContentLoaded'));
+
+            document.getElementById('pageIndicator').textContent = '第 ' + (currentPage + 1) + ' / ' + course.pages.length + ' 页';
+            
+            mod.courses.forEach((_, index) => {
+                const btn = document.getElementById('btn' + (index + 1));
+                const btnc = document.getElementById('btn' + (index + 1) + 'c');
+                if (btn) btn.className = currentCourse === index ? 'active' : '';
+                if (btnc) btnc.className = currentCourse === index ? 'active' : '';
+            });
+            
+            localStorage.setItem('currentModule', currentModule.toString());
+            localStorage.setItem('currentCourse', currentCourse.toString());
+            localStorage.setItem('currentPage', currentPage.toString());
+            
+            if (currentModule === 1 && currentCourse === 0) {
+                fillAnswersToPage(4);
+                fillAnswersToPage(5);
+            } else {
+                fillAnswersToPage(getCurrentSection());
+            }
+        }
+        
+        function showIntro() {
+            document.getElementById('introSection').style.display = 'block';
+            document.getElementById('courseSection').style.display = 'none';
+        }
+        
+        function showCourse() {
+            document.getElementById('introSection').style.display = 'none';
+            document.getElementById('courseSection').style.display = 'flex';
+            document.getElementById('courseSection').flexDirection = 'column';
+        }
+
+        function prevLesson() {
+            if (currentModule === 0) {
+                alert('这是第一课，请先学习第一课程内容');
+                return;
+            }
+            switchModule(currentModule - 1);
+        }
+
+        function nextLesson() {
+            if (currentModule >= modules.length - 1) {
+                alert('📚 这已经是最后一课了！');
+                return;
+            }
+            switchModule(currentModule + 1);
+        }
+
+        function switchModule(index) {
+            if (index < 0 || index >= modules.length) {
+                alert('已是最后一课');
+                return;
+            }
+            currentModule = index;
+            currentCourse = 0;
+            currentPage = 0;
+            
+            const mod1 = document.getElementById('module1');
+            const mod2 = document.getElementById('module2');
+            const mod3 = document.getElementById('module3');
+            if (mod1) mod1.className = index === 0 ? 'module-btn active' : 'module-btn';
+            if (mod2) mod2.className = index === 1 ? 'module-btn active' : 'module-btn';
+            if (mod3) mod3.className = index === 2 ? 'module-btn active' : 'module-btn';
+            
+            updateModuleInfo();
+            updateBookTitle();
+            showCourse();
+            updatePage();
+        }
+        
+        function updateBookTitle() {
+            const titles = [
+                '导学单一：多模态AI的感知与应用',
+                '导学单二：强化学习⸺AI的试错与奖励',
+                '导学单三：感知、决策、行动、再感知⸺认识AI的闭环'
+            ];
+            document.getElementById('bookTitle').textContent = titles[currentModule] || modules[currentModule].title;
+        }
+
+        function previousPage() {
+            const section = getCurrentSection();
+            saveCurrentPageAnswers(section);
+            const mod = modules[currentModule];
+            if (currentPage > 0) {
+                currentPage--;
+            } else if (currentCourse > 0) {
+                currentCourse--;
+                currentPage = mod.courses[currentCourse].pages.length - 1;
+            }
+            updatePage();
+        }
+
+        function nextPage() {
+            const section = getCurrentSection();
+            saveCurrentPageAnswers(section);
+            const mod = modules[currentModule];
+            if (currentPage < mod.courses[currentCourse].pages.length - 1) {
+                currentPage++;
+            } else if (currentCourse < mod.courses.length - 1) {
+                currentCourse++;
+                currentPage = 0;
+            }
+            updatePage();
+        }
+        
+        function getCurrentSection() {
+            if (currentModule === 0) {
+                if (currentCourse === 0) return 1;
+                if (currentCourse === 1) return 2;
+                if (currentCourse === 2) return 3;
+            } else if (currentModule === 1) {
+                if (currentCourse === 0) return 4;
+                if (currentCourse === 1) return 5;
+                if (currentCourse === 2) return 6;
+            } else if (currentModule === 2) {
+                return 8 + currentCourse;
+            }
+            return 1;
+        }
+        
+        function saveCurrentPageAnswers(sectionNum) {
+            let section = sectionNum;
+            if (section === undefined) {
+                if (currentCourse === 0) {
+                    section = 1;
+                } else if (currentCourse === 1) {
+                    section = 4;
+                } else if (currentCourse === 2) {
+                    section = 6;
+                }
+            }
+            if (!savedAnswers['section' + section]) {
+                savedAnswers['section' + section] = [localStorage.getItem('username') || '游客'];
+                const fieldNames = getFieldNamesForSection(section);
+                for (let i = 0; i < fieldNames.length; i++) {
+                    savedAnswers['section' + section].push('');
+                }
+            }
+            const fieldNames = getFieldNamesForSection(section);
+            fieldNames.forEach(fieldName => {
+                const idx = fieldNames.indexOf(fieldName) + 1;
+                
+                // 处理环节二的复选框组
+                if (fieldName === 'cb_group1') {
+                    const checked = document.querySelectorAll('input[name="t3_2b"]:checked, input[name="t3_2c"]:checked, input[name="t3_2d"]:checked');
+                    savedAnswers['section' + section][idx] = Array.from(checked).map(cb => cb.name).join(',');
+                    return;
+                }
+                
+                const el = document.querySelector('input[name="' + fieldName + '"], textarea[name="' + fieldName + '"]');
+                if (el) {
+                    if (el.type === 'radio') {
+                        const selected = document.querySelector('input[name="' + fieldName + '"]:checked');
+                        savedAnswers['section' + section][idx] = selected ? selected.value : '';
+                    } else if (el.type === 'checkbox') {
+                        const checked = document.querySelectorAll('input[name="' + fieldName + '"]:checked');
+                        savedAnswers['section' + section][idx] = Array.from(checked).map(cb => cb.value).join(',');
+                    } else {
+                        savedAnswers['section' + section][idx] = el.value;
+                    }
+                }
+            });
+        }
+
+        function switchCourse(index) {
+            currentCourse = index;
+            currentPage = 0;
+            showCourse();
+            updatePage();
+        }
+
+        function logout() {
+            localStorage.removeItem('loggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('currentModule');
+            localStorage.removeItem('currentCourse');
+            localStorage.removeItem('currentPage');
+            window.location.href = 'index.html';
+        }
+
+        function openModal(element) {
+            const img = element.querySelector('img');
+            const modal = document.getElementById('imgModal');
+            const modalImg = document.getElementById('modalImg');
+            modalImg.src = img.src;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imgModal');
+            modal.style.display = 'none';
+        }
+
+        // 多模态新闻轮播相关变量
+        let carouselNews = [];
+        let currentCarouselIndex = 0;
+        let carouselInterval = null;
+
+        // 初始化轮播
+        let carouselIniting = false;
+        function initCarousel() {
+            if (carouselIniting) return;
+            carouselIniting = true;
+            const checkAndInit = () => {
+                const innerEl = document.getElementById('carouselInner');
+                const dotsEl = document.getElementById('carouselDots');
+
+                if (innerEl && dotsEl) {
+                    fetchAndRender();
+                } else {
+                    setTimeout(checkAndInit, 200);
+                }
+            };
+            checkAndInit();
+        }
+
+        // 获取数据并渲染
+        async function fetchAndRender() {
+            const innerEl = document.getElementById('carouselInner');
+            if (!innerEl) {
+                console.error('轮播容器不存在');
+                return;
+            }
+
+            innerEl.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: white;"><p>正在搜索最新案例...</p></div>';
+
+            console.log('开始从AI获取多模态案例');
+            await fetchMultimodalNews();
+
+            console.log('获取结果:', carouselNews);
+
+            if (carouselNews.length > 0) {
+                renderCarousel();
+            } else {
+                // AI获取失败，尝试使用缓存
+                const cached = localStorage.getItem('multimodalNews');
+                if (cached) {
+                    try {
+                        carouselNews = JSON.parse(cached);
+                        if (carouselNews.length > 0) {
+                            renderCarousel();
+                            return;
+                        }
+                    } catch (e) {}
+                }
+                // 缓存也没有，使用备用数据
+                console.warn('AI获取失败，使用备用数据');
+                carouselNews = [
+                    {"title":"智能相册整理","desc":"AI自动识别照片中的人物、风景、美食，智能分类整理","url":"https://www.baidu.com/s?wd=AI智能相册"},
+                    {"title":"AR试衣镜","desc":"站在镜子前就能看到穿不同衣服的效果","url":"https://www.baidu.com/s?wd=AR试衣技术"},
+                    {"title":"AI拍照翻译","desc":"拍下菜单、路牌，AI实时翻译成中文","url":"https://www.baidu.com/s?wd=AI拍照翻译"},
+                    {"title":"智能客服","desc":"能看懂文字、图片甚至语音的虚拟助手","url":"https://www.baidu.com/s?wd=智能客服"},
+                    {"title":"视频字幕生成","desc":"上传视频自动识别语音生成字幕","url":"https://www.baidu.com/s?wd=AI视频字幕"}
+                ];
+                renderCarousel();
+            }
+        }
+
+        // 从AI获取多模态新闻
+        async function fetchMultimodalNews() {
+            const prompt = `搜索全网，为初中生推荐5条多模态AI（能同时处理文字、图片、语音、视频等多种信息的AI）的应用案例或新闻。要求：
+1. 案例真实具体，最好包含知名产品或公司（如ChatGPT看图说话、Sora生成视频、豆包识别物体、天猫精灵语音交互等）
+2. 标题15字内，描述50字内，语言生动易懂
+3.每条案例简要说明用到了哪几种"模态"（视觉/听觉/语言等）
+4. url填写百度搜索链接
+只返回JSON数组：[{"title":"","desc":"","url":""},...]，不要其他文字`;
+
+            try {
+                const apiKey = 'sk-xmpjjillfsfgaklhpvxihtfpsivxhmihscpohlbtzfupujiv';
+                const model = 'deepseek-ai/DeepSeek-V4-Flash';
+                
+                console.log('调用API:', model);
+                
+                const response = await fetch('https://api.siliconflow.cn/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + apiKey
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        messages: [{ role: 'user', content: prompt }],
+                        stream: false,
+                        max_tokens: 500
+                    })
+                });
+                
+                console.log('API响应状态:', response.status);
+                
+                if (!response.ok) {
+                    console.error('API请求失败:', response.status);
+                    return;
+                }
+                
+                const data = await response.json();
+                console.log('API返回数据:', data);
+                
+                const content = data.choices?.[0]?.message?.content || '';
+                console.log('AI回复内容:', content);
+                
+                const jsonMatch = content.match(/\[[\s\S]*\]/);
+                if (jsonMatch) {
+                    carouselNews = JSON.parse(jsonMatch[0]);
+                    console.log('解析成功:', carouselNews);
+                    localStorage.setItem('multimodalNews', JSON.stringify(carouselNews));
+                } else {
+                    console.warn('未找到JSON内容');
+                }
+            } catch (error) {
+                console.error('获取多模态新闻失败:', error);
+            }
+        }
+
+        // 渲染轮播
+        function renderCarousel() {
+            const innerEl = document.getElementById('carouselInner');
+            const dotsEl = document.getElementById('carouselDots');
+            
+            if (!innerEl || !dotsEl || carouselNews.length === 0) return;
+            
+            // 渲染轮播项
+            innerEl.innerHTML = carouselNews.map((news, i) => `
+                <div class="carousel-item" style="display: ${i === 0 ? 'flex' : 'none'}; height: 100%; padding: 1.5rem; align-items: center; justify-content: center; flex-direction: column; text-align: center;">
+                    <h3 style="color: white; font-size: 1.3em; margin-bottom: 0.75rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.3);">${news.title}</h3>
+                    <p style="color: rgba(255,255,255,0.95); font-size: 1em; line-height: 1.5; max-width: 90%; margin-bottom: 1rem;">${news.desc}</p>
+                    <a href="${news.url}" target="_blank" style="color: #ffd700; text-decoration: underline; font-size: 0.9em;">查看详情 →</a>
+                </div>
+            `).join('');
+            
+            // 渲染指示点
+            dotsEl.innerHTML = carouselNews.map((_, i) => `
+                <span class="carousel-dot" onclick="goToCarousel(${i})" style="width: 10px; height: 10px; border-radius: 50%; background: ${i === 0 ? '#ffd700' : 'rgba(255,255,255,0.5)'}; cursor: pointer; transition: all 0.3s;"></span>
+            `).join('');
+            
+            // 开始自动轮播
+            if (carouselInterval) clearInterval(carouselInterval);
+            carouselInterval = setInterval(() => {
+                currentCarouselIndex = (currentCarouselIndex + 1) % carouselNews.length;
+                updateCarousel();
+            }, 5000);
+        }
+
+        // 切换到指定轮播项
+        function goToCarousel(index) {
+            currentCarouselIndex = index;
+            updateCarousel();
+        }
+
+        // 更新轮播显示
+        function updateCarousel() {
+            const items = document.querySelectorAll('.carousel-item');
+            const dots = document.querySelectorAll('.carousel-dot');
+            
+            if (!items.length || !dots.length) return;
+            
+            items.forEach((item, i) => {
+                item.style.display = i === currentCarouselIndex ? 'flex' : 'none';
+            });
+            dots.forEach((dot, i) => {
+                dot.style.background = i === currentCarouselIndex ? '#ffd700' : 'rgba(255,255,255,0.5)';
+            });
+        }
+
+        async function submitAnswers(section) {
+            const username = localStorage.getItem('username') || '游客';
+            if (username === '游客') {
+                alert('请先登录！');
+                return;
+            }
+            saveCurrentPageAnswers(section);
+            const validation = validateSection(section);
+            if (!validation.valid) {
+                alert('请完成所有题目后再提交！\n未完成的题目：' + validation.missing.join(', '));
+                return;
+            }
+            const answers = collectAnswers(section);
+            if (savedAnswers['section' + section]) {
+                for (let i = 0; i < answers.length; i++) {
+                    if (!answers[i] && savedAnswers['section' + section][i]) {
+                        answers[i] = savedAnswers['section' + section][i];
+                    }
+                }
+            }
+            savedAnswers['section' + section] = answers;
+            const apiUrl = API_URLS['section' + section];
+            
+            const submitData = { '姓名': username };
+            const fieldNames = getFieldNamesForSection(section);
+            fieldNames.forEach((fieldName, idx) => {
+                submitData['题目' + (idx + 1)] = answers[idx + 1] || '';
+            });
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(submitData)
+                });
+                
+                if (response.ok) {
+                    alert('提交成功！');
+                    const cacheKey = 'savedAnswers_' + username;
+                    localStorage.removeItem(cacheKey);
+                    showFeedback(section, answers);
+                } else {
+                    alert('提交失败，请重试');
+                }
+            } catch (error) {
+                console.error('提交错误:', error);
+                alert('网络错误，请重试');
+            }
+        }
+        
+        function getFieldNamesForSection(section) {
+            const fieldNames = {
+                section1: ['t1a', 'cb1', 'cb2', 'cb3', 'ta1', 'q1a', 'q1b'],
+                section2: ['tb1', 'tb2', 'tb3', 'q2a', 'q2b'],
+                section3: ['t3a', 't3b', 'ta5', 't3c', 't3d', 't3e', 'q3a', 'q3b'],
+                section4: ['t2_1a', 't2_1b', 'q2_1a'],
+                section5: ['t2_2a', 'ta2_2b'],
+                section6: ['obs1', 'obs2', 't2_3a', 'q2_3a', 'q2_3b'],
+                section7: ['t2_4a', 't2_4b', 't2_4b_score', 't2_4c', 't2_4c_score', 't2_4d', 'q2_4a'],
+                section8: ['t3_1a', 't3_1b', 't3_1c', 'q3_1a', 'q3_1b', 'q3_1c'],
+                section9: ['q3_2a', 'cb_group1', 'q3_2e', 'q3_2f'],
+                section10: ['t3_3a', 't3_3b', 't3_3c', 't3_3d', 't3_3e', 'q3_3a', 'q3_3b'],
+                section11: ['t3_4a', 't3_4b', 't3_4c', 't3_4d', 't3_4e', 't3_4f', 't3_4g', 't3_4h', 't3_4i', 't3_4j', 't3_4k', 't3_4l', 't3_4m']
+            };
+            return fieldNames['section' + section] || [];
+        }
+        
+        function collectAnswers(section) {
+            const username = localStorage.getItem('username') || '游客';
+            const answers = [username];
+            const fieldNames = getFieldNamesForSection(section);
+            
+            fieldNames.forEach(fieldName => {
+                const radioFields = ['q1a', 'q1b', 'q2a', 'q2b', 'q3a', 'q3b', 'q2_1a', 'q2_3a', 'q2_3b', 'q2_4a', 'q3_1a', 'q3_1b', 'q3_1c', 'q3_2a', 'q3_2e', 'q3_2f', 'q3_3a', 'q3_3b'];
+                if (radioFields.includes(fieldName)) {
+                    const radio = document.querySelector('input[name="' + fieldName + '"]:checked');
+                    answers.push(radio ? radio.value : '');
+                } else if (fieldName === 'cb_group1') {
+                    // 处理环节二的复选框组
+                    const checked = document.querySelectorAll('input[name="t3_2b"]:checked, input[name="t3_2c"]:checked, input[name="t3_2d"]:checked');
+                    answers.push(Array.from(checked).map(cb => cb.name).join(','));
+                } else {
+                    const el = document.querySelector('input[name="' + fieldName + '"], textarea[name="' + fieldName + '"]');
+                    if (el) {
+                        if (el.type === 'checkbox') {
+                            const checked = document.querySelectorAll('input[name="' + fieldName + '"]:checked');
+                            answers.push(Array.from(checked).map(cb => cb.value).join(','));
+                        } else if (el.type === 'radio') {
+                            const selected = document.querySelector('input[name="' + fieldName + '"]:checked');
+                            answers.push(selected ? selected.value : '');
+                        } else {
+                            answers.push(el.value);
+                        }
+                    } else {
+                        answers.push('');
+                    }
+                }
+            });
+            return answers;
+        }
+
+        function validateAnswers(section, answers) {
+            const missing = [];
+            for (let i = 1; i < answers.length; i++) {
+                if (!answers[i] || answers[i].trim() === '') {
+                    missing.push('题目' + i);
+                }
+            }
+            return { valid: missing.length === 0, missing };
+        }
+
+        function showFeedback(section, answers) {
+            const correct = correctAnswers['section' + section];
+            if (!correct) return;
+            
+            // 只禁用分析解释部分的单选按钮（问题）
+            const radioInputs = document.querySelectorAll('.multiple-choice input[type="radio"]');
+            radioInputs.forEach(input => {
+                input.disabled = true;
+            });
+            
+            // 添加反馈（只对选中的选项显示）
+            for (const [key, value] of Object.entries(correct)) {
+                const radioButtons = document.querySelectorAll('input[name="' + key + '"]');
+                radioButtons.forEach(btn => {
+                    const label = btn.parentElement;
+                    // 先清除之前的反馈
+                    const existingFeedback = label.querySelector('.feedback-correct, .feedback-wrong');
+                    if (existingFeedback) existingFeedback.remove();
+                    
+                    // 只对选中的选项显示反馈
+                    if (btn.checked) {
+                        const feedback = document.createElement('span');
+                        if (btn.value === value) {
+                            feedback.className = 'feedback-correct';
+                            feedback.textContent = ' ✔️';
+                            feedback.style.color = '#2e7d32';
+                            feedback.style.fontWeight = 'bold';
+                        } else {
+                            feedback.className = 'feedback-wrong';
+                            feedback.textContent = ' ❌';
+                            feedback.style.color = '#c62828';
+                            feedback.style.fontWeight = 'bold';
+                        }
+                        label.appendChild(feedback);
+                    }
+                });
+            }
+            
+            // 添加重新作答按钮（只对分析解释部分有效）
+            const submitBtn = document.querySelector('.submit-btn');
+            if (submitBtn) {
+                submitBtn.style.display = 'none';
+                // 检查是否已存在重新作答按钮
+                let retryBtn = document.querySelector('.retry-btn');
+                if (!retryBtn) {
+                    retryBtn = document.createElement('button');
+                    retryBtn.className = 'submit-btn retry-btn';
+                    retryBtn.textContent = '重新作答';
+                    retryBtn.style.marginLeft = '1rem';
+                    retryBtn.onclick = function() {
+                        resetAnswers(section);
+                    };
+                    submitBtn.parentElement.appendChild(retryBtn);
+                }
+            }
+        }
+
+        function resetAnswers(section) {
+            // 清除所有反馈
+            document.querySelectorAll('.feedback-correct, .feedback-wrong').forEach(el => el.remove());
+            
+            // 只启用分析解释部分的单选按钮
+            const radioInputs = document.querySelectorAll('.multiple-choice input[type="radio"]');
+            radioInputs.forEach(input => {
+                input.disabled = false;
+            });
+            
+            // 显示提交按钮，隐藏重新作答按钮
+            const submitBtn = document.querySelector('.submit-btn');
+            const retryBtn = document.querySelector('.retry-btn');
+            if (submitBtn) submitBtn.style.display = 'inline-block';
+            if (retryBtn) retryBtn.remove();
+        }
+
+        function testConnection() {
+            document.getElementById('testResult').textContent = '已连接';
+            document.getElementById('testResult').style.color = '#2e7d32';
+        }
+
+        async function generateReport() {
+            const username = localStorage.getItem('username') || '游客';
+            if (username === '游客') {
+                alert('请先登录！');
+                return;
+            }
+            
+            const requiredSections = currentModule === 0 ? 3 : 4;
+            
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('reportContainer').style.display = 'none';
+            document.getElementById('generateBtn').disabled = true;
+            
+            const reportData = await collectAllStudentAnswers(username);
+            
+            const completedSections = reportData.filter(s => s.completed);
+            const incompleteSections = reportData.filter(s => !s.completed);
+            const totalScore = completedSections.reduce((sum, s) => sum + (s.score || 0), 0);
+            const totalQuestions = completedSections.reduce((sum, s) => sum + (s.total || 0), 0);
+            
+            if (incompleteSections.length > 0) {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('generateBtn').disabled = false;
+                
+                const missingNames = incompleteSections.map(s => s.sectionName).join('、');
+                alert(`请先完成以下环节再来生成报告：\n${missingNames}\n\n完成所有环节后才能获得勋章和学习报告！`);
+                return;
+            }
+            
+            let reportPrompt = `请为学生生成一份精简的个性化学习报告（控制在150字以内）。
+
+学生：${username}
+课程：${modules[currentModule].title}
+
+【学习数据】
+${(() => {
+    const sectionNames = currentModule === 0 ? 
+        ['环节一：翻车现场', '环节二：感官升级', '环节三：多模态体验'] : 
+        (currentModule === 1 ? 
+            ['环节一：行为克隆', '环节二：手控驾驶', '环节三：AI试错'] :
+            ['环节一：见证闭环', '环节二：闭环实验', '环节三：迁移与创作', '环节四：探索广场']);
+    let result = '';
+    reportData.forEach((section, idx) => {
+        if (section && section.completed) {
+            const correct = section.score || 0;
+            const total = section.total || 0;
+            const rate = total > 0 ? Math.round(correct / total * 100) : 0;
+            result += `${sectionNames[idx]}: ${correct}/${total}题(${rate}%) `;
+        }
+    });
+    return result;
+})()}
+
+${(() => {
+    const totalCorrect = reportData.reduce((sum, s) => sum + (s.score || 0), 0);
+    const totalQuestionsAll = reportData.reduce((sum, s) => sum + (s.total || 0), 0);
+    const correctRate = totalQuestionsAll > 0 ? Math.round(totalCorrect / totalQuestionsAll * 100) : 0;
+    
+    let overallLevel = '继续努力';
+    if (correctRate >= 90) overallLevel = '非常优秀';
+    else if (correctRate >= 80) overallLevel = '表现优秀';
+    else if (correctRate >= 70) overallLevel = '表现良好';
+    else if (correctRate >= 60) overallLevel = '及格';
+    
+    let medal = '📚 青铜勋章';
+    if (currentModule === 0) {
+        medal = '🥈 白银勋章（导学单一完成）';
+    } else if (currentModule === 1) {
+        medal = '🥇 黄金勋章（导学单二完成）';
+    } else if (currentModule === 2) {
+        medal = '🥉 黄金勋章（导学单三完成）';
+        const hasAllModules = localStorage.getItem('module0Completed') && localStorage.getItem('module1Completed') && localStorage.getItem('module2Completed');
+        if (hasAllModules) {
+            medal = '⭐ 星耀徽章 + AI总教练称号';
+        }
+    }
+    
+    return `【总体评价】\n- 正确率：${correctRate}%（${totalCorrect}/${totalQuestionsAll}题）\n- 评定：${overallLevel}\n- 勋章：${medal}`;
+})()}
+
+【课程要点】
+${(() => {
+    if (currentModule === 0) {
+        return '单模态易出错，多模态更可靠；激光雷达测距，IMU感知姿态。';
+    } else if (currentModule === 1) {
+        return '行为克隆照抄示范不会应变，强化学习通过试错自己学会最优策略。';
+    } else {
+        return '闭环四环节：感知→决策→行动→再感知，再感知是关键。';
+    }
+})()}
+
+请按照以下格式生成学习报告（用中文，语气亲切鼓励，控制在150字以内）：
+
+---
+
+**核心总结**：[1-2句总结表现，包含正确率和评定等级]
+
+**勋章**：[勋章名称]
+
+**建议**：[1条最关键的改进建议]
+
+---
+
+注意：报告要精简，根据学生的实际正确率数据来写，语气要鼓励性。`;
+            
+            try {
+                const apiKey = localStorage.getItem('ai_token') || 'sk-xmpjjillfsfgaklhpvxihtfpsivxhmihscpohlbtzfupujiv';
+                const model = localStorage.getItem('ai_model') || 'deepseek-ai/DeepSeek-V4-Flash';
+                
+                const response = await fetch('https://api.siliconflow.cn/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + apiKey
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        messages: [
+                            { role: 'system', content: '你是一位AI学习教练，善于分析学生的学习数据并给出鼓励和建议。' },
+                            { role: 'user', content: reportPrompt }
+                        ],
+                        stream: false
+                    })
+                });
+                
+                console.log('AI API响应状态:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('AI API响应数据:', JSON.stringify(data));
+                    
+                    let reportText = '';
+                    
+                    if (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) {
+                        reportText = data.choices[0].message.content;
+                        localStorage.setItem('module' + currentModule + 'Completed', 'true');
+                    } else if (data.error && data.error.message) {
+                        reportText = `API错误: ${data.error.message}`;
+                    } else {
+                        reportText = '报告生成中，请稍后再试...';
+                    }
+                    
+                    document.getElementById('reportContent').innerHTML = convertMarkdownToHtml(reportText);
+                    document.getElementById('reportContainer').style.display = 'block';
+                } else {
+                    const errorText = await response.text();
+                    console.log('API错误响应:', errorText);
+                    document.getElementById('reportContent').innerHTML = `<p style="color: #dc143c;">报告生成失败 (${response.status})。请检查AI配置是否正确。</p><p style="font-size: 12px; color: #666;">错误信息: ${errorText}</p>`;
+                    document.getElementById('reportContainer').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('生成报告错误:', error);
+                document.getElementById('reportContent').innerHTML = '<p style="color: #dc143c;">网络错误，请检查网络连接后重试。</p><p style="font-size: 12px; color: #666;">错误: ' + error.message + '</p>';
+                document.getElementById('reportContainer').style.display = 'block';
+            } finally {
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('generateBtn').disabled = false;
+            }
+        }
+
+        async function collectAllStudentAnswers(username) {
+            let sectionNames, fieldNamesMap, correctAnswersMap;
+            
+            if (currentModule === 0) {
+                sectionNames = ['环节一：翻车现场', '环节二：感官升级', '环节三：多模态体验'];
+                fieldNamesMap = {
+                    1: ['t1a', 'cb1', 'cb2', 'cb3', 'ta1', 'q1a', 'q1b'],
+                    2: ['tb1', 'tb2', 'tb3', 'q2a', 'q2b'],
+                    3: ['t3a', 't3b', 'ta5', 't3c', 't3d', 't3e', 'q3a', 'q3b']
+                };
+                correctAnswersMap = {
+                    1: { q1a: 'b', q1b: 'b' },
+                    2: { q2a: 'b', q2b: 'b' },
+                    3: { q3a: 'c', q3b: 'c' }
+                };
+            } else if (currentModule === 1) {
+                sectionNames = ['环节一：行为克隆', '环节二：手控驾驶', '环节三：AI试错'];
+                fieldNamesMap = {
+                    4: ['t2_1a', 't2_1b', 'q2_1a'],
+                    5: ['t2_2a', 't2_2b', 'q2_2a'],
+                    6: ['obs1', 'obs2', 't2_3a', 'q2_3a', 'q2_3b']
+                };
+                correctAnswersMap = {
+                    4: { q2_1a: 'b' },
+                    5: {},
+                    6: { q2_3a: 'c', q2_3b: 'b' }
+                };
+            } else if (currentModule === 2) {
+                sectionNames = ['环节一：见证闭环', '环节二：闭环实验', '环节三：迁移与创作', '环节四：探索广场'];
+                fieldNamesMap = {
+                    8: ['t3_1a', 't3_1b', 't3_1c', 'q3_1a', 'q3_1b', 'q3_1c'],
+                    9: ['q3_2a', 't3_2b', 't3_2c', 't3_2d', 'q3_2e', 'q3_2f'],
+                    10: ['t3_3a', 't3_3b', 't3_3c', 't3_3d', 't3_3e', 'q3_3a', 'q3_3b'],
+                    11: ['t3_4a', 't3_4b', 't3_4c', 't3_4d', 't3_4e', 't3_4f', 't3_4g', 't3_4h', 't3_4i', 't3_4j', 't3_4k', 't3_4l', 't3_4m']
+                };
+                correctAnswersMap = {
+                    8: { q3_1a: 'b', q3_1b: 'b', q3_1c: 'c' },
+                    9: { q3_2e: 'b', q3_2f: 'c' },
+                    10: { q3_3a: 'd', q3_3b: 'c' },
+                    11: {}
+                };
+            }
+            
+            let reportData = [];
+            const sectionsToLoad = currentModule === 0 ? [1, 2, 3] : (currentModule === 1 ? [4, 5, 6] : [8, 9, 10, 11]);
+            
+            for (let i = 0; i < sectionsToLoad.length; i++) {
+                const section = sectionsToLoad[i];
+                const sectionIndex = currentModule === 0 ? section : i + 1;
+                try {
+                    const apiUrl = API_READ_URLS['section' + section];
+                    const response = await fetch(apiUrl);
+                    if (response.ok) {
+                        const data = await response.json();
+                        let submissions = [];
+                        
+                        if (Array.isArray(data)) {
+                            submissions = data;
+                        } else if (data && data.submissions && Array.isArray(data.submissions)) {
+                            submissions = data.submissions;
+                        }
+                        
+                        const userRecords = submissions.filter(item => {
+                            const name = item['姓名'] || item['\u59d3\u540d'];
+                            return name === username;
+                        });
+                        
+                        if (userRecords.length > 0) {
+                            const latestRecord = userRecords[0];
+                            const fields = fieldNamesMap[section];
+                            const correctAnswers = correctAnswersMap[section];
+                            const sectionData = {
+                                sectionName: sectionNames[sectionIndex - 1],
+                                completed: true,
+                                answers: {},
+                                score: 0,
+                                total: 0
+                            };
+                            
+                            fields.forEach(field => {
+                                const value = latestRecord['题目' + (fields.indexOf(field) + 1)] || 
+                                             latestRecord['\u9898\u76ee' + (fields.indexOf(field) + 1)] || '';
+                                sectionData.answers[field] = value;
+                            });
+                            
+                            Object.keys(correctAnswers).forEach(q => {
+                                sectionData.total += 1;
+                                if (sectionData.answers[q] === correctAnswers[q]) {
+                                    sectionData.score += 1;
+                                }
+                            });
+                            
+                            reportData.push(sectionData);
+                            console.log('环节' + sectionIndex + '数据已收集:', sectionData);
+                        } else {
+                            reportData.push({
+                                sectionName: sectionNames[sectionIndex - 1],
+                                completed: false
+                            });
+                            console.log('环节' + sectionIndex + '无数据');
+                        }
+                    } else {
+                        reportData.push({
+                            sectionName: sectionNames[sectionIndex - 1],
+                            completed: false
+                        });
+                        console.log('环节' + sectionIndex + '加载失败');
+                    }
+                } catch (e) {
+                    console.warn('加载环节' + sectionIndex + '数据失败:', e);
+                    reportData.push({
+                        sectionName: sectionNames[sectionIndex - 1],
+                        completed: false,
+                        error: true
+                    });
+                }
+            }
+            
+            return reportData;
+        }
+
+        function convertMarkdownToHtml(markdown) {
+            let html = markdown
+                .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+                .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/^\- (.*$)/gm, '<li>$1</li>')
+                .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+                .replace(/\n\n/g, '</p><p>')
+                .replace(/\n/g, '<br>');
+            return '<p>' + html + '</p>';
+        }
+
+        async function loadSavedAnswers() {
+            const currentUser = localStorage.getItem('username');
+            console.log('========== 开始加载保存的答案 ==========');
+            console.log('当前用户名:', currentUser);
+            
+            if (!currentUser || currentUser === '游客') {
+                console.log('用户未登录或为游客，跳过数据加载');
+                document.getElementById('loadingOverlay').style.display = 'none';
+                return;
+            }
+            
+            const cacheKey = 'savedAnswers_' + currentUser;
+            const cachedData = localStorage.getItem(cacheKey);
+            let hasCachedData = false;
+            
+            if (cachedData) {
+                try {
+                    const cached = JSON.parse(cachedData);
+                    Object.assign(savedAnswers, cached);
+                    hasCachedData = true;
+                    console.log('已加载本地缓存数据');
+                } catch (e) {
+                    localStorage.removeItem(cacheKey);
+                }
+            }
+            
+            const sectionsToLoad = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+            const promises = sectionsToLoad.map(section => {
+                return new Promise(async (resolve) => {
+                    const readUrl = API_READ_URLS['section' + section];
+                    if (!readUrl) {
+                        resolve(null);
+                        return;
+                    }
+                    console.log(`\n--- 加载环节${section} ---`);
+                    console.log('请求URL:', readUrl);
+                    try {
+                        const response = await fetch(readUrl);
+                        console.log('响应状态:', response.status);
+                        if (response.ok) {
+                            const data = await response.json();
+                            console.log('原始响应数据:', JSON.stringify(data).substring(0, 500) + '...');
+                            let dataArray = [];
+                            if (Array.isArray(data)) {
+                                dataArray = data;
+                            } else if (data && data.submissions && Array.isArray(data.submissions)) {
+                                dataArray = data.submissions;
+                            } else if (data && data.data && Array.isArray(data.data)) {
+                                dataArray = data.data;
+                            } else if (typeof data === 'object') {
+                                const keys = Object.keys(data);
+                                const arrayKey = keys.find(key => Array.isArray(data[key]));
+                                if (arrayKey) {
+                                    dataArray = data[arrayKey];
+                                } else {
+                                    dataArray = [data];
+                                }
+                            }
+                            
+                            console.log('处理后的数据数组长度:', dataArray.length);
+                            
+                            dataArray.sort((a, b) => {
+                                const timeA = a.submitted_at || a.created_at || '';
+                                const timeB = b.submitted_at || b.created_at || '';
+                                return timeB.localeCompare(timeA);
+                            });
+                            
+                            const userRecords = dataArray.filter(item => item && 
+                                (item['姓名'] === currentUser || 
+                                 item['\u59d3\u540d'] === currentUser));
+                            
+                            console.log('找到的用户记录数量:', userRecords.length);
+                            
+                            if (userRecords.length > 0) {
+                                savedAnswers['section' + section] = convertToArray(userRecords[0], section);
+                                console.log(`环节${section}数据加载成功:`, savedAnswers['section' + section]);
+                            } else {
+                                console.log(`未找到用户"${currentUser}"的记录`);
+                            }
+                        } else {
+                            console.log('请求失败，状态:', response.statusText);
+                            if (hasCachedData && savedAnswers['section' + section]) {
+                                console.log(`使用缓存数据填充环节${section}`);
+                            }
+                        }
+                    } catch (e) {
+                        console.error(`加载环节${section}数据失败:`, e.message);
+                        if (hasCachedData && savedAnswers['section' + section]) {
+                            console.log(`使用缓存数据填充环节${section}`);
+                        }
+                    }
+                    resolve(null);
+                });
+            });
+            
+            await Promise.all(promises);
+            
+            localStorage.setItem(cacheKey, JSON.stringify(savedAnswers));
+            
+            console.log('\n========== 数据加载完成 ==========');
+            console.log('最终savedAnswers:', JSON.stringify(savedAnswers));
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+        
+        function convertToArray(userData, section) {
+            const fieldNames = getFieldNamesForSection(section);
+            const getValue = (obj, key) => {
+                if (obj[key]) return obj[key];
+                const unescaped = unescapeUnicode(key);
+                if (obj[unescaped]) return obj[unescaped];
+                return '';
+            };
+            const result = [getValue(userData, '姓名')];
+            fieldNames.forEach((fieldName, idx) => {
+                result.push(getValue(userData, '题目' + (idx + 1)) || '');
+            });
+            return result;
+        }
+        
+        function unescapeUnicode(str) {
+            return str.replace(/\\u[\dA-Fa-f]{4}/g, (match) => {
+                return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
+            });
+        }
+
+        function fillAnswersToPage(section) {
+            console.log('========== fillAnswersToPage开始, section:', section);
+            console.log('savedAnswers["section' + section + '"]:', savedAnswers['section' + section]);
+            const saved = savedAnswers['section' + section];
+            if (!saved || !Array.isArray(saved)) {
+                console.log('没有找到该环节的保存答案');
+                return;
+            }
+            
+            console.log('保存的答案数据:', saved);
+            const fieldNames = getFieldNamesForSection(section);
+            console.log('字段列表:', fieldNames);
+            console.log('页面当前HTML:', document.body.innerHTML.substring(0, 500));
+            
+            for (let idx = 0; idx < fieldNames.length; idx++) {
+                const fieldName = fieldNames[idx];
+                const dataIndex = idx + 1;
+                const value = saved[dataIndex];
+                
+                if (!value) {
+                    console.log('字段', fieldName, '(索引:', dataIndex, ')值为空，跳过');
+                    continue;
+                }
+                
+                console.log('填充字段:', fieldName, '(索引:', dataIndex, '), 值:', value);
+                
+                const allInputs = document.querySelectorAll('[name="' + fieldName + '"]');
+                console.log('找到的输入元素数量:', allInputs.length);
+                
+                if (allInputs.length === 0) {
+                    console.log('警告：未找到名为"' + fieldName + '"的元素，可能不在当前页面');
+                    continue;
+                }
+                
+                const radios = document.querySelectorAll('input[name="' + fieldName + '"][type="radio"]');
+                const checkboxes = document.querySelectorAll('input[name="' + fieldName + '"][type="checkbox"]');
+                const textInputs = document.querySelectorAll('input[name="' + fieldName + '"][type="text"], textarea[name="' + fieldName + '"]');
+                
+                if (radios.length > 0) {
+                    const radio = document.querySelector('input[name="' + fieldName + '"][value="' + value + '"]');
+                    console.log('找到单选按钮:', radio ? '是' : '否');
+                    if (radio) {
+                        radio.checked = true;
+                        console.log('已选中单选按钮:', value);
+                    } else {
+                        console.log('警告：未找到值为"' + value + '"的单选按钮');
+                    }
+                } else if (checkboxes.length > 0) {
+                    const values = value.split(',');
+                    console.log('复选框值列表:', values);
+                    values.forEach(val => {
+                        const cb = document.querySelector('input[name="' + fieldName + '"][value="' + val + '"]');
+                        if (cb) {
+                            cb.checked = true;
+                            console.log('已选中复选框:', val);
+                        }
+                    });
+                } else if (textInputs.length > 0) {
+                    textInputs[0].value = value;
+                    console.log('已填充文本输入:', value);
+                } else {
+                    console.log('未知类型的输入元素:', allInputs[0].type);
+                }
+            }
+        }
+
+        function validateCurrentPage() {
+            const formElements = document.querySelectorAll('.page-content input, .page-content textarea');
+            const missing = [];
+            const checkedNames = new Set();
+            formElements.forEach(el => {
+                if (el.name && !checkedNames.has(el.name)) {
+                    checkedNames.add(el.name);
+                    if (el.type === 'checkbox') {
+                        const checkboxes = document.querySelectorAll('input[name="' + el.name + '"]:checked');
+                        if (checkboxes.length === 0) {
+                            missing.push(el.name);
+                        }
+                    } else if (el.type === 'radio') {
+                        const radios = document.querySelectorAll('input[name="' + el.name + '"]:checked');
+                        if (radios.length === 0) {
+                            missing.push(el.name);
+                        }
+                    } else {
+                        if (!el.value || el.value.trim() === '') {
+                            missing.push(el.name);
+                        }
+                    }
+                }
+            });
+            return { valid: missing.length === 0, missing };
+        }
+        
+        function validateSection(section) {
+            const fieldNames = getFieldNamesForSection(section);
+            const answers = savedAnswers['section' + section];
+            const missing = [];
+            
+            if (!answers || !Array.isArray(answers)) {
+                return { valid: false, missing: fieldNames };
+            }
+            
+            fieldNames.forEach((fieldName, idx) => {
+                const value = answers[idx + 1];
+                if (!value || value.trim() === '') {
+                    missing.push(fieldName);
+                }
+            });
+            
+            return { valid: missing.length === 0, missing };
+        }
+
+        const savedAnswers = {};
+        const username = localStorage.getItem('username');
+        document.getElementById('userWelcome').textContent = '欢迎，' + (username || '游客');
+        
+        function debugLoadData() {
+            console.log('=== 手动调试数据加载 ===');
+            console.log('当前用户名:', username);
+            console.log('savedAnswers:', JSON.stringify(savedAnswers, null, 2));
+            
+            const testData = {
+                '姓名': username,
+                '题目1': '测试预测内容',
+                '题目2': '顺利',
+                '题目3': '转向',
+                '题目4': '距离',
+                '题目5': '测试指令内容',
+                '题目6': 'b',
+                '题目7': 'b'
+            };
+            
+            savedAnswers['section1'] = convertToArray(testData, 1);
+            console.log('手动设置的测试数据:', savedAnswers['section1']);
+            
+            currentCourse = 0;
+            currentPage = 0;
+            updatePage();
+            alert('已加载测试数据，请查看页面');
+        }
+        
+        window.debugLoadData = debugLoadData;
+        
+        function validateSectionData(section) {
+            console.log(`=== 验证环节${section}数据 ===`);
+            const saved = savedAnswers['section' + section];
+            console.log('原始数据:', saved);
+            
+            if (!saved || !Array.isArray(saved)) {
+                console.log('错误：数据不存在或格式不正确');
+                return;
+            }
+            
+            console.log('数据长度:', saved.length);
+            console.log('用户名:', saved[0]);
+            
+            const fieldNames = getFieldNamesForSection(section);
+            console.log('期望的字段数:', fieldNames.length);
+            
+            fieldNames.forEach((field, idx) => {
+                const value = saved[idx + 1];
+                console.log(`索引${idx + 1}: ${field} = "${value}"`);
+            });
+        }
+        
+        window.validateSectionData = validateSectionData;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const loggedIn = localStorage.getItem('loggedIn');
+            const currentUser = localStorage.getItem('username');
+            
+            if (loggedIn !== 'true' || !currentUser || currentUser.trim() === '' || currentUser === '游客') {
+                localStorage.removeItem('loggedIn');
+                localStorage.removeItem('username');
+                location.href = 'index.html';
+                return;
+            }
+            
+            loadSavedAnswers().then(() => {
+                console.log('========== 初始化完成 ==========');
+                console.log('当前用户:', username);
+                console.log('当前模块:', currentModule);
+                console.log('当前课程:', currentCourse);
+                console.log('当前页面:', currentPage);
+                console.log('已加载的答案:', JSON.stringify(savedAnswers));
+                document.getElementById('loadingOverlay').style.display = 'none';
+                updateModuleInfo();
+                switchModule(currentModule);
+                const savedCourse = localStorage.getItem('currentCourse');
+                const savedPage = localStorage.getItem('currentPage');
+                currentCourse = savedCourse ? parseInt(savedCourse) : 0;
+                currentPage = savedPage ? parseInt(savedPage) : 0;
+                console.log(`恢复到模块${currentModule}, 环节${currentCourse + 1}, 页面${currentPage + 1}`);
+                console.log(`getCurrentSection() = ${getCurrentSection()}`);
+                showCourse();
+                updatePage();
+            });
+        });
+
+        // 机器人跳跃游戏代码
+        let robotGameInitialized = false;
+
+        function initializeRobotGame() {
+            if (robotGameInitialized) return;
+            robotGameInitialized = true;
+
+            const GAME_CONSTANTS = {
+                WIDTH: 600,
+                HEIGHT: 220,
+                GRAVITY: 0.6,
+                JUMP_FORCE: -12,
+                GROUND_Y: 150,
+                BASE_SPEED: 5,
+                MAX_SPEED: 12,
+                SPEED_INCREMENT: 0.01
+            };
+
+            const GAME_MODES = {
+                PLAYER: 1,
+                AI_TRAINING: 2,
+                AI_DISPLAY: 3
+            };
+
+            let currentMode = GAME_MODES.PLAYER;
+
+            const GAME_STATES = {
+                START: 'start',
+                PLAYING: 'playing',
+                GAME_OVER: 'gameOver'
+            };
+
+            let gameState = GAME_STATES.START;
+            let currentSpeed = GAME_CONSTANTS.BASE_SPEED;
+            let scoreTimer = 0;
+            let scoreInterval = 100;
+            let speedTimer = 0;
+            let speedInterval = 3000;
+
+            let mode1Data = { score: 0, highScore: 0 };
+            let mode2Data = { score: 0, attempts: 0, highScore: 0 };
+            let mode3Data = { score: 0, highScore: 0 };
+            let score = 0;
+
+            const Q_LEARNING = {
+                LEARNING_RATE: 0.1,
+                DISCOUNT_FACTOR: 0.95,
+                EXPLORATION_RATE: 0.1,
+                EXPLORATION_DECAY: 0.999,
+                MIN_EXPLORATION: 0.01
+            };
+
+            let qTable = {};
+
+            function initializeQTableWithCommonSense() {
+                for (let distance = 0; distance < 10; distance++) {
+                    for (let speed = 0; speed < 5; speed++) {
+                        for (let jump = 0; jump < 2; jump++) {
+                            let normalState = `${distance},0,${speed},${jump}`;
+                            qTable[normalState] = { jump: 0, wait: 0 };
+                            let beamState = `${distance},1,${speed},${jump}`;
+                            qTable[beamState] = { jump: -50, wait: 0 };
+                        }
+                    }
+                }
+            }
+
+            initializeQTableWithCommonSense();
+
+            const STATE_PARAMS = {
+                DISTANCE_BUCKETS: 10,
+                SPEED_BUCKETS: 5,
+                MAX_DISTANCE: 300
+            };
+
+            let robot = {
+                x: 50,
+                y: GAME_CONSTANTS.GROUND_Y,
+                width: 40,
+                height: 40,
+                velocity: 0,
+                isJumping: false,
+                frame: 0
+            };
+
+            let obstacles = [];
+            let obstaclesTimer = 0;
+            let obstaclesInterval = 1500;
+            let obstacleCounter = 0;
+
+            const canvas = document.getElementById('gameCanvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            const scoreElement = document.getElementById('score');
+            const highScoreElement = document.getElementById('highScore');
+            const finalScoreElement = document.getElementById('finalScore');
+            const gameOverElement = document.getElementById('gameOver');
+            const startScreenElement = document.getElementById('startScreen');
+            const restartButton = document.getElementById('restartButton');
+
+            if (!scoreElement || !highScoreElement || !restartButton) return;
+
+            restartButton.addEventListener('click', restartGame);
+            document.addEventListener('keydown', handleKeyDown);
+            document.addEventListener('keyup', handleKeyUp);
+
+            document.getElementById('mode1Button')?.addEventListener('click', () => switchMode(GAME_MODES.PLAYER));
+            document.getElementById('mode2Button')?.addEventListener('click', () => switchMode(GAME_MODES.AI_TRAINING));
+            document.getElementById('mode3Button')?.addEventListener('click', () => switchMode(GAME_MODES.AI_DISPLAY));
+
+            document.getElementById('resetAiButton')?.addEventListener('click', () => {
+                if (confirm('确定要重置AI训练数据吗？')) {
+                    resetAiTraining();
+                    qTable = {};
+                    initializeQTableWithCommonSense();
+                    restartGame();
+                    alert('AI训练数据已重置');
+                }
+            });
+
+            function switchMode(mode) {
+                currentMode = mode;
+
+                document.getElementById('mode1Button')?.classList.remove('active');
+                document.getElementById('mode2Button')?.classList.remove('active');
+                document.getElementById('mode3Button')?.classList.remove('active');
+
+                if (mode === GAME_MODES.PLAYER) {
+                    document.getElementById('mode1Button')?.classList.add('active');
+                    document.getElementById('mode1Button').style.backgroundColor = '#00ff00';
+                    document.getElementById('mode1Button').style.color = '#000';
+                    document.getElementById('mode2Button').style.backgroundColor = '#333';
+                    document.getElementById('mode2Button').style.color = '#00ff00';
+                    document.getElementById('mode3Button').style.backgroundColor = '#333';
+                    document.getElementById('mode3Button').style.color = '#00ff00';
+                    const aiStats = document.getElementById('aiStats');
+                    if (aiStats) aiStats.style.display = 'none';
+                    const highScore = document.querySelector('.high-score');
+                    if (highScore) highScore.style.display = 'block';
+                    const instructions = document.querySelector('.instructions');
+                    if (instructions) instructions.textContent = '按空格键或↑键跳跃';
+                    resetToStartScreen();
+                } else if (mode === GAME_MODES.AI_TRAINING) {
+                    document.getElementById('mode2Button')?.classList.add('active');
+                    document.getElementById('mode2Button').style.backgroundColor = '#00ff00';
+                    document.getElementById('mode2Button').style.color = '#000';
+                    document.getElementById('mode1Button').style.backgroundColor = '#333';
+                    document.getElementById('mode1Button').style.color = '#00ff00';
+                    document.getElementById('mode3Button').style.backgroundColor = '#333';
+                    document.getElementById('mode3Button').style.color = '#00ff00';
+                    const aiStats2 = document.getElementById('aiStats');
+                    if (aiStats2) aiStats2.style.display = 'flex';
+                    const highScore2 = document.querySelector('.high-score');
+                    if (highScore2) highScore2.style.display = 'none';
+                    const instructions2 = document.querySelector('.instructions');
+                    if (instructions2) instructions2.textContent = 'AI正在自动训练...';
+                    document.getElementById('attempts').textContent = mode2Data.attempts;
+                    document.getElementById('aiHighScore').textContent = mode2Data.highScore;
+                    restartGame();
+                } else if (mode === GAME_MODES.AI_DISPLAY) {
+                    document.getElementById('mode3Button')?.classList.add('active');
+                    document.getElementById('mode3Button').style.backgroundColor = '#00ff00';
+                    document.getElementById('mode3Button').style.color = '#000';
+                    document.getElementById('mode1Button').style.backgroundColor = '#333';
+                    document.getElementById('mode1Button').style.color = '#00ff00';
+                    document.getElementById('mode2Button').style.backgroundColor = '#333';
+                    document.getElementById('mode2Button').style.color = '#00ff00';
+                    const aiStats3 = document.getElementById('aiStats');
+                    if (aiStats3) aiStats3.style.display = 'none';
+                    const highScore3 = document.querySelector('.high-score');
+                    if (highScore3) highScore3.style.display = 'none';
+                    const instructions3 = document.querySelector('.instructions');
+                    if (instructions3) instructions3.textContent = 'AI正在展示学习成果...';
+                    restartGame();
+                }
+            }
+
+            function resetToStartScreen() {
+                gameState = GAME_STATES.START;
+                score = 0;
+                scoreElement.textContent = score;
+                highScoreElement.textContent = mode1Data.highScore;
+                currentSpeed = GAME_CONSTANTS.BASE_SPEED;
+                robot.y = GAME_CONSTANTS.GROUND_Y;
+                robot.velocity = 0;
+                robot.isJumping = false;
+                obstacles = [];
+                obstaclesTimer = 0;
+                obstacleCounter = 0;
+                obstaclesInterval = 1500;
+                gameOverElement.style.display = 'none';
+                startScreenElement.style.display = 'block';
+            }
+
+            let keys = {};
+
+            function handleKeyDown(event) {
+                keys[event.code] = true;
+
+                if (event.code === 'Space' || event.code === 'ArrowUp') {
+                    event.preventDefault();
+                    if (gameState === GAME_STATES.START) {
+                        gameState = GAME_STATES.PLAYING;
+                        startScreenElement.style.display = 'none';
+                    } else if (gameState === GAME_STATES.PLAYING && !robot.isJumping) {
+                        jump();
+                    } else if (gameState === GAME_STATES.GAME_OVER) {
+                        restartGame();
+                    }
+                }
+            }
+
+            function handleKeyUp(event) {
+                keys[event.code] = false;
+            }
+
+            function gameLoop(timestamp) {
+                ctx.clearRect(0, 0, GAME_CONSTANTS.WIDTH, GAME_CONSTANTS.HEIGHT);
+                drawBackground();
+
+                let previousState = null;
+                let action = null;
+
+                if (currentMode === GAME_MODES.AI_TRAINING || currentMode === GAME_MODES.AI_DISPLAY) {
+                    previousState = getState();
+                    action = aiTakeAction();
+                }
+
+                switch (gameState) {
+                    case GAME_STATES.START:
+                        drawRobot();
+                        break;
+                    case GAME_STATES.PLAYING:
+                        if (currentMode === GAME_MODES.PLAYER) {
+                            speedTimer += 16;
+                            if (speedTimer >= speedInterval && currentSpeed < GAME_CONSTANTS.MAX_SPEED) {
+                                currentSpeed += GAME_CONSTANTS.SPEED_INCREMENT * 10;
+                                speedTimer = 0;
+                            }
+                        }
+
+                        updateRobot();
+                        drawRobot();
+                        updateObstacles();
+                        drawObstacles();
+                        checkCollision();
+                        updateScore();
+
+                        if (currentMode === GAME_MODES.AI_TRAINING && previousState && action) {
+                            const nextState = getState();
+                            const reward = calculateReward();
+                            updateQTable(previousState, action, reward, nextState);
+
+                            if (Q_LEARNING.EXPLORATION_RATE > Q_LEARNING.MIN_EXPLORATION) {
+                                Q_LEARNING.EXPLORATION_RATE *= Q_LEARNING.EXPLORATION_DECAY;
+                            }
+                        }
+                        break;
+                    case GAME_STATES.GAME_OVER:
+                        drawRobot();
+                        drawObstacles();
+
+                        if (currentMode === GAME_MODES.AI_TRAINING) {
+                            mode2Data.attempts++;
+                            if (score > mode2Data.highScore) {
+                                mode2Data.highScore = score;
+                            }
+                            document.getElementById('attempts').textContent = mode2Data.attempts;
+                            document.getElementById('aiHighScore').textContent = mode2Data.highScore;
+                            restartGame();
+                        } else {
+                            showGameOver();
+                        }
+                        break;
+                }
+
+                requestAnimationFrame(gameLoop);
+            }
+
+            function drawBackground() {
+                ctx.fillStyle = '#111';
+                ctx.fillRect(0, 0, GAME_CONSTANTS.WIDTH, GAME_CONSTANTS.GROUND_Y);
+                ctx.fillStyle = '#333';
+                ctx.fillRect(0, GAME_CONSTANTS.GROUND_Y, GAME_CONSTANTS.WIDTH, GAME_CONSTANTS.HEIGHT - GAME_CONSTANTS.GROUND_Y);
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 1;
+                for (let x = 0; x < GAME_CONSTANTS.WIDTH; x += 15) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, GAME_CONSTANTS.GROUND_Y);
+                    ctx.stroke();
+                }
+                for (let y = 0; y < GAME_CONSTANTS.GROUND_Y; y += 15) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(GAME_CONSTANTS.WIDTH, y);
+                    ctx.stroke();
+                }
+            }
+
+            function drawRobot() {
+                ctx.fillStyle = '#00ff00';
+                ctx.fillRect(robot.x, robot.y - robot.height, robot.width, robot.height);
+                ctx.fillStyle = '#00cc00';
+                ctx.fillRect(robot.x + 12, robot.y - robot.height - 12, 16, 12);
+                ctx.fillStyle = '#000';
+                ctx.fillRect(robot.x + 16, robot.y - robot.height - 8, 4, 4);
+                ctx.fillRect(robot.x + 20, robot.y - robot.height - 8, 4, 4);
+
+                if (robot.isJumping) {
+                    ctx.fillStyle = '#00ff00';
+                    ctx.fillRect(robot.x - 4, robot.y - robot.height + 8, 4, 12);
+                    ctx.fillRect(robot.x + robot.width, robot.y - robot.height + 8, 4, 12);
+                } else {
+                    ctx.fillStyle = '#00ff00';
+                    if (robot.frame % 2 === 0) {
+                        ctx.fillRect(robot.x - 4, robot.y - robot.height + 4, 4, 12);
+                        ctx.fillRect(robot.x + robot.width, robot.y - robot.height + 12, 4, 12);
+                    } else {
+                        ctx.fillRect(robot.x - 4, robot.y - robot.height + 12, 4, 12);
+                        ctx.fillRect(robot.x + robot.width, robot.y - robot.height + 4, 4, 12);
+                    }
+                }
+
+                if (!robot.isJumping) {
+                    if (robot.frame % 2 === 0) {
+                        ctx.fillStyle = '#00ff00';
+                        ctx.fillRect(robot.x + 8, robot.y, 8, 12);
+                        ctx.fillRect(robot.x + 24, robot.y - 4, 8, 12);
+                    } else {
+                        ctx.fillStyle = '#00ff00';
+                        ctx.fillRect(robot.x + 8, robot.y - 4, 8, 12);
+                        ctx.fillRect(robot.x + 24, robot.y, 8, 12);
+                    }
+                }
+
+                robot.frame++;
+            }
+
+            function updateRobot() {
+                robot.velocity += GAME_CONSTANTS.GRAVITY;
+                robot.y += robot.velocity;
+
+                if (robot.y > GAME_CONSTANTS.GROUND_Y) {
+                    robot.y = GAME_CONSTANTS.GROUND_Y;
+                    robot.velocity = 0;
+                    robot.isJumping = false;
+                }
+            }
+
+            function jump() {
+                robot.velocity = GAME_CONSTANTS.JUMP_FORCE;
+                robot.isJumping = true;
+            }
+
+            function createObstacle() {
+                let type;
+
+                if (currentMode === GAME_MODES.AI_TRAINING || currentMode === GAME_MODES.AI_DISPLAY) {
+                    obstacleCounter++;
+                    if (obstacleCounter % 4 === 0) {
+                        type = { width: 80, height: 15, color: '#ff00ff', type: 'beam', y: GAME_CONSTANTS.GROUND_Y - 70 };
+                    } else {
+                        const groundObstacles = [
+                            { width: 25, height: 30, color: '#ff0000', type: 'ground' },
+                            { width: 30, height: 25, color: '#ffaa00', type: 'ground' },
+                            { width: 20, height: 35, color: '#0000ff', type: 'ground' }
+                        ];
+                        type = groundObstacles[Math.floor(Math.random() * groundObstacles.length)];
+                    }
+                } else {
+                    const obstacleTypes = [
+                        { width: 25, height: 30, color: '#ff0000', type: 'ground' },
+                        { width: 30, height: 25, color: '#ffaa00', type: 'ground' },
+                        { width: 20, height: 35, color: '#0000ff', type: 'ground' },
+                        { width: 80, height: 15, color: '#ff00ff', type: 'beam', y: GAME_CONSTANTS.GROUND_Y - 70 }
+                    ];
+                    type = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+                }
+
+                obstacles.push({
+                    x: GAME_CONSTANTS.WIDTH,
+                    y: type.type === 'beam' ? type.y : GAME_CONSTANTS.GROUND_Y - type.height,
+                    width: type.width,
+                    height: type.height,
+                    color: type.color,
+                    type: type.type,
+                    speed: currentSpeed
+                });
+            }
+
+            function updateObstacles() {
+                obstaclesTimer += 16;
+
+                if (obstaclesTimer >= obstaclesInterval) {
+                    createObstacle();
+                    obstaclesTimer = 0;
+
+                    if (currentMode === GAME_MODES.PLAYER) {
+                        if (currentSpeed < GAME_CONSTANTS.BASE_SPEED + 2) {
+                            obstaclesInterval = 1000;
+                        } else {
+                            obstaclesInterval = 600 + Math.random() * 400;
+                        }
+                    }
+                }
+
+                for (let i = 0; i < obstacles.length; i++) {
+                    obstacles[i].x -= obstacles[i].speed;
+
+                    if (obstacles[i].x + obstacles[i].width < 0) {
+                        obstacles.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
+
+            function drawObstacles() {
+                for (let obstacle of obstacles) {
+                    ctx.fillStyle = obstacle.color;
+                    ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+                    ctx.fillStyle = '#000';
+                    ctx.fillRect(obstacle.x + 4, obstacle.y + 4, obstacle.width - 8, obstacle.height - 8);
+                }
+            }
+
+            function checkCollision() {
+                for (let obstacle of obstacles) {
+                    if (obstacle.type === 'beam') {
+                        if (
+                            robot.x < obstacle.x + obstacle.width &&
+                            robot.x + robot.width > obstacle.x &&
+                            robot.y - robot.height < obstacle.y + obstacle.height &&
+                            robot.isJumping
+                        ) {
+                            gameState = GAME_STATES.GAME_OVER;
+                            break;
+                        }
+                    } else {
+                        if (
+                            robot.x < obstacle.x + obstacle.width &&
+                            robot.x + robot.width > obstacle.x &&
+                            robot.y - robot.height < obstacle.y + obstacle.height &&
+                            robot.y > obstacle.y
+                        ) {
+                            gameState = GAME_STATES.GAME_OVER;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            function updateScore() {
+                scoreTimer += 16;
+                if (scoreTimer >= scoreInterval) {
+                    score++;
+                    scoreElement.textContent = score;
+                    if (currentMode === GAME_MODES.PLAYER) {
+                        mode1Data.score = score;
+                    } else if (currentMode === GAME_MODES.AI_TRAINING) {
+                        mode2Data.score = score;
+                    } else if (currentMode === GAME_MODES.AI_DISPLAY) {
+                        mode3Data.score = score;
+                    }
+                    scoreTimer = 0;
+                }
+            }
+
+            function showGameOver() {
+                gameOverElement.style.display = 'block';
+                finalScoreElement.textContent = score;
+
+                if (currentMode === GAME_MODES.PLAYER) {
+                    if (score > mode1Data.highScore) {
+                        mode1Data.highScore = score;
+                        highScoreElement.textContent = mode1Data.highScore;
+                    }
+                } else if (currentMode === GAME_MODES.AI_TRAINING) {
+                    if (score > mode2Data.highScore) {
+                        mode2Data.highScore = score;
+                        highScoreElement.textContent = mode2Data.highScore;
+                    }
+                } else if (currentMode === GAME_MODES.AI_DISPLAY) {
+                    if (score > mode3Data.highScore) {
+                        mode3Data.highScore = score;
+                        highScoreElement.textContent = mode3Data.highScore;
+                    }
+                }
+            }
+
+            function restartGame() {
+                gameState = GAME_STATES.PLAYING;
+                score = 0;
+                scoreElement.textContent = score;
+                if (currentMode === GAME_MODES.AI_TRAINING || currentMode === GAME_MODES.AI_DISPLAY) {
+                    currentSpeed = 8;
+                } else {
+                    currentSpeed = GAME_CONSTANTS.BASE_SPEED;
+                }
+                robot.y = GAME_CONSTANTS.GROUND_Y;
+                robot.velocity = 0;
+                robot.isJumping = false;
+                obstacles = [];
+                obstaclesTimer = 0;
+                obstacleCounter = 0;
+                if (currentMode === GAME_MODES.AI_TRAINING || currentMode === GAME_MODES.AI_DISPLAY) {
+                    obstaclesInterval = 600;
+                } else {
+                    obstaclesInterval = 1500;
+                }
+                gameOverElement.style.display = 'none';
+                startScreenElement.style.display = 'none';
+            }
+
+            function getState() {
+                let closestObstacle = null;
+                let minDistance = Infinity;
+
+                for (let obstacle of obstacles) {
+                    if (obstacle.x > robot.x && obstacle.x - robot.x < minDistance) {
+                        minDistance = obstacle.x - robot.x;
+                        closestObstacle = obstacle;
+                    }
+                }
+
+                let distanceBucket = 0;
+                let obstacleType = 0;
+
+                if (closestObstacle) {
+                    distanceBucket = Math.min(
+                        STATE_PARAMS.DISTANCE_BUCKETS - 1,
+                        Math.floor(minDistance / (STATE_PARAMS.MAX_DISTANCE / STATE_PARAMS.DISTANCE_BUCKETS))
+                    );
+                    obstacleType = closestObstacle.type === 'beam' ? 1 : 0;
+                }
+
+                let speedBucket = Math.min(
+                    STATE_PARAMS.SPEED_BUCKETS - 1,
+                    Math.floor((currentSpeed - GAME_CONSTANTS.BASE_SPEED) / ((GAME_CONSTANTS.MAX_SPEED - GAME_CONSTANTS.BASE_SPEED) / STATE_PARAMS.SPEED_BUCKETS))
+                );
+
+                let jumpState = robot.isJumping ? 1 : 0;
+
+                return `${distanceBucket},${obstacleType},${speedBucket},${jumpState}`;
+            }
+
+            function selectAction(state) {
+                if (currentMode === GAME_MODES.AI_DISPLAY) {
+                    if (!qTable[state]) {
+                        qTable[state] = { jump: 0, wait: 0 };
+                    }
+                    return qTable[state].jump > qTable[state].wait ? 'jump' : 'wait';
+                } else if (currentMode === GAME_MODES.AI_TRAINING) {
+                    if (Math.random() < Q_LEARNING.EXPLORATION_RATE) {
+                        return Math.random() > 0.5 ? 'jump' : 'wait';
+                    } else {
+                        if (!qTable[state]) {
+                            qTable[state] = { jump: 0, wait: 0 };
+                        }
+                        return qTable[state].jump > qTable[state].wait ? 'jump' : 'wait';
+                    }
+                }
+                return 'wait';
+            }
+
+            function updateQTable(state, action, reward, nextState) {
+                if (!qTable[state]) {
+                    qTable[state] = { jump: 0, wait: 0 };
+                }
+
+                if (!qTable[nextState]) {
+                    qTable[nextState] = { jump: 0, wait: 0 };
+                }
+
+                const bestNextAction = qTable[nextState].jump > qTable[nextState].wait ? 'jump' : 'wait';
+                const tdTarget = reward + Q_LEARNING.DISCOUNT_FACTOR * qTable[nextState][bestNextAction];
+                const tdError = tdTarget - qTable[state][action];
+                qTable[state][action] += Q_LEARNING.LEARNING_RATE * tdError;
+            }
+
+            function calculateReward() {
+                let reward = 0;
+                reward += 0.1;
+                reward += score * 0.01;
+                if (gameState === GAME_STATES.GAME_OVER) {
+                    reward -= 10;
+                }
+                return reward;
+            }
+
+            function aiTakeAction() {
+                if (currentMode === GAME_MODES.AI_TRAINING || currentMode === GAME_MODES.AI_DISPLAY) {
+                    const state = getState();
+                    const action = selectAction(state);
+
+                    if (action === 'jump' && !robot.isJumping) {
+                        jump();
+                    }
+
+                    return action;
+                }
+                return null;
+            }
+
+            function resetAiTraining() {
+                mode2Data.attempts = 0;
+                mode2Data.highScore = 0;
+                mode2Data.score = 0;
+                document.getElementById('attempts').textContent = mode2Data.attempts;
+                document.getElementById('aiHighScore').textContent = mode2Data.highScore;
+            }
+
+            setTimeout(() => {
+                requestAnimationFrame(gameLoop);
+            }, 100);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeRobotGame();
+            setTimeout(() => {
+                if (document.getElementById('newsCarousel')) {
+                    initCarousel();
+                }
+            }, 300);
+            
+            // 如果有保存的课程进度，自动跳转到对应的位置
+            const savedCourse = localStorage.getItem('currentCourse');
+            if (savedCourse !== null && savedCourse !== 'null') {
+                // 优先读取 currentModule，因为它是每次页面更新都会保存的
+                const moduleNum = parseInt(localStorage.getItem('currentModule')) || parseInt(localStorage.getItem('selectedModule')) || 0;
+                const courseNum = parseInt(savedCourse);
+                const pageNum = parseInt(localStorage.getItem('currentPage')) || 0;
+                
+                // 更新全局变量
+                currentModule = moduleNum;
+                currentCourse = courseNum;
+                currentPage = pageNum;
+                
+                // 跳转到保存的位置
+                updateModuleInfo();
+                updateCourseSelector();
+                showCourse();
+                updatePage();
+            }
+        });
+
+        document.addEventListener('courseContentLoaded', function() {
+            setTimeout(() => {
+                robotGameInitialized = false;
+                initializeRobotGame();
+                if (document.getElementById('newsCarousel')) {
+                    initCarousel();
+                }
+            }, 200);
+        });
+    </script>
+</body>
+</html>
