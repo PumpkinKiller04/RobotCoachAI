@@ -2618,50 +2618,39 @@ ${(() => {
             '图例/e71060f965e577109afb726fbe0e5c50.jpg'
         ];
 
+        let currentGalleryImage = '';
+
         function shuffleArray(arr) {
-            const a = arr.slice();
-            for (let i = a.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [a[i], a[j]] = [a[j], a[i]];
+            var a = arr.slice();
+            for (var i = a.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
             }
             return a;
         }
 
-        function handleDragStart(e) {
-            e.target.style.opacity = '0.5';
-            e.dataTransfer.setData('text/plain', e.target.src);
+        function shuffleGalleryImage() {
+            var img = document.getElementById('randomGalleryImg');
+            if (!img) return;
+            var shuffled = shuffleArray(GALLERY_IMAGES);
+            currentGalleryImage = shuffled[0];
+            img.src = currentGalleryImage;
         }
 
-        function handleDragEnd(e) {
-            e.target.style.opacity = '1';
+        function useImageForQuestion() {
+            if (!currentGalleryImage) return;
+            var iframe = document.querySelector('iframe[src*="multimodal.html"]');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({ type: 'setImage', imageUrl: currentGalleryImage }, '*');
+            }
         }
 
         function initImageGallery() {
-            const gallery = document.getElementById('imageGallery');
-            if (!gallery) return;
-            const shuffled = shuffleArray(GALLERY_IMAGES);
-            gallery.innerHTML = shuffled.map(src =>
-                '<img src="' + src + '" class="gallery-img" draggable="true" ondragstart="handleDragStart(event)" ondragend="handleDragEnd(event)">'
-            ).join('');
-
-            const dropZone = document.getElementById('dropZone');
-            if (!dropZone || dropZone.dataset.initialized) return;
-            dropZone.dataset.initialized = 'true';
-            dropZone.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                dropZone.classList.add('active');
-            });
-            dropZone.addEventListener('dragleave', function() {
-                dropZone.classList.remove('active');
-            });
-            dropZone.addEventListener('drop', function(e) {
-                e.preventDefault();
-                dropZone.classList.remove('active');
-                const imgSrc = e.dataTransfer.getData('text/plain');
-                if (imgSrc) {
-                    dropZone.innerHTML = '<img src="' + imgSrc + '" alt="已上传图片"><p style="margin-top:8px;color:#2e7d32;font-weight:bold;">图片已上传成功！</p>';
-                }
-            });
+            var img = document.getElementById('randomGalleryImg');
+            if (!img) return;
+            if (!img.src || img.src === '' || img.src === window.location.href) {
+                shuffleGalleryImage();
+            }
         }
 
         document.addEventListener('courseContentLoaded', function() {
