@@ -158,7 +158,10 @@
       if (galleryPanel.classList.contains('active')) {
         // clicking again on the same panel = shuffle
         shuffleGalleryImage();
-        loadImageFromUrl(galleryImg.src);
+        setGalleryLoading(true);
+        loadImageFromUrl(galleryImg.src).then(function() {
+          setGalleryLoading(false);
+        });
         return;
       }
 
@@ -167,21 +170,48 @@
       document.getElementById('uploadPreview').classList.add('hidden');
       document.getElementById('uploadPreview').innerHTML = '';
 
-      // select gallery
+      setGalleryLoading(true);
       galleryPanel.classList.add('active');
-      loadImageFromUrl(galleryImg.src);
+      var url = galleryImg.src;
+      if (url) {
+        loadImageFromUrl(url).then(function() {
+          setGalleryLoading(false);
+        });
+      }
+    }
+
+    function setGalleryLoading(loading) {
+      var img = document.getElementById('galleryImg');
+      var hint = document.getElementById('galleryHint');
+      var link = document.getElementById('refreshLink');
+      if (loading) {
+        img.style.opacity = '0.4';
+        hint.style.display = 'block';
+        hint.textContent = '加载中...';
+        link.style.display = 'none';
+      } else {
+        img.style.opacity = '1';
+        hint.style.display = 'none';
+        link.style.display = 'inline';
+      }
     }
 
     function loadImageFromUrl(url) {
-      if (!url) return;
-      fetch(url).then(function(res) { return res.blob(); }).then(function(blob) {
-        var reader = new FileReader();
-        reader.onload = function(ev) {
-          uploadedImage = ev.target.result;
-        };
-        reader.readAsDataURL(blob);
-      }).catch(function(e) {
-        console.error('加载图片失败:', e);
+      return new Promise(function(resolve, reject) {
+        if (!url) { resolve(); return; }
+        uploadedImage = null;
+        fetch(url).then(function(res) { return res.blob(); }).then(function(blob) {
+          var reader = new FileReader();
+          reader.onload = function(ev) {
+            uploadedImage = ev.target.result;
+            resolve();
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        }).catch(function(e) {
+          console.error('加载图片失败:', e);
+          reject(e);
+        });
       });
     }
 
