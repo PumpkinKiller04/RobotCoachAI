@@ -365,7 +365,7 @@
         }
 
         if (!fullText) {
-          textEl.textContent = 'AI未返回有效响应，请重试。';
+          textEl.innerHTML = 'AI未返回有效响应，请重试。';
           textEl.classList.add('text-muted');
         }
 
@@ -373,7 +373,7 @@
         console.error('API调用失败:', error);
         loadingArea.classList.add('hidden');
         var textEl = document.getElementById('responseText') || document.createElement('p');
-        textEl.textContent = '请求失败: ' + error.message + '。请检查网络连接后重试。';
+        textEl.innerHTML = '请求失败: ' + error.message + '。请检查网络连接后重试。';
         textEl.classList.add('text-muted');
         if (!document.getElementById('responseText')) {
           responseArea.innerHTML = '';
