@@ -597,8 +597,8 @@
           const r = T.curveR;
           robot.x = T.rightX + r * Math.cos(theta);
           robot.y = T.cy + r * Math.sin(theta);
-          robot.y += Math.sin(frame * 0.4) * 5.5;
-          bumpShake = Math.sin(frame * 0.5) * 4;
+          robot.y += Math.sin(frame * 0.5) * 8.0;
+          bumpShake = Math.sin(frame * 0.5) * 8;
           fpvOfftrack = Math.min(1, fpvOfftrack + 0.03);
           fpvCurve = Math.max(0, fpvCurve - 0.015);
           if (!isOnTrack(robot.x, robot.y)) {
