@@ -236,23 +236,17 @@ function checkCol(){
     }
 }
 
-// ============ 学习：只更新关键决策，不污染无关状态 ============
+// ============ 学习：只更新一次关键决策 ============
 function learnFromOutcome(reward){
-    if(firstJumpState && firstJumpAction){
-        // 有起跳 → 奖励/惩罚起跳时的那个状态
-        var q=qGet(firstJumpState);
-        q[firstJumpAction]+=LR*(reward-q[firstJumpAction]);
-    }else if(closestGroundState && reward<0){
-        // 没起跳但撞了 → 惩罚"该跳不跳"
-        var q2=qGet(closestGroundState);
+    if(jumpState && jumpAction){
+        var q=qGet(jumpState);
+        q[jumpAction]+=LR*(reward-q[jumpAction]);
+    }else if(closestWaitState){
+        var q2=qGet(closestWaitState);
         q2.wait+=LR*(reward-q2.wait);
-    }else if(closestGroundState && reward>0){
-        // 没起跳但通过了（横梁正确躲避）→ 奖励"等待"
-        var q3=qGet(closestGroundState);
-        q3.wait+=LR*(reward-q3.wait);
     }
     settled=true;
-    if(explore>0.03)explore*=0.94;
+    if(explore>0.03)explore*=0.92;
 }
 
 // ============ 辅助 ============
@@ -287,7 +281,7 @@ function restart(){
     gs='playing';score=0;sel.textContent=0;st=0;
     robot.y=GY;robot.vy=0;robot.jumping=false;
     obs=[];otimer=0;ocount=0;
-    curObsId=-1;resetTrack();settled=false;
+    curObsId=-1;canJump=false;resetTrack();settled=false;
     gel.style.display='none';
 }
 function updateRobot(){
