@@ -26,7 +26,9 @@
       "Bash(xxd multimodal.html)",
       "Bash(node --check \"c:/Users/13241/Desktop/导学单网站/course.html\")",
       "Bash(sed '1d;$d')",
-      "Bash(node --check /tmp/course_script.js)"
+      "Bash(node --check /tmp/course_script.js)",
+      "Bash(sed -n '2105,2120p' /tmp/course_script.js)",
+      "Read(//tmp/**)"
     ]
   }
 }
