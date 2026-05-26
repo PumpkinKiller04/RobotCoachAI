@@ -70,12 +70,12 @@ var SPD=7;
 var OBS_INTV=750;
 var OT={RED:0,YELLOW:1,BLUE:2,BEAM:3};
 
-// ============ Q-learning：超小状态空间 + 完整序列学习 ============
+// ============ Q-learning：每障碍物只跳一次，精确信用分配 ============
 var qTable={};
-var explore=0.20;
-var LR=0.6;  // 高学习率
+var explore=0.25;
+var LR=0.5;
 
-// 6个距离桶(每60px)，4种障碍物，2种跳跃状态 = 48个状态
+// 距离桶(0-5), 障碍类型(0-3), 跳跃中(0-1) = 48状态
 function initQ(){
     for(var d=0;d<6;d++){
         for(var t=0;t<4;t++){
@@ -83,20 +83,15 @@ function initQ(){
                 var k=d+','+t+','+j;
                 var dist=d*60;
                 if(j===1){
-                    // 已经在空中：jump 没效果，应偏好 wait
-                    qTable[k]={jump:-10,wait:5};
+                    qTable[k]={jump:-5,wait:5};
                 }else if(t===OT.BEAM){
-                    // 横梁：死也不跳
-                    qTable[k]={jump:-60,wait:30};
-                }else if(dist<60){
-                    // 0-60px：太晚，但跳总比不跳好
-                    qTable[k]={jump:5,wait:-60};
-                }else if(dist<240){
-                    // 60-240px：最佳起跳窗口
-                    qTable[k]={jump:30,wait:-60};
+                    qTable[k]={jump:-30,wait:20};
+                }else if(dist<50){
+                    qTable[k]={jump:8,wait:-20};
+                }else if(dist<230){
+                    qTable[k]={jump:25,wait:-25};
                 }else{
-                    // 240-360px：太远，落地了障碍物还没到
-                    qTable[k]={jump:-40,wait:20};
+                    qTable[k]={jump:-25,wait:15};
                 }
             }
         }
