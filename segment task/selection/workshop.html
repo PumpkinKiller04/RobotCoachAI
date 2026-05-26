@@ -491,8 +491,8 @@
       frame++;
       
       const hasAllSensors = sensors.lidar && sensors.imu && sensors.force;
-      const straightSpeed = sensors.lidar && !sensors.imu ? 0.38 : 0.55;
-      fpvScroll += sensors.lidar && !sensors.imu ? 1.6 : 2.5;
+      const straightSpeed = hasAllSensors ? 0.75 : (sensors.lidar && !sensors.imu ? 0.38 : 0.55);
+      fpvScroll += hasAllSensors ? 3.2 : (sensors.lidar && !sensors.imu ? 1.6 : 2.5);
 
       if (phase === 0) {
         // 下直道：从右往左
@@ -683,11 +683,10 @@
           '安装<strong>激光雷达</strong>测量弯道距离',
           '#dc2626', true);
       } else if (sensors.lidar && !sensors.imu) {
-        const lapTime = frame;
-        statusText.textContent = '完成一圈，用时 ' + lapTime + ' 帧（规定' + TIME_LIMIT + '帧）— 超时';
+        statusText.textContent = '车身摇晃严重，速度过慢 — 超时';
         statusText.style.color = '#f59e0b';
         showResultOverlay('⏱️', '超时！',
-          '车身摇晃导致速度太慢，超时未完成',
+          '没有IMU导致车身不停摇晃，速度太慢无法在时限内完成',
           '安装<strong>IMU</strong>消除车身摇晃',
           '#d97706', true);
       } else if (sensors.lidar && sensors.imu && !sensors.force && hadBumpIssue) {
