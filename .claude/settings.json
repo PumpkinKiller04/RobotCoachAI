@@ -38,7 +38,8 @@
       "Bash(node --check /tmp/course_script5.js)",
       "Bash(node --check /tmp/course_script6.js)",
       "Bash(python3 -c ' *)",
-      "Bash(python3 -c \"print\\('test'\\)\")"
+      "Bash(python3 -c \"print\\('test'\\)\")",
+      "Bash(python \"c:/Users/13241/Desktop/导学单网站/_carousel_update.py\")"
     ]
   }
 }

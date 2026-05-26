@@ -674,7 +674,19 @@
                         pages: [
                             {
                                 left: { type: 'knowledge', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节三：多模态体验站 & 前沿应用——感受AI的跨模态能力</h3><h4>1. 学习知识</h4><ul><li><strong>多模态问答：</strong>拍一张照片，问AI一个关于照片的问题，它能图文结合给出答案。</li><li><strong>多模态生成：</strong>输入一段文字描述，AI能立刻生成一张对应的图片。</li></ul><h4>2. 动手求证</h4><p><strong>活动一：多模态问答体验</strong></p><iframe src="segment task/selection/multimodal.html" width="100%" height="550px" frameborder="0" style="border-radius: 8px;"></iframe>' },
-                                right: { type: 'activity', content: '<h4>活动二：前沿应用观察</h4><div id="appCarousel" style="position: relative; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; margin-top: 1rem; cursor: pointer;" onclick="openAppModal()"><img id="appCarouselImg" src="resource/多模态问答.png" alt="多模态应用" style="width: 100%; display: block;"><div style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); padding: 0.75rem 1rem; color: #fff; font-weight: 600;" id="appCarouselCaption">多模态问答：看图提问智能解答</div><div style="position: absolute; bottom: 2.5rem; right: 0.75rem; display: flex; gap: 4px;" id="appCarouselDots"></div><div style="position: absolute; top: 50%; left: 8px; transform: translateY(-50%); background: rgba(0,0,0,0.4); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer;" onclick="event.stopPropagation();prevAppSlide()">‹</div><div style="position: absolute; top: 50%; right: 8px; transform: translateY(-50%); background: rgba(0,0,0,0.4); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer;" onclick="event.stopPropagation();nextAppSlide()">›</div></div><div id="appModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;" onclick="closeAppModal()"><img id="appModalImg" src="" style="max-width: 90%; max-height: 90%; border-radius: 8px;"></div>' }
+                                right: { type: 'activity', content: '<h4>活动二：前沿应用观察</h4>
+<div id="appCarousel" class="app-carousel-wrapper" onclick="openAppModal()" onmouseenter="pauseAppCarousel()" onmouseleave="resumeAppCarousel()">
+  <div class="app-carousel-track" id="appCarouselTrack"></div>
+  <div class="app-carousel-overlay"></div>
+  <div class="app-carousel-caption" id="appCarouselCaption"></div>
+  <div class="app-carousel-progress"><div class="app-carousel-progress-bar" id="appCarouselProgressBar"></div></div>
+  <div class="app-carousel-dots" id="appCarouselDots"></div>
+  <div class="app-carousel-arrow prev" onclick="event.stopPropagation();prevAppSlide()">&#10094;</div>
+  <div class="app-carousel-arrow next" onclick="event.stopPropagation();nextAppSlide()">&#10095;</div>
+</div>
+<div id="appModal" class="app-carousel-modal" onclick="closeAppModal()">
+  <img id="appModalImg" src="">
+</div>' }
                             },
                             {
                                 left: { type: 'analysis', content: '<h3 style="font-size: 1.5em; margin-top: 0;">3. 分析解释</h3><h4 style="font-size: 1.2em; margin-top: 1.5rem; line-height: 1.6;"><strong>题目一：想让AI生成"嫦娥在空间站吃月饼"的图片，主要用了AI的什么能力？</strong></h4><div class="multiple-choice" style="font-size: 1.5em; margin-top: 1rem; line-height: 2;"><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q3a" value="a"> A. 图像分类</label><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q3a" value="b"> B. 语音识别</label><label style="display: block; margin-bottom: 0.5rem;"><input type="radio" name="q3a" value="c"> C. 多模态生成</label><label style="display: block;"><input type="radio" name="q3a" value="d"> D. 目标检测</label></div>' },
@@ -1130,85 +1142,119 @@
             modal.style.display = 'none';
         }
 
-        // 前沿应用轮播相关变量
-        let appCarouselData = [
+        // ========== 前沿应用轮播 ==========
+        const appCarouselData = [
             { img: 'resource/多模态问答.png', caption: '多模态问答：看图提问智能解答' },
             { img: 'resource/多模态生成.png', caption: '多模态生成：文字秒变创意图画' },
             { img: 'resource/多模态融合.PNG', caption: '多模态融合：人脸语音手势控制家居' }
         ];
         let currentAppIndex = 0;
         let appCarouselInterval = null;
+        let appCarouselPaused = false;
 
-        // 初始化应用轮播
         function initAppCarousel() {
-            const imgEl = document.getElementById('appCarouselImg');
-            const captionEl = document.getElementById('appCarouselCaption');
-            const dotsEl = document.getElementById('appCarouselDots');
-            
-            if (!imgEl || !captionEl || !dotsEl) {
+            const track = document.getElementById('appCarouselTrack');
+            const caption = document.getElementById('appCarouselCaption');
+            const dots = document.getElementById('appCarouselDots');
+            if (!track || !caption || !dots) {
                 setTimeout(initAppCarousel, 200);
                 return;
             }
 
-            // 渲染指示点
-            dotsEl.innerHTML = appCarouselData.map((_, i) => `
-                <span style="width: 8px; height: 8px; border-radius: 50%; background: ${i === 0 ? '#fff' : 'rgba(255,255,255,0.5)'}; cursor: pointer; transition: all 0.3s;" onclick="goToAppSlide(${i})"></span>
+            track.innerHTML = appCarouselData.map((item, i) => `
+                <div class="app-carousel-slide${i === 0 ? ' active' : ''}" data-index="${i}">
+                    <img class="app-carousel-slide-img" src="${item.img}" alt="${item.caption}">
+                </div>
             `).join('');
 
-            // 开始自动轮播
-            if (appCarouselInterval) clearInterval(appCarouselInterval);
+            caption.textContent = appCarouselData[0].caption;
+
+            dots.innerHTML = appCarouselData.map((_, i) => `
+                <span class="app-carousel-dot${i === 0 ? ' active' : ''}" onclick="event.stopPropagation();goToAppSlide(${i})"></span>
+            `).join('');
+
+            startAppCarouselAuto();
+        }
+
+        function startAppCarouselAuto() {
+            stopAppCarouselAuto();
+            const bar = document.getElementById('appCarouselProgressBar');
+            if (bar) {
+                bar.classList.remove('running');
+                void bar.offsetWidth;
+                bar.classList.add('running');
+            }
             appCarouselInterval = setInterval(() => {
                 currentAppIndex = (currentAppIndex + 1) % appCarouselData.length;
-                updateAppCarousel();
+                goToAppSlide(currentAppIndex);
             }, 4000);
         }
 
-        // 切换到指定应用轮播项
-        function goToAppSlide(index) {
-            currentAppIndex = index;
-            updateAppCarousel();
+        function stopAppCarouselAuto() {
+            if (appCarouselInterval) { clearInterval(appCarouselInterval); appCarouselInterval = null; }
         }
 
-        // 更新应用轮播显示
-        function updateAppCarousel() {
-            const imgEl = document.getElementById('appCarouselImg');
-            const captionEl = document.getElementById('appCarouselCaption');
-            const dots = document.querySelectorAll('#appCarouselDots span');
+        function resetProgressBar() {
+            const bar = document.getElementById('appCarouselProgressBar');
+            if (!bar) return;
+            bar.classList.remove('running');
+            void bar.offsetWidth;
+            bar.classList.add('running');
+        }
 
-            if (!imgEl || !captionEl) return;
+        function goToAppSlide(index) {
+            const track = document.getElementById('appCarouselTrack');
+            const caption = document.getElementById('appCarouselCaption');
+            if (!track) return;
 
-            imgEl.src = appCarouselData[currentAppIndex].img;
-            captionEl.textContent = appCarouselData[currentAppIndex].caption;
+            const slides = track.querySelectorAll('.app-carousel-slide');
+            const dots = document.querySelectorAll('#appCarouselDots .app-carousel-dot');
+
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
 
             dots.forEach((dot, i) => {
-                dot.style.background = i === currentAppIndex ? '#fff' : 'rgba(255,255,255,0.5)';
+                dot.classList.toggle('active', i === index);
             });
+
+            caption.textContent = appCarouselData[index].caption;
+            currentAppIndex = index;
+            resetProgressBar();
         }
 
-        // 上一张
         function prevAppSlide() {
             currentAppIndex = (currentAppIndex - 1 + appCarouselData.length) % appCarouselData.length;
-            updateAppCarousel();
+            goToAppSlide(currentAppIndex);
         }
 
-        // 下一张
         function nextAppSlide() {
             currentAppIndex = (currentAppIndex + 1) % appCarouselData.length;
-            updateAppCarousel();
+            goToAppSlide(currentAppIndex);
         }
 
-        // 打开应用模态框
+        function pauseAppCarousel() {
+            appCarouselPaused = true;
+            stopAppCarouselAuto();
+            const bar = document.getElementById('appCarouselProgressBar');
+            if (bar) bar.classList.remove('running');
+        }
+
+        function resumeAppCarousel() {
+            appCarouselPaused = false;
+            startAppCarouselAuto();
+        }
+
         function openAppModal() {
             const modal = document.getElementById('appModal');
             const modalImg = document.getElementById('appModalImg');
             modalImg.src = appCarouselData[currentAppIndex].img;
-            modal.style.display = 'flex';
+            modal.classList.add('show');
         }
 
-        // 关闭应用模态框
         function closeAppModal() {
             const modal = document.getElementById('appModal');
-            modal.style.display = 'none';
+            modal.classList.remove('show');
         }
 
         async function submitAnswers(section) {
