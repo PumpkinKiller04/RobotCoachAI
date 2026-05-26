@@ -1039,7 +1039,8 @@
                 var title = news.title || news.Title || '';
                 var desc = news.desc || news.Desc || news.description || '';
                 var summary = news.summary || news.Summary || '';
-                var url = news.url || news.Url || '#';
+                var searchKey = news.search || news.Search || title;
+                var url = 'https://www.baidu.com/s?wd=' + encodeURIComponent(searchKey);
                 return '<div class="carousel-item" style="display: ' + (i === 0 ? 'block' : 'none') + '; height: 100%; width: 100%; position: absolute; top: 0; left: 0;">' +
                     '<a href="' + url + '" target="_blank" style="display: flex; flex-direction: column; height: 100%; padding: 1.25rem 1.5rem; text-decoration: none; color: inherit;">' +
                         '<div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">' +
