@@ -295,7 +295,7 @@ function restart(){
     gs='playing';score=0;sel.textContent=0;st=0;
     robot.y=GY;robot.vy=0;robot.jumping=false;
     obs=[];otimer=0;ocount=0;
-    curObsId=-1;history=[];settled=false;
+    curObsId=-1;resetTrack();settled=false;
     gel.style.display='none';
 }
 function updateRobot(){
