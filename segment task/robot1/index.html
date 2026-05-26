@@ -791,7 +791,7 @@
             startScreenElement.style.display = 'none';
         }
 
-        // 获取当前状态（使用相对距离，自适应画布尺寸）
+        // 获取当前状态
         function getState() {
             // 找到最近的障碍物
             let closestObstacle = null;
@@ -809,12 +809,10 @@
             let obstacleType = 0; // 0 = 普通路障，1 = 紫色横梁
             
             if (closestObstacle) {
-                // 使用相对距离（距离 / 画布宽度），使其自适应画布尺寸
-                const relativeDistance = minDistance / GAME_CONSTANTS.WIDTH;
-                // 将相对距离分桶（0-1映射到0-9）
+                // 将距离分桶
                 distanceBucket = Math.min(
                     STATE_PARAMS.DISTANCE_BUCKETS - 1,
-                    Math.floor(relativeDistance * STATE_PARAMS.DISTANCE_BUCKETS)
+                    Math.floor(minDistance / (STATE_PARAMS.MAX_DISTANCE / STATE_PARAMS.DISTANCE_BUCKETS))
                 );
                 // 判断障碍物类型
                 obstacleType = closestObstacle.type === 'beam' ? 1 : 0;

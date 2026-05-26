@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>教练操控台</title>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: Arial, sans-serif;
+                background-color: transparent;
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                min-height: 100%;
+                overflow: hidden;
+            }
+
+            .game-container {
+                position: relative;
+                text-align: center;
+                background-color: #000;
+                border-radius: 10px;
+                padding: 15px;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+                display: inline-block;
+            }
+
+            .game-title {
+                color: #00ff00;
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 12px;
+                text-shadow: 0 0 10px #00ff00;
+            }
+
+            canvas {
+                background-color: #111;
+                border: 2px solid #00ff00;
+                border-radius: 5px;
+            }
+
+            .game-info {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 8px;
+                color: #00ff00;
+                font-size: 13px;
+            }
+
+            .score {
+                font-weight: bold;
+            }
+
+            .high-score {
+                font-weight: bold;
+                color: #ffff00;
+            }
+
+            .instructions {
+                font-style: italic;
+            }
+
+            .game-over {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: rgba(0, 0, 0, 0.8);
+                border: 2px solid #ff0000;
+                border-radius: 8px;
+                padding: 15px;
+                color: #ff0000;
+                display: none;
+            }
+
+            .game-over-text {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 8px;
+            }
+
+            .final-score {
+                margin-bottom: 15px;
+                font-size: 14px;
+            }
+
+            #restartButton {
+                background-color: #ff0000;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                font-size: 14px;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+            }
+
+            #restartButton:hover {
+                background-color: #cc0000;
+            }
+
+            .start-screen {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: rgba(0, 0, 0, 0.8);
+                border: 2px solid #00ff00;
+                border-radius: 8px;
+                padding: 15px;
+                color: #00ff00;
+            }
+
+            .start-text {
+                font-size: 16px;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+<body>
+    <div class="game-container">
+        <div class="game-title">教练操控台</div>
+        <canvas id="gameCanvas" width="480" height="180"></canvas>
+        <div class="game-info">
+            <div class="score">得分: <span id="score">0</span></div>
+            <div class="high-score">历史最高分: <span id="highScore">0</span></div>
+            <div class="instructions">按空格键或↑键跳跃</div>
+        </div>
+        <div class="game-over" id="gameOver">
+            <div class="game-over-text">游戏结束</div>
+            <div class="final-score">最终得分: <span id="finalScore">0</span></div>
+            <button id="restartButton">重新开始</button>
+        </div>
+        <div class="start-screen" id="startScreen">
+            <div class="start-text">按空格键开始游戏</div>
+        </div>
+    </div>
+    <script>
+        const GAME_CONSTANTS = {
+            WIDTH: 480,
+            HEIGHT: 180,
+            GRAVITY: 0.6,
+            JUMP_FORCE: -11,
+            GROUND_Y: 115,
+            BASE_SPEED: 4,
+            MAX_SPEED: 10,
+            SPEED_INCREMENT: 0.01
+        };
+
+        const GAME_STATES = {
+            START: 'start',
+            PLAYING: 'playing',
+            GAME_OVER: 'gameOver'
+        };
+
+        let gameState = GAME_STATES.START;
+        let currentSpeed = GAME_CONSTANTS.BASE_SPEED;
+        let scoreTimer = 0;
+        let scoreInterval = 100;
+        let speedTimer = 0;
+        let speedInterval = 3000;
+
+        let score = 0;
+        let highScore = 0;
+
+        let robot = {
+            x: 35,
+            y: GAME_CONSTANTS.GROUND_Y,
+            width: 32,
+            height: 32,
+            velocity: 0,
+            isJumping: false,
+            frame: 0
+        };
+
+        let obstacles = [];
+        let obstaclesTimer = 0;
+        let obstaclesInterval = 1500;
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const scoreElement = document.getElementById('score');
+        const highScoreElement = document.getElementById('highScore');
+        const finalScoreElement = document.getElementById('finalScore');
+        const gameOverElement = document.getElementById('gameOver');
+        const startScreenElement = document.getElementById('startScreen');
+        const restartButton = document.getElementById('restartButton');
+
+        restartButton.addEventListener('click', restartGame);
+        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('keyup', handleKeyUp);
+
+        let keys = {};
+
+        function handleKeyDown(event) {
+            keys[event.code] = true;
+            
+            if (event.code === 'Space' || event.code === 'ArrowUp') {
+                event.preventDefault();
+                if (gameState === GAME_STATES.START) {
+                    gameState = GAME_STATES.PLAYING;
+                    startScreenElement.style.display = 'none';
+                } else if (gameState === GAME_STATES.PLAYING && !robot.isJumping) {
+                    jump();
+                } else if (gameState === GAME_STATES.GAME_OVER) {
+                    restartGame();
+                }
+            }
+        }
+
+        function handleKeyUp(event) {
+            keys[event.code] = false;
+        }
+
+        function gameLoop(timestamp) {
+            ctx.clearRect(0, 0, GAME_CONSTANTS.WIDTH, GAME_CONSTANTS.HEIGHT);
+            drawBackground();
+
+            switch (gameState) {
+                case GAME_STATES.START:
+                    drawRobot();
+                    break;
+                case GAME_STATES.PLAYING:
+                    speedTimer += 16;
+                    if (speedTimer >= speedInterval && currentSpeed < GAME_CONSTANTS.MAX_SPEED) {
+                        currentSpeed += GAME_CONSTANTS.SPEED_INCREMENT * 10;
+                        speedTimer = 0;
+                    }
+                    
+                    updateRobot();
+                    drawRobot();
+                    updateObstacles();
+                    drawObstacles();
+                    checkCollision();
+                    updateScore();
+                    break;
+                case GAME_STATES.GAME_OVER:
+                    drawRobot();
+                    drawObstacles();
+                    showGameOver();
+                    break;
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function drawBackground() {
+            ctx.fillStyle = '#111';
+            ctx.fillRect(0, 0, GAME_CONSTANTS.WIDTH, GAME_CONSTANTS.GROUND_Y);
+            ctx.fillStyle = '#333';
+            ctx.fillRect(0, GAME_CONSTANTS.GROUND_Y, GAME_CONSTANTS.WIDTH, GAME_CONSTANTS.HEIGHT - GAME_CONSTANTS.GROUND_Y);
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 1;
+            for (let x = 0; x < GAME_CONSTANTS.WIDTH; x += 14) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, GAME_CONSTANTS.GROUND_Y);
+                ctx.stroke();
+            }
+            for (let y = 0; y < GAME_CONSTANTS.GROUND_Y; y += 14) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(GAME_CONSTANTS.WIDTH, y);
+                ctx.stroke();
+            }
+        }
+
+        function drawRobot() {
+            ctx.fillStyle = '#00ff00';
+            ctx.fillRect(robot.x, robot.y - robot.height, robot.width, robot.height);
+            ctx.fillStyle = '#00cc00';
+            ctx.fillRect(robot.x + 10, robot.y - robot.height - 10, 12, 10);
+            ctx.fillStyle = '#000';
+            ctx.fillRect(robot.x + 13, robot.y - robot.height - 7, 3, 3);
+            ctx.fillRect(robot.x + 16, robot.y - robot.height - 7, 3, 3);
+
+            if (robot.isJumping) {
+                ctx.fillStyle = '#00ff00';
+                ctx.fillRect(robot.x - 3, robot.y - robot.height + 6, 3, 10);
+                ctx.fillRect(robot.x + robot.width, robot.y - robot.height + 6, 3, 10);
+            } else {
+                ctx.fillStyle = '#00ff00';
+                if (robot.frame % 2 === 0) {
+                    ctx.fillRect(robot.x - 3, robot.y - robot.height + 3, 3, 10);
+                    ctx.fillRect(robot.x + robot.width, robot.y - robot.height + 10, 3, 10);
+                } else {
+                    ctx.fillRect(robot.x - 3, robot.y - robot.height + 10, 3, 10);
+                    ctx.fillRect(robot.x + robot.width, robot.y - robot.height + 3, 3, 10);
+                }
+            }
+
+            if (!robot.isJumping) {
+                if (robot.frame % 2 === 0) {
+                    ctx.fillStyle = '#00ff00';
+                    ctx.fillRect(robot.x + 6, robot.y, 6, 10);
+                    ctx.fillRect(robot.x + 20, robot.y - 3, 6, 10);
+                } else {
+                    ctx.fillStyle = '#00ff00';
+                    ctx.fillRect(robot.x + 6, robot.y - 3, 6, 10);
+                    ctx.fillRect(robot.x + 20, robot.y, 6, 10);
+                }
+            }
+
+            robot.frame++;
+        }
+
+        function updateRobot() {
+            robot.velocity += GAME_CONSTANTS.GRAVITY;
+            robot.y += robot.velocity;
+
+            if (robot.y > GAME_CONSTANTS.GROUND_Y) {
+                robot.y = GAME_CONSTANTS.GROUND_Y;
+                robot.velocity = 0;
+                robot.isJumping = false;
+            }
+        }
+
+        function jump() {
+            robot.velocity = GAME_CONSTANTS.JUMP_FORCE;
+            robot.isJumping = true;
+        }
+
+        function createObstacle() {
+            const obstacleTypes = [
+                { width: 20, height: 26, color: '#ff0000', type: 'ground' },
+                { width: 26, height: 20, color: '#ffaa00', type: 'ground' },
+                { width: 16, height: 32, color: '#0000ff', type: 'ground' },
+                { width: 70, height: 14, color: '#ff00ff', type: 'beam', y: GAME_CONSTANTS.GROUND_Y - 65 }
+            ];
+            const type = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+
+            obstacles.push({
+                x: GAME_CONSTANTS.WIDTH,
+                y: type.type === 'beam' ? type.y : GAME_CONSTANTS.GROUND_Y - type.height,
+                width: type.width,
+                height: type.height,
+                color: type.color,
+                type: type.type,
+                speed: currentSpeed
+            });
+        }
+
+        function updateObstacles() {
+            obstaclesTimer += 16;
+
+            if (obstaclesTimer >= obstaclesInterval) {
+                createObstacle();
+                obstaclesTimer = 0;
+
+                if (currentSpeed < GAME_CONSTANTS.BASE_SPEED + 2) {
+                    obstaclesInterval = 1000;
+                } else {
+                    obstaclesInterval = 800 + Math.random() * 600;
+                }
+            }
+
+            for (let i = 0; i < obstacles.length; i++) {
+                obstacles[i].x -= obstacles[i].speed;
+
+                if (obstacles[i].x + obstacles[i].width < 0) {
+                    obstacles.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        function drawObstacles() {
+            for (let obstacle of obstacles) {
+                ctx.fillStyle = obstacle.color;
+                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+                ctx.fillStyle = '#000';
+                ctx.fillRect(obstacle.x + 3, obstacle.y + 3, obstacle.width - 6, obstacle.height - 6);
+            }
+        }
+
+        function checkCollision() {
+            for (let obstacle of obstacles) {
+                if (obstacle.type === 'beam') {
+                    if (
+                        robot.x < obstacle.x + obstacle.width &&
+                        robot.x + robot.width > obstacle.x &&
+                        robot.y - robot.height < obstacle.y + obstacle.height &&
+                        robot.isJumping
+                    ) {
+                        gameState = GAME_STATES.GAME_OVER;
+                        break;
+                    }
+                } else {
+                    if (
+                        robot.x < obstacle.x + obstacle.width &&
+                        robot.x + robot.width > obstacle.x &&
+                        robot.y - robot.height < obstacle.y + obstacle.height &&
+                        robot.y > obstacle.y
+                    ) {
+                        gameState = GAME_STATES.GAME_OVER;
+                        break;
+                    }
+                }
+            }
+        }
+
+        function updateScore() {
+            scoreTimer += 16;
+            if (scoreTimer >= scoreInterval) {
+                score++;
+                scoreElement.textContent = score;
+                scoreTimer = 0;
+            }
+        }
+
+        function showGameOver() {
+            gameOverElement.style.display = 'block';
+            finalScoreElement.textContent = score;
+
+            if (score > highScore) {
+                highScore = score;
+                highScoreElement.textContent = highScore;
+            }
+        }
+
+        function restartGame() {
+            gameState = GAME_STATES.PLAYING;
+            score = 0;
+            scoreElement.textContent = score;
+            currentSpeed = GAME_CONSTANTS.BASE_SPEED;
+            robot.y = GAME_CONSTANTS.GROUND_Y;
+            robot.velocity = 0;
+            robot.isJumping = false;
+            obstacles = [];
+            obstaclesTimer = 0;
+            obstaclesInterval = 1500;
+            gameOverElement.style.display = 'none';
+            startScreenElement.style.display = 'none';
+        }
+
+        requestAnimationFrame(gameLoop);
+    </script>
+</body>
+</html>
