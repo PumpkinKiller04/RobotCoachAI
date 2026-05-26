@@ -647,9 +647,31 @@
             }
         ];
 
-        let currentModule = parseInt(localStorage.getItem('currentModule')) || parseInt(localStorage.getItem('selectedModule')) || 0;
-        let currentCourse = parseInt(localStorage.getItem('currentCourse')) || 0;
-        let currentPage = parseInt(localStorage.getItem('currentPage')) || 0;
+        function readHash() {
+            var hash = location.hash;
+            if (hash && hash.length > 1) {
+                var parts = hash.substring(1).split('-');
+                if (parts.length === 3) {
+                    return {
+                        module: parseInt(parts[0]) || 0,
+                        course: parseInt(parts[1]) || 0,
+                        page: parseInt(parts[2]) || 0
+                    };
+                }
+            }
+            return null;
+        }
+        function updateHash() {
+            var h = currentModule + '-' + currentCourse + '-' + currentPage;
+            if (location.hash !== '#' + h) {
+                history.replaceState(null, '', '#' + h);
+            }
+        }
+
+        var hashState = readHash();
+        let currentModule = hashState ? hashState.module : (parseInt(localStorage.getItem('currentModule')) || parseInt(localStorage.getItem('selectedModule')) || 0);
+        let currentCourse = hashState ? hashState.course : (parseInt(localStorage.getItem('currentCourse')) || 0);
+        let currentPage = hashState ? hashState.page : (parseInt(localStorage.getItem('currentPage')) || 0);
         const API_URLS = {
             section1: 'https://quickform.cn/api/hn79b9cbyy',
             section2: 'https://quickform.cn/api/ls3925kbkc',
