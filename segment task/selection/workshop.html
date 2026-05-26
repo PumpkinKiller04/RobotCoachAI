@@ -575,14 +575,14 @@
             robot.y = T.cy + T.curveR;
           }
         } else if (sensors.lidar) {
-          const speed = sensors.force ? 0.028 : 0.02;
+          const speed = sensors.force ? 0.028 : 0.0042;
           curveT += speed;
           const theta = -Math.PI / 2 + curveT;  // -π/2→0→π/2
           const r = T.curveR;
           robot.x = T.rightX + r * Math.cos(theta);
           robot.y = T.cy + r * Math.sin(theta);
           if (!sensors.imu) {
-            robot.y += Math.sin(frame * 0.25) * 0.7;
+            robot.y += Math.sin(frame * 0.12) * 1.0;
           }
           fpvCurve = Math.max(0, fpvCurve - 0.015);
           fpvOfftrack = sensors.force ? 0 : Math.min(0.3, fpvOfftrack + 0.008);
