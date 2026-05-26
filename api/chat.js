@@ -1,5 +1,6 @@
 const API_BASE = 'https://api.siliconflow.cn/v1';
 const DEFAULT_MODEL = 'Pro/moonshotai/Kimi-K2.6';
+const SYSTEM_PROMPT = '你是简洁助手。回答控制在150字以内，直接给核心信息，不要铺垫、不要展开、不要总结。';
 
 function resolveImageUrl(url, host) {
   if (!url) return url;
@@ -50,7 +51,10 @@ export default async function handler(req, res) {
   try {
     const { messages, model } = req.body;
     const host = req.headers.host || 'localhost:3000';
-    const resolvedMessages = resolveMessages(messages, host);
+    const resolvedMessages = [
+      { role: 'system', content: SYSTEM_PROMPT },
+      ...resolveMessages(messages, host),
+    ];
 
     const response = await fetch(`${API_BASE}/chat/completions`, {
       method: 'POST',
@@ -63,7 +67,7 @@ export default async function handler(req, res) {
         messages: resolvedMessages,
         stream: true,
         temperature: 0.1,
-        max_tokens: 300,
+        max_tokens: 200,
         top_p: 0.7,
       }),
     });
