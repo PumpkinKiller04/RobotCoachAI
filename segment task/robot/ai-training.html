@@ -161,34 +161,54 @@ function loop(){
     requestAnimationFrame(loop);
 }
 
-// ============ AI决策（每帧） ============
+// ============ AI决策（每障碍物做一次探索决策） ============
 function aiDecide(){
     var ob=getClosest();
     if(!ob){curObsId=-1;resetTrack();return;}
     var dist=ob.x-RX;
     if(dist<=0||dist>360){curObsId=-1;resetTrack();return;}
 
+    var isBeam=(ob.typeId===OT.BEAM)?1:0;
+
+    // 新障碍物 → 做一次探索/利用决策
     if(ob._uid!==curObsId){
         curObsId=ob._uid;
         settled=false;
         canJump=true;
         resetTrack();
+        if(Math.random()<explore){
+            // 探索：随机决定跳(50%)还是不跳(50%)
+            if(Math.random()<0.5){
+                exploreAction='jump';
+                exploreBucket=Math.floor(Math.random()*6);
+            }else{
+                exploreAction='wait';
+            }
+        }else{
+            exploreAction=null; // 利用Q值
+        }
     }
     if(settled)return;
 
     var db=Math.min(5,Math.floor(dist/60));
-    var state=db+','+ob.typeId+','+(robot.jumping?1:0);
+    var state=db+','+isBeam+','+(robot.jumping?1:0);
 
-    // 选动作
+    // 选动作（每帧）
     var action;
-    if(Math.random()<explore){
-        action=Math.random()<0.5?'jump':'wait';
+    if(exploreAction!==null){
+        // 探索模式：按预定计划执行
+        if(exploreAction==='jump' && db===exploreBucket){
+            action='jump';
+        }else{
+            action='wait';
+        }
     }else{
+        // 利用模式：跟Q值走
         var q=qGet(state);
         action=q.jump>q.wait?'jump':'wait';
     }
 
-    // 在地面上时持续更新"最近等待位置"
+    // 在地面上时持续更新最近等待位置
     if(!robot.jumping){
         closestWaitState=state;
     }
