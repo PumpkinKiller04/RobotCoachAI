@@ -164,43 +164,41 @@
         </div>
     </div>
     <script>
-        const GAME_CONSTANTS = {
-            WIDTH: 480,
-            HEIGHT: 180,
-            GRAVITY: 0.6,
-            JUMP_FORCE: -11,
-            GROUND_Y: 115,
-            BASE_SPEED: 4,
-            MAX_SPEED: 10,
-            SPEED_INCREMENT: 0.01
-        };
+        var GW = 480, GH = 180;
+        var GRAVITY = 0.6;
+        var JUMP_FORCE = -11;
+        var GROUND_Y = 115;
+        var ROBOT_X = 35, ROBOT_W = 32, ROBOT_H = 32;
+        var SPEED = 7;
+        var OBS_INTERVAL = 850;
 
-        const GAME_STATES = {
-            START: 'start',
-            PLAYING: 'playing',
-            GAME_OVER: 'gameOver'
-        };
+        var OT = { RED: 0, YELLOW: 1, BLUE: 2, BEAM: 3 };
 
-        // 障碍物类型ID: 0=红色, 1=黄色, 2=蓝色, 3=横梁
-        const OT = { RED: 0, YELLOW: 1, BLUE: 2, BEAM: 3 };
-
-        // ---- Q-learning 参数 ----
+        // ============ Q-learning ============
         var qTable = {};
-        var explorationRate = 0.3;
-        var LR = 0.4;           // 学习率 — 高，因为每个障碍物只学一次
-        var DF = 0.9;           // 折扣因子
+        var exploreRate = 0.25;   // 初始探索率
+        var LR = 0.3;             // 学习率
 
+        // 初始化 Q 表 — 关键：不同距离给不同初始值
+        // 跳跃后空中时间≈37帧，障碍物速度7px/帧，跳跃期间障碍物走≈259px
+        // 所以距离>250px（bucket 9-11）时跳太早→落地后障碍物还没到→必死
         function initQTable() {
             for (var d = 0; d < 12; d++) {
                 for (var t = 0; t < 4; t++) {
                     for (var j = 0; j < 2; j++) {
-                        var key = d + ',' + t + ',' + j;
+                        var k = d + ',' + t + ',' + j;
                         if (t === OT.BEAM) {
-                            // 横梁：跳跃 = 坏，等待 = 好
-                            qTable[key] = { jump: -20, wait: 5 };
+                            // 横梁：永远不跳
+                            qTable[k] = { jump: -30, wait: 10 };
+                        } else if (d <= 1) {
+                            // 0-60px：太近了，跳还有希望，不跳必死
+                            qTable[k] = { jump: 5, wait: -30 };
+                        } else if (d <= 7) {
+                            // 60-240px：最佳起跳距离
+                            qTable[k] = { jump: 15, wait: -30 };
                         } else {
-                            // 地面障碍物：等待 = 坏，跳跃 = 好
-                            qTable[key] = { jump: 5, wait: -20 };
+                            // 240-360px：太远了，跳了会提前落地
+                            qTable[k] = { jump: -20, wait: 10 };
                         }
                     }
                 }
@@ -208,91 +206,65 @@
         }
         initQTable();
 
-        // 预装常识的快捷Q表初始化
-        function qGet(state) {
-            if (!qTable[state]) qTable[state] = { jump: 0, wait: 0 };
-            return qTable[state];
+        function qGet(s) {
+            if (!qTable[s]) qTable[s] = { jump: 0, wait: 0 };
+            return qTable[s];
         }
 
-        // ---- 游戏状态 ----
-        var gameState = GAME_STATES.START;
-        var currentSpeed = 7;
-        var score = 0;
-        var scoreTimer = 0;
-        var scoreInterval = 100;
+        // ============ 游戏状态 ============
+        var gameState = 'start';  // start | playing | over
+        var score = 0, scoreTimer = 0;
+        var aiAttempts = 0, aiHighScore = 0;
 
-        var aiAttempts = 0;
-        var aiHighScore = 0;
-
-        var robot = {
-            x: 35, y: GAME_CONSTANTS.GROUND_Y,
-            width: 32, height: 32,
-            velocity: 0, isJumping: false,
-            frame: 0
-        };
-
+        var robot = { x: ROBOT_X, y: GROUND_Y, vy: 0, jumping: false, frame: 0 };
         var obstacles = [];
-        var obstaclesTimer = 0;
-        var obstaclesInterval = 850;
-        var obstacleCounter = 0;
+        var obsTimer = 0, obsCounter = 0, obsIdCounter = 0;
 
-        // ---- 事件驱动学习：记录每个障碍物触发时的决策 ----
-        var currentObstacleId = 0;
-        var decisionState = null;    // 障碍物进入判定区时的状态
-        var decisionAction = null;   // AI在那一刻的选择
-        var obstacleHandled = false; // 当前障碍物是否已结算过
+        // 每障碍物的学习追踪
+        var trackId = -1;       // 当前追踪的障碍物ID
+        var trackState = null;  // 决策时的状态
+        var trackAction = null; // 决策时的动作
+        var trackDone = false;  // 是否已结算
 
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreElement = document.getElementById('score');
-        const gameOverElement = document.getElementById('gameOver');
-        const startScreenElement = document.getElementById('startScreen');
+        // ============ DOM ============
+        var canvas = document.getElementById('gameCanvas');
+        var ctx = canvas.getContext('2d');
+        var scoreEl = document.getElementById('score');
+        var gameOverEl = document.getElementById('gameOver');
+        var startEl = document.getElementById('startScreen');
 
         document.getElementById('restartButton').addEventListener('click', restartGame);
-        document.addEventListener('keydown', handleKeyDown);
-
+        document.addEventListener('keydown', function(e) {
+            if (e.code === 'Space') { e.preventDefault(); if (gameState === 'start') { gameState = 'playing'; startEl.style.display = 'none'; } }
+        });
         document.getElementById('resetAiButton').addEventListener('click', function() {
-            if (confirm('确定要重置AI训练数据吗？这将清空所有训练进度。')) {
-                aiAttempts = 0;
-                aiHighScore = 0;
+            if (confirm('确定要重置AI训练数据吗？')) {
+                aiAttempts = 0; aiHighScore = 0;
                 document.getElementById('attempts').textContent = 0;
                 document.getElementById('aiHighScore').textContent = 0;
-                qTable = {};
-                initQTable();
-                explorationRate = 0.3;
+                qTable = {}; initQTable(); exploreRate = 0.25;
                 restartGame();
                 alert('AI训练数据已重置');
             }
         });
 
-        function handleKeyDown(event) {
-            if (event.code === 'Space') {
-                event.preventDefault();
-                if (gameState === GAME_STATES.START) {
-                    gameState = GAME_STATES.PLAYING;
-                    startScreenElement.style.display = 'none';
-                }
-            }
-        }
-
         // ============ 主循环 ============
         function gameLoop() {
-            ctx.clearRect(0, 0, GAME_CONSTANTS.WIDTH, GAME_CONSTANTS.HEIGHT);
-            drawBackground();
+            ctx.clearRect(0, 0, GW, GH);
+            drawBg();
 
-            if (gameState === GAME_STATES.START) {
+            if (gameState === 'start') {
                 drawRobot();
-            } else if (gameState === GAME_STATES.PLAYING) {
+            } else if (gameState === 'playing') {
                 updateRobot();
                 drawRobot();
-                updateObstacles();   // 内含事件检测和学习
+                updateObstacles();
                 drawObstacles();
-                checkCollision();    // 内含死亡学习
+                checkCollision();
                 updateScore();
-                aiThink();           // AI决策
-            } else if (gameState === GAME_STATES.GAME_OVER) {
-                drawRobot();
-                drawObstacles();
+                aiThink();
+            } else if (gameState === 'over') {
+                drawRobot(); drawObstacles();
                 aiAttempts++;
                 if (score > aiHighScore) aiHighScore = score;
                 document.getElementById('attempts').textContent = aiAttempts;
@@ -303,156 +275,135 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // ============ AI 决策（每帧调用） ============
+        // ============ AI 决策 ============
         function aiThink() {
-            var closest = getClosestObstacle();
-            if (!closest) return;
-
-            var dist = closest.x - robot.x;
-            // 只在障碍物进入判定范围(0-360px)时做决策
+            var ob = getClosest();
+            if (!ob) return;
+            var dist = ob.x - ROBOT_X;
             if (dist <= 0 || dist > 360) return;
 
-            var distBucket = Math.min(11, Math.floor(dist / 30));  // 0-11, 每30px一档
-            var typeId = closest.typeId;
-            var jumpState = robot.isJumping ? 1 : 0;
-            var state = distBucket + ',' + typeId + ',' + jumpState;
+            var db = Math.min(11, Math.floor(dist / 30));
+            var state = db + ',' + ob.typeId + ',' + (robot.jumping ? 1 : 0);
 
-            // 如果障碍物刚进入判定范围，记录这个时刻的决策
-            if (!decisionState || closest._id !== currentObstacleId) {
-                decisionState = state;
-                currentObstacleId = closest._id;
-                obstacleHandled = false;
+            // 新障碍物：重置追踪
+            if (ob._id !== trackId) {
+                trackId = ob._id;
+                trackDone = false;
+                trackState = null;
+                trackAction = null;
             }
 
-            // 选择动作
+            if (trackDone) return; // 已结算，不再决策
+
+            // 选动作
             var action;
-            if (Math.random() < explorationRate) {
-                action = Math.random() > 0.5 ? 'jump' : 'wait';
+            if (Math.random() < exploreRate) {
+                action = Math.random() < 0.5 ? 'jump' : 'wait';
             } else {
                 var q = qGet(state);
                 action = q.jump > q.wait ? 'jump' : 'wait';
             }
 
-            // 执行动作
-            if (action === 'jump' && !robot.isJumping) {
-                robot.velocity = GAME_CONSTANTS.JUMP_FORCE;
-                robot.isJumping = true;
-                // 记录起跳时的状态，用于后续学习
-                if (!obstacleHandled) {
-                    decisionState = state;
-                    decisionAction = 'jump';
+            // 执行跳跃 — 只记录第一次起跳
+            if (action === 'jump' && !robot.jumping) {
+                robot.vy = JUMP_FORCE;
+                robot.jumping = true;
+                if (!trackState) {
+                    trackState = state;
+                    trackAction = 'jump';
                 }
             }
-            if (action === 'wait' && !obstacleHandled) {
-                decisionAction = 'wait';
+
+            // 如果还没记录过决策且选择了wait，记录下来
+            if (!trackState) {
+                trackState = state;
+                trackAction = 'wait';
             }
         }
 
-        // ============ 障碍物更新 + 通过检测 ============
-        var _obsIdCounter = 0;
+        // ============ 障碍物 ============
         function updateObstacles() {
-            obstaclesTimer += 16;
-            if (obstaclesTimer >= obstaclesInterval) {
+            obsTimer += 16;
+            if (obsTimer >= OBS_INTERVAL) {
                 createObstacle();
-                obstaclesTimer = 0;
+                obsTimer = 0;
             }
-
             for (var i = 0; i < obstacles.length; i++) {
                 var ob = obstacles[i];
                 ob.x -= ob.speed;
 
-                // 检测：障碍物完全通过了机器人 → 成功！给予正奖励
-                if (!ob._handled && ob.x + ob.width < robot.x) {
-                    ob._handled = true;
-                    obstacleHandled = true;
-
-                    if (ob.typeId === OT.BEAM) {
-                        // 横梁通过：不跳就是成功
-                        learnFromOutcome(decisionState, decisionAction, +8);
-                    } else {
-                        // 地面障碍物通过：跳了就是成功
-                        learnFromOutcome(decisionState, decisionAction, +10);
+                // 障碍物通过机器人 → 成功
+                if (!ob._done && ob.x + ob.width < ROBOT_X) {
+                    ob._done = true;
+                    if (ob._id === trackId && !trackDone) {
+                        trackDone = true;
+                        var reward = ob.typeId === OT.BEAM ? 10 : 12;
+                        learn(trackState, trackAction, reward);
                     }
-
-                    decisionState = null;
-                    decisionAction = null;
                 }
 
-                // 移除屏幕外的障碍物
                 if (ob.x + ob.width < 0) {
+                    if (ob._id === trackId && !trackDone) {
+                        // 障碍物出了屏幕但没通过机器人（极端情况）
+                        trackDone = true;
+                    }
                     obstacles.splice(i, 1);
                     i--;
                 }
             }
         }
 
-        // ============ 碰撞检测 + 死亡学习 ============
         function checkCollision() {
             for (var i = 0; i < obstacles.length; i++) {
                 var ob = obstacles[i];
-                var hOverlap = robot.x < ob.x + ob.width && robot.x + robot.width > ob.x;
+                if (!(ROBOT_X < ob.x + ob.width && ROBOT_X + ROBOT_W > ob.x)) continue;
 
-                if (!hOverlap) continue;
-
+                var hit = false;
                 if (ob.typeId === OT.BEAM) {
-                    // 横梁：跳跃时碰到 = 死
-                    if (robot.isJumping &&
-                        robot.y - robot.height < ob.y + ob.height &&
-                        robot.y > ob.y) {
-                        learnFromOutcome(decisionState, decisionAction, -20);
-                        gameState = GAME_STATES.GAME_OVER;
-                        return;
-                    }
+                    hit = robot.jumping && robot.y < ob.y + ob.height && robot.y - ROBOT_H < ob.y + ob.height;
                 } else {
-                    // 地面障碍物：碰到 = 死
-                    if (robot.y - robot.height < ob.y + ob.height && robot.y > ob.y) {
-                        learnFromOutcome(decisionState, decisionAction, -20);
-                        gameState = GAME_STATES.GAME_OVER;
-                        return;
+                    hit = robot.y - ROBOT_H < ob.y + ob.height && robot.y > ob.y;
+                }
+
+                if (hit) {
+                    if (ob._id === trackId && !trackDone) {
+                        trackDone = true;
+                        learn(trackState, trackAction, -25);
                     }
+                    gameState = 'over';
+                    return;
                 }
             }
         }
 
-        // ============ Q-learning 核心：只在关键事件时更新 ============
-        function learnFromOutcome(state, action, reward) {
+        // ============ Q-learning：事件驱动，只在障碍物通过/碰撞时更新 ============
+        function learn(state, action, reward) {
             if (!state || !action) return;
 
             var q = qGet(state);
-            var oldValue = q[action];
+            q[action] = q[action] + LR * (reward - q[action]);
 
-            // 简化Q-update：Q(s,a) += LR * (reward - Q(s,a))
-            // 不依赖下一状态，直接用即时奖励（因为每个障碍物事件是独立的）
-            q[action] = oldValue + LR * (reward - oldValue);
-
-            // 衰减探索率
-            if (explorationRate > 0.05) {
-                explorationRate *= 0.998;
+            // 快速衰减探索率（每次学习衰减 5%）
+            if (exploreRate > 0.03) {
+                exploreRate *= 0.95;
             }
-
-            decisionState = null;
-            decisionAction = null;
         }
 
-        // ============ 辅助函数 ============
-        function getClosestObstacle() {
-            var closest = null;
-            var minDist = Infinity;
+        // ============ 辅助 ============
+        function getClosest() {
+            var best = null, min = Infinity;
             for (var i = 0; i < obstacles.length; i++) {
-                var d = obstacles[i].x - robot.x;
-                if (d > 0 && d < minDist) {
-                    minDist = d;
-                    closest = obstacles[i];
-                }
+                var d = obstacles[i].x - ROBOT_X;
+                if (d > 0 && d < min) { min = d; best = obstacles[i]; }
             }
-            return closest;
+            return best;
         }
 
         function createObstacle() {
-            obstacleCounter++;
+            obsCounter++;
             var t;
-            if (obstacleCounter % 4 === 0) {
-                t = { w: 70, h: 14, c: '#ff00ff', tid: OT.BEAM, y: GAME_CONSTANTS.GROUND_Y - 65 };
+            if (obsCounter % 4 === 0) {
+                t = { w: 70, h: 14, c: '#ff00ff', tid: OT.BEAM, y: GROUND_Y - 65 };
             } else {
                 var pool = [
                     { w: 24, h: 26, c: '#ff0000', tid: OT.RED },
@@ -462,63 +413,53 @@
                 t = pool[Math.floor(Math.random() * pool.length)];
             }
             obstacles.push({
-                _id: ++_obsIdCounter,
-                _handled: false,
-                x: GAME_CONSTANTS.WIDTH,
-                y: t.tid === OT.BEAM ? t.y : GAME_CONSTANTS.GROUND_Y - t.h,
+                _id: ++obsIdCounter, _done: false,
+                x: GW,
+                y: t.tid === OT.BEAM ? t.y : GROUND_Y - t.h,
                 width: t.w, height: t.h,
                 color: t.c, typeId: t.tid,
-                speed: currentSpeed
+                speed: SPEED
             });
         }
 
         function updateScore() {
             scoreTimer += 16;
-            if (scoreTimer >= scoreInterval) {
-                score++;
-                scoreElement.textContent = score;
-                scoreTimer = 0;
-            }
+            if (scoreTimer >= 100) { score++; scoreEl.textContent = score; scoreTimer = 0; }
         }
 
         function restartGame() {
-            gameState = GAME_STATES.PLAYING;
-            score = 0;
-            scoreElement.textContent = 0;
-            currentSpeed = 7;
-            robot.y = GAME_CONSTANTS.GROUND_Y;
-            robot.velocity = 0;
-            robot.isJumping = false;
-            obstacles = [];
-            obstaclesTimer = 0;
-            obstacleCounter = 0;
-            obstaclesInterval = 850;
-            decisionState = null;
-            decisionAction = null;
-            obstacleHandled = false;
-            gameOverElement.style.display = 'none';
-            startScreenElement.style.display = 'none';
+            gameState = 'playing';
+            score = 0; scoreEl.textContent = 0; scoreTimer = 0;
+            robot.y = GROUND_Y; robot.vy = 0; robot.jumping = false;
+            obstacles = []; obsTimer = 0; obsCounter = 0;
+            trackId = -1; trackState = null; trackAction = null; trackDone = false;
+            gameOverEl.style.display = 'none';
         }
 
-        // ============ 渲染函数 ============
-        function drawBackground() {
-            var gy = GAME_CONSTANTS.GROUND_Y;
+        function updateRobot() {
+            robot.vy += GRAVITY;
+            robot.y += robot.vy;
+            if (robot.y > GROUND_Y) { robot.y = GROUND_Y; robot.vy = 0; robot.jumping = false; }
+        }
+
+        // ============ 渲染 ============
+        function drawBg() {
             ctx.fillStyle = '#111';
-            ctx.fillRect(0, 0, GAME_CONSTANTS.WIDTH, gy);
+            ctx.fillRect(0, 0, GW, GROUND_Y);
             ctx.fillStyle = '#333';
-            ctx.fillRect(0, gy, GAME_CONSTANTS.WIDTH, GAME_CONSTANTS.HEIGHT - gy);
-            ctx.strokeStyle = '#555';
+            ctx.fillRect(0, GROUND_Y, GW, GH - GROUND_Y);
+            ctx.strokeStyle = '#444';
             ctx.lineWidth = 1;
-            for (var x = 0; x < GAME_CONSTANTS.WIDTH; x += 14) {
-                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, gy); ctx.stroke();
+            for (var x = 0; x < GW; x += 16) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, GROUND_Y); ctx.stroke();
             }
-            for (var y = 0; y < gy; y += 14) {
-                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(GAME_CONSTANTS.WIDTH, y); ctx.stroke();
+            for (var y = 0; y < GROUND_Y; y += 16) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(GW, y); ctx.stroke();
             }
         }
 
         function drawRobot() {
-            var rx = robot.x, ry = robot.y, rh = robot.height, rw = robot.width;
+            var rx = ROBOT_X, ry = robot.y, rh = ROBOT_H, rw = ROBOT_W;
             ctx.fillStyle = '#00ff00';
             ctx.fillRect(rx, ry - rh, rw, rh);
             ctx.fillStyle = '#00cc00';
@@ -527,7 +468,7 @@
             ctx.fillRect(rx + 13, ry - rh - 7, 3, 3);
             ctx.fillRect(rx + 16, ry - rh - 7, 3, 3);
             ctx.fillStyle = '#00ff00';
-            if (robot.isJumping) {
+            if (robot.jumping) {
                 ctx.fillRect(rx - 3, ry - rh + 6, 3, 10);
                 ctx.fillRect(rx + rw, ry - rh + 6, 3, 10);
             } else {
@@ -539,7 +480,7 @@
                     ctx.fillRect(rx + rw, ry - rh + 3, 3, 10);
                 }
             }
-            if (!robot.isJumping) {
+            if (!robot.jumping) {
                 ctx.fillStyle = '#00ff00';
                 if (robot.frame % 2 === 0) {
                     ctx.fillRect(rx + 6, ry, 6, 10);
@@ -550,16 +491,6 @@
                 }
             }
             robot.frame++;
-        }
-
-        function updateRobot() {
-            robot.velocity += GAME_CONSTANTS.GRAVITY;
-            robot.y += robot.velocity;
-            if (robot.y > GAME_CONSTANTS.GROUND_Y) {
-                robot.y = GAME_CONSTANTS.GROUND_Y;
-                robot.velocity = 0;
-                robot.isJumping = false;
-            }
         }
 
         function drawObstacles() {
