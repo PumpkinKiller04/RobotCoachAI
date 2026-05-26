@@ -978,40 +978,21 @@
         // 获取数据并渲染
         async function fetchAndRender() {
             const innerEl = document.getElementById('carouselInner');
-            if (!innerEl) {
-                console.error('轮播容器不存在');
-                return;
-            }
+            if (!innerEl) return;
 
             innerEl.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: white;"><p>正在搜索最新案例...</p></div>';
 
-            console.log('开始从AI获取多模态案例');
             await fetchMultimodalNews();
-
-            console.log('获取结果:', carouselNews);
 
             if (carouselNews.length > 0) {
                 renderCarousel();
             } else {
-                // AI获取失败，尝试使用缓存
-                const cached = localStorage.getItem('multimodalNews');
-                if (cached) {
-                    try {
-                        carouselNews = JSON.parse(cached);
-                        if (carouselNews.length > 0) {
-                            renderCarousel();
-                            return;
-                        }
-                    } catch (e) {}
-                }
-                // 缓存也没有，使用备用数据
-                console.warn('AI获取失败，使用备用数据');
                 carouselNews = [
-                    {"title":"智能相册整理","desc":"AI自动识别照片中的人物、风景、美食，智能分类整理","url":"https://www.baidu.com/s?wd=AI智能相册"},
-                    {"title":"AR试衣镜","desc":"站在镜子前就能看到穿不同衣服的效果","url":"https://www.baidu.com/s?wd=AR试衣技术"},
-                    {"title":"AI拍照翻译","desc":"拍下菜单、路牌，AI实时翻译成中文","url":"https://www.baidu.com/s?wd=AI拍照翻译"},
-                    {"title":"智能客服","desc":"能看懂文字、图片甚至语音的虚拟助手","url":"https://www.baidu.com/s?wd=智能客服"},
-                    {"title":"视频字幕生成","desc":"上传视频自动识别语音生成字幕","url":"https://www.baidu.com/s?wd=AI视频字幕"}
+                    {"title":"ChatGPT看图说话","desc":"拍一张照片发给ChatGPT，它就能看懂画面内容并和你聊天讨论","summary":"AI有了眼睛","url":"https://openai.com/index/chatgpt-can-now-see-hear-and-speak/"},
+                    {"title":"Sora生成视频","desc":"输入一句话，AI直接生成逼真的视频片段，画面细腻到可以乱真","summary":"一句话变电影","url":"https://openai.com/index/sora/"},
+                    {"title":"豆包识别万物","desc":"拍照识别植物、动物、菜品，还能翻译外文菜单和路牌","summary":"口袋里的万能眼睛","url":"https://www.doubao.com/"},
+                    {"title":"AI作曲助手","desc":"哼一段旋律，AI帮你编曲、配器，不会乐器也能创作音乐","summary":"人人都是作曲家","url":"https://suno.ai/"},
+                    {"title":"AR翻译眼镜","desc":"戴上眼镜看外文，眼前直接显示中文翻译，出国交流无障碍","summary":"打破语言壁垒","url":"https://www.meta.com/smart-glasses/"}
                 ];
                 renderCarousel();
             }
