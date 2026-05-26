@@ -256,26 +256,61 @@
       ctx.fillStyle = '#333'; ctx.font = 'bold 9px system-ui'; ctx.textAlign = 'center';
       ctx.fillText('起/终点', startX + 18, T.innerBottom - 5);
 
-      // 机器人
+      // 机器人 - 绿色小机器人
       if (animState !== 'idle') {
         const rx = robot.x, ry = robot.y;
-        ctx.fillStyle = 'rgba(0,0,0,0.3)';
-        ctx.beginPath(); ctx.arc(rx, ry + 2, 9, 0, Math.PI*2); ctx.fill();
-        const bg = ctx.createRadialGradient(rx - 2, ry - 2, 1, rx, ry, 9);
-        bg.addColorStop(0, '#64b5f6'); bg.addColorStop(1, '#1565c0');
-        ctx.fillStyle = bg;
-        ctx.beginPath(); ctx.arc(rx, ry, 9, 0, Math.PI*2); ctx.fill();
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
-        ctx.fillStyle = '#fff';
-        ctx.beginPath(); ctx.arc(rx - 4, ry, 3, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = '#111';
-        ctx.beginPath(); ctx.arc(rx - 4, ry, 1.5, 0, Math.PI*2); ctx.fill();
-        ctx.strokeStyle = '#ffeb3b'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(rx - 9, ry); ctx.lineTo(rx - 18, ry); ctx.stroke();
+        const BW = 20, BH = 16; // body size
+
+        // 阴影
+        ctx.fillStyle = 'rgba(0,0,0,0.25)';
+        ctx.beginPath(); ctx.ellipse(rx, ry + 2, BW/2 + 2, 4, 0, 0, Math.PI * 2); ctx.fill();
+
+        // 腿部（交替动画）
+        ctx.fillStyle = '#00cc00';
+        if (frame % 2 === 0) {
+          ctx.fillRect(rx - BW/2 + 2, ry - 2, 5, 6);
+          ctx.fillRect(rx + BW/2 - 7, ry - 4, 5, 6);
+        } else {
+          ctx.fillRect(rx - BW/2 + 2, ry - 4, 5, 6);
+          ctx.fillRect(rx + BW/2 - 7, ry - 2, 5, 6);
+        }
+
+        // 身体
+        ctx.fillStyle = '#00ff00';
+        ctx.fillRect(rx - BW/2, ry - BH - 2, BW, BH);
+
+        // 手臂（交替动画）
+        ctx.fillStyle = '#00ff00';
+        if (frame % 2 === 0) {
+          ctx.fillRect(rx - BW/2 - 2, ry - BH + 2, 2, 6);
+          ctx.fillRect(rx + BW/2, ry - BH + 8, 2, 6);
+        } else {
+          ctx.fillRect(rx - BW/2 - 2, ry - BH + 8, 2, 6);
+          ctx.fillRect(rx + BW/2, ry - BH + 2, 2, 6);
+        }
+
+        // 头部
+        ctx.fillStyle = '#00cc00';
+        ctx.fillRect(rx - 6, ry - BH - 10, 12, 8);
+
+        // 眼睛
+        ctx.fillStyle = '#000';
+        ctx.fillRect(rx - 4, ry - BH - 7, 2.5, 2.5);
+        ctx.fillRect(rx + 1.5, ry - BH - 7, 2.5, 2.5);
+
+        // 天线
+        ctx.strokeStyle = '#00cc00'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(rx, ry - BH - 10); ctx.lineTo(rx, ry - BH - 16); ctx.stroke();
+        ctx.fillStyle = '#00ff00';
+        ctx.beginPath(); ctx.arc(rx, ry - BH - 17, 2.5, 0, Math.PI * 2); ctx.fill();
+
+        // 失败标记
         if (animState === 'offtrack' || animState === 'done') {
           ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 3;
-          ctx.beginPath(); ctx.moveTo(rx-7, ry-7); ctx.lineTo(rx+7, ry+7);
-          ctx.moveTo(rx+7, ry-7); ctx.lineTo(rx-7, ry+7); ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(rx - 8, ry - BH/2 - 8); ctx.lineTo(rx + 8, ry - BH/2 + 8);
+          ctx.moveTo(rx + 8, ry - BH/2 - 8); ctx.lineTo(rx - 8, ry - BH/2 + 8);
+          ctx.stroke();
         }
       }
       ctx.fillStyle = '#fff'; ctx.font = '10px system-ui'; ctx.textAlign = 'left';
