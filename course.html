@@ -2544,25 +2544,21 @@ ${(() => {
                     initCarousel();
                 }
             }, 300);
-            
-            // 如果有保存的课程进度，自动跳转到对应的位置
-            const savedCourse = localStorage.getItem('currentCourse');
-            if (savedCourse !== null && savedCourse !== 'null') {
-                // 优先读取 currentModule，因为它是每次页面更新都会保存的
-                const moduleNum = parseInt(localStorage.getItem('currentModule')) || parseInt(localStorage.getItem('selectedModule')) || 0;
-                const courseNum = parseInt(savedCourse);
-                const pageNum = parseInt(localStorage.getItem('currentPage')) || 0;
-                
-                // 更新全局变量
-                currentModule = moduleNum;
-                currentCourse = courseNum;
-                currentPage = pageNum;
-                
-                // 跳转到保存的位置
-                updateModuleInfo();
-                updateCourseSelector();
-                showCourse();
-                updatePage();
+
+            // URL hash 优先，回退到 localStorage
+            var hashState = readHash();
+            if (!hashState) {
+                var savedCourse = localStorage.getItem('currentCourse');
+                if (savedCourse !== null && savedCourse !== 'null') {
+                    currentModule = parseInt(localStorage.getItem('currentModule')) || parseInt(localStorage.getItem('selectedModule')) || 0;
+                    currentCourse = parseInt(savedCourse);
+                    currentPage = parseInt(localStorage.getItem('currentPage')) || 0;
+                }
+            }
+            updateModuleInfo();
+            updateBookTitle();
+            showCourse();
+            updatePage();
             }
         });
 
