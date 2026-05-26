@@ -952,6 +952,87 @@
             modal.style.display = 'none';
         }
 
+        // 前沿应用轮播相关变量
+        let appCarouselData = [
+            { img: 'resource/多模态问答.png', caption: '多模态问答：看图提问智能解答' },
+            { img: 'resource/多模态生成.png', caption: '多模态生成：文字秒变创意图画' },
+            { img: 'resource/多模态融合.PNG', caption: '多模态融合：人脸语音手势控制家居' }
+        ];
+        let currentAppIndex = 0;
+        let appCarouselInterval = null;
+
+        // 初始化应用轮播
+        function initAppCarousel() {
+            const imgEl = document.getElementById('appCarouselImg');
+            const captionEl = document.getElementById('appCarouselCaption');
+            const dotsEl = document.getElementById('appCarouselDots');
+            
+            if (!imgEl || !captionEl || !dotsEl) {
+                setTimeout(initAppCarousel, 200);
+                return;
+            }
+
+            // 渲染指示点
+            dotsEl.innerHTML = appCarouselData.map((_, i) => `
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: ${i === 0 ? '#fff' : 'rgba(255,255,255,0.5)'}; cursor: pointer; transition: all 0.3s;" onclick="goToAppSlide(${i})"></span>
+            `).join('');
+
+            // 开始自动轮播
+            if (appCarouselInterval) clearInterval(appCarouselInterval);
+            appCarouselInterval = setInterval(() => {
+                currentAppIndex = (currentAppIndex + 1) % appCarouselData.length;
+                updateAppCarousel();
+            }, 4000);
+        }
+
+        // 切换到指定应用轮播项
+        function goToAppSlide(index) {
+            currentAppIndex = index;
+            updateAppCarousel();
+        }
+
+        // 更新应用轮播显示
+        function updateAppCarousel() {
+            const imgEl = document.getElementById('appCarouselImg');
+            const captionEl = document.getElementById('appCarouselCaption');
+            const dots = document.querySelectorAll('#appCarouselDots span');
+
+            if (!imgEl || !captionEl) return;
+
+            imgEl.src = appCarouselData[currentAppIndex].img;
+            captionEl.textContent = appCarouselData[currentAppIndex].caption;
+
+            dots.forEach((dot, i) => {
+                dot.style.background = i === currentAppIndex ? '#fff' : 'rgba(255,255,255,0.5)';
+            });
+        }
+
+        // 上一张
+        function prevAppSlide() {
+            currentAppIndex = (currentAppIndex - 1 + appCarouselData.length) % appCarouselData.length;
+            updateAppCarousel();
+        }
+
+        // 下一张
+        function nextAppSlide() {
+            currentAppIndex = (currentAppIndex + 1) % appCarouselData.length;
+            updateAppCarousel();
+        }
+
+        // 打开应用模态框
+        function openAppModal() {
+            const modal = document.getElementById('appModal');
+            const modalImg = document.getElementById('appModalImg');
+            modalImg.src = appCarouselData[currentAppIndex].img;
+            modal.style.display = 'flex';
+        }
+
+        // 关闭应用模态框
+        function closeAppModal() {
+            const modal = document.getElementById('appModal');
+            modal.style.display = 'none';
+        }
+
         // 多模态新闻轮播相关变量
         let carouselNews = [];
         let currentCarouselIndex = 0;
