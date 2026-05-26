@@ -71,26 +71,27 @@ var SPD=7;
 var OBS_INTV=750;
 var OT={RED:0,YELLOW:1,BLUE:2,BEAM:3};
 
-// ============ Q-learning：每障碍物只跳一次，精确信用分配 ============
+// ============ Q-learning：24状态(6距离×2类型×2跳跃) ============
 var qTable={};
-var explore=0.25;
-var LR=0.5;
+var explore=0.30;
+var LR=0.7;
 
-// 距离桶(0-5), 障碍类型(0-3), 跳跃中(0-1) = 48状态
+// obstacleIsBeam: 0=地面障碍, 1=横梁
 function initQ(){
     for(var d=0;d<6;d++){
-        for(var t=0;t<4;t++){
+        for(var b=0;b<2;b++){
             for(var j=0;j<2;j++){
-                var k=d+','+t+','+j;
+                var k=d+','+b+','+j;
                 var dist=d*60;
                 if(j===1){
                     qTable[k]={jump:-5,wait:5};
-                }else if(t===OT.BEAM){
+                }else if(b===1){
+                    // 横梁在地面上方 → 跳起来会撞头
                     qTable[k]={jump:-30,wait:20};
                 }else if(dist<50){
-                    qTable[k]={jump:8,wait:-20};
+                    qTable[k]={jump:5,wait:-15};
                 }else if(dist<230){
-                    qTable[k]={jump:25,wait:-25};
+                    qTable[k]={jump:20,wait:-25};
                 }else{
                     qTable[k]={jump:-25,wait:15};
                 }
