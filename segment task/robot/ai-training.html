@@ -51,6 +51,7 @@
         <span>最高: <span id="aiHighScore">0</span></span>
         <button id="resetAiButton">重置AI训练</button>
     </div>
+    <div class="debug-panel" id="debugPanel" style="margin-top:6px;color:#888;font-size:9px;font-family:monospace;text-align:left;max-height:60px;overflow-y:auto;"></div>
     <div class="game-over" id="gameOver">
         <div class="game-over-text">游戏结束</div>
         <div class="final-score">最终得分: <span id="finalScore">0</span></div>
@@ -128,7 +129,7 @@ document.getElementById('resetAiButton').addEventListener('click',function(){
         attempts=0;hiScore=0;
         document.getElementById('attempts').textContent=0;
         document.getElementById('aiHighScore').textContent=0;
-        qTable={};initQ();explore=0.20;
+        qTable={};initQ();explore=0.25;
         restart();
         alert('AI训练数据已重置');
     }
