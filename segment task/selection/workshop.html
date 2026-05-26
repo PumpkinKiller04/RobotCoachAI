@@ -424,6 +424,7 @@
             const key = card.dataset.sensor;
             sensors[key] = true;
             updateEquipTags();
+            drawTPV(); // 重绘以移除颠簸路段标记
             equipOverlay.classList.add('hidden');
             statusText.textContent = '已安装 ' + sensorCount() + ' 个传感器，点击试跑';
             statusText.style.color = '#64748b';
