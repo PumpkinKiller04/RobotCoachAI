@@ -1,5 +1,3 @@
-import { Readable } from 'node:stream';
-
 const API_BASE = 'https://api.siliconflow.cn/v1';
 const DEFAULT_MODEL = 'Pro/moonshotai/Kimi-K2.6';
 
