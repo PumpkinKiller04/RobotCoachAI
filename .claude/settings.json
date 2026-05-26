@@ -33,7 +33,8 @@
       "Bash(node --check -)",
       "Bash(echo \"Exit: $?\")",
       "Bash(node --check /tmp/course_script2.js)",
-      "Bash(node --check /tmp/course_script3.js)"
+      "Bash(node --check /tmp/course_script3.js)",
+      "Bash(node --check /tmp/course_script4.js)"
     ]
   }
 }
