@@ -1409,26 +1409,19 @@ ${(() => {
 注意：报告要精简，根据学生的实际正确率数据来写，语气要鼓励性。`;
             
             try {
-                const apiKey = localStorage.getItem('ai_token') || 'sk-xmpjjillfsfgaklhpvxihtfpsivxhmihscpohlbtzfupujiv';
                 const model = localStorage.getItem('ai_model') || 'deepseek-ai/DeepSeek-V4-Flash';
-                
-                const response = await fetch('https://api.siliconflow.cn/v1/chat/completions', {
+
+                const response = await fetch('/api/report', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + apiKey
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         model: model,
                         messages: [
                             { role: 'system', content: '你是一位AI学习教练，善于分析学生的学习数据并给出鼓励和建议。' },
                             { role: 'user', content: reportPrompt }
-                        ],
-                        stream: false
+                        ]
                     })
                 });
-                
-                console.log('AI API响应状态:', response.status);
                 
                 if (response.ok) {
                     const data = await response.json();
