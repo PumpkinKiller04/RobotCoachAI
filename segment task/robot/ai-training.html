@@ -164,15 +164,15 @@ function loop(){
 // ============ AI决策（每帧） ============
 function aiDecide(){
     var ob=getClosest();
-    if(!ob){curObsId=-1;history=[];return;}
+    if(!ob){curObsId=-1;resetTrack();return;}
     var dist=ob.x-RX;
-    if(dist<=0||dist>360){curObsId=-1;history=[];return;}
+    if(dist<=0||dist>360){curObsId=-1;resetTrack();return;}
 
-    // 新障碍物 → 清空决策历史
+    // 新障碍物 → 重置追踪
     if(ob._uid!==curObsId){
         curObsId=ob._uid;
         settled=false;
-        history=[];
+        resetTrack();
     }
     if(settled)return;
 
@@ -188,14 +188,24 @@ function aiDecide(){
         action=q.jump>q.wait?'jump':'wait';
     }
 
-    // 记录决策
-    history.push({state:state,action:action});
+    // 记录第一次起跳的状态（最关键决策）
+    if(action==='jump'&&!robot.jumping&&!firstJumpState){
+        firstJumpState=state;
+        firstJumpAction='jump';
+    }
+    // 记录离障碍物最近的"该跳不跳"状态
+    if(!robot.jumping){
+        closestGroundState=state;
+    }
 
     // 执行跳跃
     if(action==='jump'&&!robot.jumping){
         robot.vy=JV;
         robot.jumping=true;
     }
+}
+function resetTrack(){
+    firstJumpState=null;firstJumpAction=null;closestGroundState=null;
 }
 
 // ============ 障碍物 ============
