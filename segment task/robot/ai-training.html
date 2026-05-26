@@ -1,157 +1,125 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>AI训练模式</title>
-        <style>
-            body {
-                margin: 0;
-                padding: 0;
-                font-family: Arial, sans-serif;
-                background-color: transparent;
-                display: flex;
-                justify-content: center;
-                align-items: flex-start;
-                min-height: 100%;
-                overflow: hidden;
-            }
-
-            .game-container {
-                position: relative;
-                text-align: center;
-                background-color: #000;
-                border-radius: 10px;
-                padding: 15px;
-                box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
-                display: inline-block;
-            }
-
-            .game-title {
-                color: #00ff00;
-                font-size: 18px;
-                font-weight: bold;
-                margin-bottom: 12px;
-                text-shadow: 0 0 10px #00ff00;
-            }
-
-            canvas {
-                background-color: #111;
-                border: 2px solid #00ff00;
-                border-radius: 5px;
-            }
-
-            .game-info {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 8px;
-                color: #00ff00;
-                font-size: 13px;
-            }
-
-            .score {
-                font-weight: bold;
-            }
-
-            .instructions {
-                font-style: italic;
-            }
-
-            .game-over {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background-color: rgba(0, 0, 0, 0.8);
-                border: 2px solid #ff0000;
-                border-radius: 10px;
-                padding: 20px;
-                color: #ff0000;
-                display: none;
-            }
-
-            .game-over-text {
-                font-size: 24px;
-                font-weight: bold;
-                margin-bottom: 10px;
-            }
-
-            .final-score {
-                margin-bottom: 20px;
-                font-size: 18px;
-            }
-
-            #restartButton {
-                background-color: #ff0000;
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                font-size: 16px;
-                border-radius: 5px;
-                cursor: pointer;
-                transition: background-color 0.3s;
-            }
-
-            #restartButton:hover {
-                background-color: #cc0000;
-            }
-
-            .ai-stats {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 8px;
-                color: #00ff00;
-                font-size: 12px;
-            }
-
-            .attempts, .ai-high-score {
-                font-weight: bold;
-            }
-            
-            #resetAiButton {
-                background-color: #ff6600;
-                color: white;
-                border: none;
-                padding: 4px 8px;
-                font-size: 10px;
-                border-radius: 3px;
-                cursor: pointer;
-                margin-left: 8px;
-            }
-            
-            #resetAiButton:hover {
-                background-color: #cc5200;
-            }
-
-            .start-screen {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background-color: rgba(0, 0, 0, 0.8);
-                border: 2px solid #00ff00;
-                border-radius: 8px;
-                padding: 15px;
-                color: #00ff00;
-            }
-
-            .start-text {
-                font-size: 16px;
-                font-weight: bold;
-            }
-        </style>
-    </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI训练模式</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100%;
+            overflow: hidden;
+        }
+        .game-container {
+            position: relative;
+            text-align: center;
+            background-color: #000;
+            border-radius: 10px;
+            padding: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+            display: inline-block;
+        }
+        .game-title {
+            color: #00ff00;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        canvas {
+            background-color: #111;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+        }
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            color: #00ff00;
+            font-size: 12px;
+        }
+        .score { font-weight: bold; }
+        .instructions { font-style: italic; }
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.85);
+            border: 2px solid #ff0000;
+            border-radius: 10px;
+            padding: 18px;
+            color: #ff0000;
+            display: none;
+            z-index: 10;
+        }
+        .game-over-text {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .final-score { margin-bottom: 16px; font-size: 16px; }
+        #restartButton {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #restartButton:hover { background-color: #cc0000; }
+        .ai-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+            color: #00ff00;
+            font-size: 11px;
+        }
+        #resetAiButton {
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            padding: 3px 7px;
+            font-size: 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        #resetAiButton:hover { background-color: #cc5200; }
+        .start-screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.85);
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+            padding: 14px;
+            color: #00ff00;
+            z-index: 10;
+        }
+        .start-text { font-size: 15px; font-weight: bold; }
+    </style>
+</head>
 <body>
     <div class="game-container">
         <div class="game-title">AI训练模式</div>
-        <canvas id="gameCanvas" width="480" height="180"></canvas>
+        <canvas id="gameCanvas" width="480" height="200"></canvas>
         <div class="game-info">
             <div class="score">得分: <span id="score">0</span></div>
             <div class="instructions">AI正在自动训练...</div>
         </div>
         <div class="ai-stats" id="aiStats">
-            <div class="attempts">尝试次数: <span id="attempts">0</span></div>
-            <div class="ai-high-score">最高得分: <span id="aiHighScore">0</span></div>
+            <span>尝试: <span id="attempts">0</span></span>
+            <span>最高: <span id="aiHighScore">0</span></span>
             <button id="resetAiButton">重置AI训练</button>
         </div>
         <div class="game-over" id="gameOver">
@@ -163,16 +131,17 @@
             <div class="start-text">按空格键开始AI训练</div>
         </div>
     </div>
+
     <script>
         const GAME_CONSTANTS = {
             WIDTH: 480,
-            HEIGHT: 180,
+            HEIGHT: 200,
             GRAVITY: 0.6,
-            JUMP_FORCE: -11,
-            GROUND_Y: 115,
-            BASE_SPEED: 4,
+            JUMP_FORCE: -11.5,
+            GROUND_Y: 135,
+            BASE_SPEED: 5,
             MAX_SPEED: 10,
-            SPEED_INCREMENT: 0.01
+            SPEED_INCREMENT: 0.005
         };
 
         const GAME_STATES = {
@@ -181,55 +150,33 @@
             GAME_OVER: 'gameOver'
         };
 
-        let gameState = GAME_STATES.START;
-        let currentSpeed = 8;
-        let scoreTimer = 0;
-        let scoreInterval = 100;
-
-        let mode2Data = {
-            score: 0,
-            attempts: 0,
-            highScore: 0
-        };
-
-        let score = 0;
-
         const Q_LEARNING = {
             LEARNING_RATE: 0.1,
             DISCOUNT_FACTOR: 0.95,
-            EXPLORATION_RATE: 0.1,
-            EXPLORATION_DECAY: 0.999,
-            MIN_EXPLORATION: 0.01
+            EXPLORATION_RATE: 0.15,
+            EXPLORATION_DECAY: 0.9995,
+            MIN_EXPLORATION: 0.02
         };
-
-        let qTable = {};
-
-        function initializeQTableWithCommonSense() {
-            for (let distance = 0; distance < 10; distance++) {
-                for (let speed = 0; speed < 5; speed++) {
-                    for (let jump = 0; jump < 2; jump++) {
-                        let normalState = `${distance},0,${speed},${jump}`;
-                        qTable[normalState] = { jump: 0, wait: 0 };
-                        let beamState = `${distance},1,${speed},${jump}`;
-                        qTable[beamState] = { jump: -50, wait: 0 };
-                    }
-                }
-            }
-        }
-
-        initializeQTableWithCommonSense();
 
         const STATE_PARAMS = {
             DISTANCE_BUCKETS: 10,
             SPEED_BUCKETS: 5,
-            MAX_DISTANCE: 300
+            MAX_DISTANCE: 280
         };
 
+        let gameState = GAME_STATES.START;
+        let currentSpeed = 7;
+        let score = 0;
+        let scoreTimer = 0;
+        let scoreInterval = 100;
+        let aiAttempts = 0;
+        let aiHighScore = 0;
+
         let robot = {
-            x: 35,
+            x: 40,
             y: GAME_CONSTANTS.GROUND_Y,
-            width: 32,
-            height: 32,
+            width: 40,
+            height: 40,
             velocity: 0,
             isJumping: false,
             frame: 0
@@ -237,8 +184,10 @@
 
         let obstacles = [];
         let obstaclesTimer = 0;
-        let obstaclesInterval = 800;
+        let obstaclesInterval = 900;
         let obstacleCounter = 0;
+
+        let qTable = {};
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -246,12 +195,39 @@
         const scoreElement = document.getElementById('score');
         const finalScoreElement = document.getElementById('finalScore');
         const gameOverElement = document.getElementById('gameOver');
+        const startScreenElement = document.getElementById('startScreen');
         const restartButton = document.getElementById('restartButton');
 
         restartButton.addEventListener('click', restartGame);
         document.addEventListener('keydown', handleKeyDown);
 
-        const startScreenElement = document.getElementById('startScreen');
+        document.getElementById('resetAiButton').addEventListener('click', function() {
+            if (confirm('确定要重置AI训练数据吗？这将清空所有训练进度。')) {
+                aiAttempts = 0;
+                aiHighScore = 0;
+                document.getElementById('attempts').textContent = 0;
+                document.getElementById('aiHighScore').textContent = 0;
+                qTable = {};
+                initQTable();
+                Q_LEARNING.EXPLORATION_RATE = 0.15;
+                restartGame();
+                alert('AI训练数据已重置');
+            }
+        });
+
+        function initQTable() {
+            for (let d = 0; d < STATE_PARAMS.DISTANCE_BUCKETS; d++) {
+                for (let s = 0; s < STATE_PARAMS.SPEED_BUCKETS; s++) {
+                    for (let j = 0; j < 2; j++) {
+                        // 地面障碍物：正常从零开始
+                        qTable[d + ',0,' + s + ',' + j] = { jump: 0, wait: 0 };
+                        // 横梁障碍物：跳跃初始化为负值，AI 学会不跳
+                        qTable[d + ',1,' + s + ',' + j] = { jump: -50, wait: 0 };
+                    }
+                }
+            }
+        }
+        initQTable();
 
         function handleKeyDown(event) {
             if (event.code === 'Space') {
@@ -263,22 +239,12 @@
             }
         }
 
-        document.getElementById('resetAiButton').addEventListener('click', () => {
-            if (confirm('确定要重置AI训练数据吗？这将清空所有训练进度。')) {
-                resetAiTraining();
-                qTable = {};
-                initializeQTableWithCommonSense();
-                restartGame();
-                alert('AI训练数据已重置');
-            }
-        });
-
-        function gameLoop(timestamp) {
+        function gameLoop() {
             ctx.clearRect(0, 0, GAME_CONSTANTS.WIDTH, GAME_CONSTANTS.HEIGHT);
             drawBackground();
 
-            let previousState = getState();
-            let action = aiTakeAction();
+            var previousState = getState();
+            var action = aiTakeAction();
 
             switch (gameState) {
                 case GAME_STATES.START:
@@ -293,10 +259,9 @@
                     updateScore();
 
                     if (previousState && action) {
-                        const nextState = getState();
-                        const reward = calculateReward();
+                        var nextState = getState();
+                        var reward = calculateReward();
                         updateQTable(previousState, action, reward, nextState);
-
                         if (Q_LEARNING.EXPLORATION_RATE > Q_LEARNING.MIN_EXPLORATION) {
                             Q_LEARNING.EXPLORATION_RATE *= Q_LEARNING.EXPLORATION_DECAY;
                         }
@@ -305,36 +270,37 @@
                 case GAME_STATES.GAME_OVER:
                     drawRobot();
                     drawObstacles();
-                    
-                    mode2Data.attempts++;
-                    if (score > mode2Data.highScore) {
-                        mode2Data.highScore = score;
-                    }
-
-                    document.getElementById('attempts').textContent = mode2Data.attempts;
-                    document.getElementById('aiHighScore').textContent = mode2Data.highScore;
-
+                    aiAttempts++;
+                    if (score > aiHighScore) aiHighScore = score;
+                    document.getElementById('attempts').textContent = aiAttempts;
+                    document.getElementById('aiHighScore').textContent = aiHighScore;
                     restartGame();
                     break;
+            }
+
+            // 每10帧更新探索率显示
+            if (aiAttempts > 0 && aiAttempts % 10 === 0 && gameState === GAME_STATES.PLAYING) {
+                // 静默更新
             }
 
             requestAnimationFrame(gameLoop);
         }
 
         function drawBackground() {
+            var gy = GAME_CONSTANTS.GROUND_Y;
             ctx.fillStyle = '#111';
-            ctx.fillRect(0, 0, GAME_CONSTANTS.WIDTH, GAME_CONSTANTS.GROUND_Y);
+            ctx.fillRect(0, 0, GAME_CONSTANTS.WIDTH, gy);
             ctx.fillStyle = '#333';
-            ctx.fillRect(0, GAME_CONSTANTS.GROUND_Y, GAME_CONSTANTS.WIDTH, GAME_CONSTANTS.HEIGHT - GAME_CONSTANTS.GROUND_Y);
-            ctx.strokeStyle = '#555';
+            ctx.fillRect(0, gy, GAME_CONSTANTS.WIDTH, GAME_CONSTANTS.HEIGHT - gy);
+            ctx.strokeStyle = '#444';
             ctx.lineWidth = 1;
-            for (let x = 0; x < GAME_CONSTANTS.WIDTH; x += 14) {
+            for (var x = 0; x < GAME_CONSTANTS.WIDTH; x += 16) {
                 ctx.beginPath();
                 ctx.moveTo(x, 0);
-                ctx.lineTo(x, GAME_CONSTANTS.GROUND_Y);
+                ctx.lineTo(x, gy);
                 ctx.stroke();
             }
-            for (let y = 0; y < GAME_CONSTANTS.GROUND_Y; y += 14) {
+            for (var y = 0; y < gy; y += 16) {
                 ctx.beginPath();
                 ctx.moveTo(0, y);
                 ctx.lineTo(GAME_CONSTANTS.WIDTH, y);
@@ -343,48 +309,48 @@
         }
 
         function drawRobot() {
+            var rx = robot.x, ry = robot.y, rh = robot.height, rw = robot.width;
+            // 身体
             ctx.fillStyle = '#00ff00';
-            ctx.fillRect(robot.x, robot.y - robot.height, robot.width, robot.height);
+            ctx.fillRect(rx, ry - rh, rw, rh);
+            // 头部
             ctx.fillStyle = '#00cc00';
-            ctx.fillRect(robot.x + 10, robot.y - robot.height - 10, 12, 10);
+            ctx.fillRect(rx + 12, ry - rh - 13, 16, 13);
+            // 眼睛
             ctx.fillStyle = '#000';
-            ctx.fillRect(robot.x + 13, robot.y - robot.height - 7, 3, 3);
-            ctx.fillRect(robot.x + 16, robot.y - robot.height - 7, 3, 3);
-
+            ctx.fillRect(rx + 15, ry - rh - 9, 4, 4);
+            ctx.fillRect(rx + 21, ry - rh - 9, 4, 4);
+            // 手臂
+            ctx.fillStyle = '#00ff00';
             if (robot.isJumping) {
-                ctx.fillStyle = '#00ff00';
-                ctx.fillRect(robot.x - 3, robot.y - robot.height + 6, 3, 10);
-                ctx.fillRect(robot.x + robot.width, robot.y - robot.height + 6, 3, 10);
+                ctx.fillRect(rx - 4, ry - rh + 8, 4, 12);
+                ctx.fillRect(rx + rw, ry - rh + 8, 4, 12);
             } else {
+                if (robot.frame % 2 === 0) {
+                    ctx.fillRect(rx - 4, ry - rh + 4, 4, 12);
+                    ctx.fillRect(rx + rw, ry - rh + 12, 4, 12);
+                } else {
+                    ctx.fillRect(rx - 4, ry - rh + 12, 4, 12);
+                    ctx.fillRect(rx + rw, ry - rh + 4, 4, 12);
+                }
+            }
+            // 腿
+            if (!robot.isJumping) {
                 ctx.fillStyle = '#00ff00';
                 if (robot.frame % 2 === 0) {
-                    ctx.fillRect(robot.x - 3, robot.y - robot.height + 3, 3, 10);
-                    ctx.fillRect(robot.x + robot.width, robot.y - robot.height + 10, 3, 10);
+                    ctx.fillRect(rx + 8, ry, 8, 12);
+                    ctx.fillRect(rx + 24, ry - 4, 8, 12);
                 } else {
-                    ctx.fillRect(robot.x - 3, robot.y - robot.height + 10, 3, 10);
-                    ctx.fillRect(robot.x + robot.width, robot.y - robot.height + 3, 3, 10);
+                    ctx.fillRect(rx + 8, ry - 4, 8, 12);
+                    ctx.fillRect(rx + 24, ry, 8, 12);
                 }
             }
-
-            if (!robot.isJumping) {
-                if (robot.frame % 2 === 0) {
-                    ctx.fillStyle = '#00ff00';
-                    ctx.fillRect(robot.x + 6, robot.y, 6, 10);
-                    ctx.fillRect(robot.x + 20, robot.y - 3, 6, 10);
-                } else {
-                    ctx.fillStyle = '#00ff00';
-                    ctx.fillRect(robot.x + 6, robot.y - 3, 6, 10);
-                    ctx.fillRect(robot.x + 20, robot.y, 6, 10);
-                }
-            }
-
             robot.frame++;
         }
 
         function updateRobot() {
             robot.velocity += GAME_CONSTANTS.GRAVITY;
             robot.y += robot.velocity;
-
             if (robot.y > GAME_CONSTANTS.GROUND_Y) {
                 robot.y = GAME_CONSTANTS.GROUND_Y;
                 robot.velocity = 0;
@@ -393,25 +359,26 @@
         }
 
         function jump() {
-            robot.velocity = GAME_CONSTANTS.JUMP_FORCE;
-            robot.isJumping = true;
+            if (!robot.isJumping) {
+                robot.velocity = GAME_CONSTANTS.JUMP_FORCE;
+                robot.isJumping = true;
+            }
         }
 
         function createObstacle() {
             obstacleCounter++;
-            let type;
-
+            var type;
+            // 每4个障碍物中的第4个是横梁，形成可学习的规律
             if (obstacleCounter % 4 === 0) {
-                type = { width: 70, height: 14, color: '#ff00ff', type: 'beam', y: GAME_CONSTANTS.GROUND_Y - 65 };
+                type = { width: 90, height: 16, color: '#ff00ff', type: 'beam', y: GAME_CONSTANTS.GROUND_Y - 72 };
             } else {
-                const groundObstacles = [
-                    { width: 20, height: 26, color: '#ff0000', type: 'ground' },
-                    { width: 26, height: 20, color: '#ffaa00', type: 'ground' },
-                    { width: 16, height: 32, color: '#0000ff', type: 'ground' }
+                var groundObs = [
+                    { width: 24, height: 34, color: '#ff0000', type: 'ground' },
+                    { width: 32, height: 26, color: '#ffaa00', type: 'ground' },
+                    { width: 20, height: 42, color: '#0000ff', type: 'ground' }
                 ];
-                type = groundObstacles[Math.floor(Math.random() * groundObstacles.length)];
+                type = groundObs[Math.floor(Math.random() * groundObs.length)];
             }
-
             obstacles.push({
                 x: GAME_CONSTANTS.WIDTH,
                 y: type.type === 'beam' ? type.y : GAME_CONSTANTS.GROUND_Y - type.height,
@@ -425,15 +392,12 @@
 
         function updateObstacles() {
             obstaclesTimer += 16;
-
             if (obstaclesTimer >= obstaclesInterval) {
                 createObstacle();
                 obstaclesTimer = 0;
             }
-
-            for (let i = 0; i < obstacles.length; i++) {
+            for (var i = 0; i < obstacles.length; i++) {
                 obstacles[i].x -= obstacles[i].speed;
-
                 if (obstacles[i].x + obstacles[i].width < 0) {
                     obstacles.splice(i, 1);
                     i--;
@@ -442,33 +406,34 @@
         }
 
         function drawObstacles() {
-            for (let obstacle of obstacles) {
-                ctx.fillStyle = obstacle.color;
-                ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
-                ctx.fillStyle = '#000';
-                ctx.fillRect(obstacle.x + 3, obstacle.y + 3, obstacle.width - 6, obstacle.height - 6);
+            for (var i = 0; i < obstacles.length; i++) {
+                var ob = obstacles[i];
+                ctx.fillStyle = ob.color;
+                ctx.fillRect(ob.x, ob.y, ob.width, ob.height);
+                ctx.fillStyle = 'rgba(0,0,0,0.35)';
+                ctx.fillRect(ob.x + 4, ob.y + 3, ob.width - 8, ob.height - 6);
             }
         }
 
         function checkCollision() {
-            for (let obstacle of obstacles) {
-                if (obstacle.type === 'beam') {
-                    if (
-                        robot.x < obstacle.x + obstacle.width &&
-                        robot.x + robot.width > obstacle.x &&
-                        robot.y - robot.height < obstacle.y + obstacle.height &&
-                        robot.isJumping
-                    ) {
+            for (var i = 0; i < obstacles.length; i++) {
+                var ob = obstacles[i];
+                if (ob.type === 'beam') {
+                    // 横梁：跳跃时碰到才死，不跳就能安全通过
+                    if (robot.isJumping &&
+                        robot.x < ob.x + ob.width &&
+                        robot.x + robot.width > ob.x &&
+                        robot.y - robot.height < ob.y + ob.height &&
+                        robot.y > ob.y) {
                         gameState = GAME_STATES.GAME_OVER;
                         break;
                     }
                 } else {
-                    if (
-                        robot.x < obstacle.x + obstacle.width &&
-                        robot.x + robot.width > obstacle.x &&
-                        robot.y - robot.height < obstacle.y + obstacle.height &&
-                        robot.y > obstacle.y
-                    ) {
+                    // 地面障碍物：必须跳过去
+                    if (robot.x < ob.x + ob.width &&
+                        robot.x + robot.width > ob.x &&
+                        robot.y - robot.height < ob.y + ob.height &&
+                        robot.y > ob.y) {
                         gameState = GAME_STATES.GAME_OVER;
                         break;
                     }
@@ -481,7 +446,6 @@
             if (scoreTimer >= scoreInterval) {
                 score++;
                 scoreElement.textContent = score;
-                mode2Data.score = score;
                 scoreTimer = 0;
             }
         }
@@ -489,32 +453,30 @@
         function restartGame() {
             gameState = GAME_STATES.PLAYING;
             score = 0;
-            scoreElement.textContent = score;
-            currentSpeed = 8;
+            scoreElement.textContent = 0;
+            currentSpeed = 7;
             robot.y = GAME_CONSTANTS.GROUND_Y;
             robot.velocity = 0;
             robot.isJumping = false;
             obstacles = [];
             obstaclesTimer = 0;
             obstacleCounter = 0;
-            obstaclesInterval = 800;
+            obstaclesInterval = 900;
             gameOverElement.style.display = 'none';
+            startScreenElement.style.display = 'none';
         }
 
         function getState() {
-            let closestObstacle = null;
-            let minDistance = Infinity;
-
-            for (let obstacle of obstacles) {
-                if (obstacle.x > robot.x && obstacle.x - robot.x < minDistance) {
-                    minDistance = obstacle.x - robot.x;
-                    closestObstacle = obstacle;
+            var closestObstacle = null;
+            var minDistance = Infinity;
+            for (var i = 0; i < obstacles.length; i++) {
+                if (obstacles[i].x > robot.x && (obstacles[i].x - robot.x) < minDistance) {
+                    minDistance = obstacles[i].x - robot.x;
+                    closestObstacle = obstacles[i];
                 }
             }
-
-            let distanceBucket = 0;
-            let obstacleType = 0;
-
+            var distanceBucket = 0;
+            var obstacleType = 0;
             if (closestObstacle) {
                 distanceBucket = Math.min(
                     STATE_PARAMS.DISTANCE_BUCKETS - 1,
@@ -522,47 +484,36 @@
                 );
                 obstacleType = closestObstacle.type === 'beam' ? 1 : 0;
             }
-
-            let speedBucket = Math.min(
+            var speedBucket = Math.min(
                 STATE_PARAMS.SPEED_BUCKETS - 1,
                 Math.floor((currentSpeed - GAME_CONSTANTS.BASE_SPEED) / ((GAME_CONSTANTS.MAX_SPEED - GAME_CONSTANTS.BASE_SPEED) / STATE_PARAMS.SPEED_BUCKETS))
             );
-
-            let jumpState = robot.isJumping ? 1 : 0;
-
-            return `${distanceBucket},${obstacleType},${speedBucket},${jumpState}`;
+            var jumpState = robot.isJumping ? 1 : 0;
+            return distanceBucket + ',' + obstacleType + ',' + speedBucket + ',' + jumpState;
         }
 
         function selectAction(state) {
             if (Math.random() < Q_LEARNING.EXPLORATION_RATE) {
                 return Math.random() > 0.5 ? 'jump' : 'wait';
-            } else {
-                if (!qTable[state]) {
-                    qTable[state] = { jump: 0, wait: 0 };
-                }
-                return qTable[state].jump > qTable[state].wait ? 'jump' : 'wait';
             }
-        }
-
-        function updateQTable(state, action, reward, nextState) {
             if (!qTable[state]) {
                 qTable[state] = { jump: 0, wait: 0 };
             }
+            return qTable[state].jump > qTable[state].wait ? 'jump' : 'wait';
+        }
 
-            if (!qTable[nextState]) {
-                qTable[nextState] = { jump: 0, wait: 0 };
-            }
-
-            const bestNextAction = qTable[nextState].jump > qTable[nextState].wait ? 'jump' : 'wait';
-            const tdTarget = reward + Q_LEARNING.DISCOUNT_FACTOR * qTable[nextState][bestNextAction];
-            const tdError = tdTarget - qTable[state][action];
+        function updateQTable(state, action, reward, nextState) {
+            if (!qTable[state]) qTable[state] = { jump: 0, wait: 0 };
+            if (!qTable[nextState]) qTable[nextState] = { jump: 0, wait: 0 };
+            var bestNext = qTable[nextState].jump > qTable[nextState].wait ? 'jump' : 'wait';
+            var tdTarget = reward + Q_LEARNING.DISCOUNT_FACTOR * qTable[nextState][bestNext];
+            var tdError = tdTarget - qTable[state][action];
             qTable[state][action] += Q_LEARNING.LEARNING_RATE * tdError;
         }
 
         function calculateReward() {
-            let reward = 0;
-            reward += 0.1;
-            reward += score * 0.01;
+            var reward = 0.1;
+            reward += score * 0.02;
             if (gameState === GAME_STATES.GAME_OVER) {
                 reward -= 10;
             }
@@ -570,22 +521,10 @@
         }
 
         function aiTakeAction() {
-            const state = getState();
-            const action = selectAction(state);
-
-            if (action === 'jump' && !robot.isJumping) {
-                jump();
-            }
-
+            var state = getState();
+            var action = selectAction(state);
+            if (action === 'jump') jump();
             return action;
-        }
-
-        function resetAiTraining() {
-            mode2Data.attempts = 0;
-            mode2Data.highScore = 0;
-            mode2Data.score = 0;
-            document.getElementById('attempts').textContent = mode2Data.attempts;
-            document.getElementById('aiHighScore').textContent = mode2Data.highScore;
         }
 
         requestAnimationFrame(gameLoop);
