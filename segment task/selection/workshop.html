@@ -725,6 +725,7 @@
           (key) => {
             sensors[key] = true;
             updateEquipTags();
+            drawTPV();
             statusText.textContent = '已安装 ' + sensorCount() + ' 个传感器，点击试跑';
             statusText.style.color = '#64748b';
             setTimeout(() => startRun(), 400);
@@ -739,6 +740,7 @@
           (key) => {
             sensors[key] = true;
             updateEquipTags();
+            drawTPV();
             statusText.textContent = '已安装 ' + sensorCount() + ' 个传感器，点击试跑';
             statusText.style.color = '#64748b';
             setTimeout(() => startRun(), 400);
