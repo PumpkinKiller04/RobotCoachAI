@@ -263,17 +263,15 @@ function checkCol(){
     }
 }
 
-// ============ 学习：只更新一次关键决策 ============
+// ============ 学习：泛化到相邻距离桶，一次经验教会多个状态 ============
 function learnFromOutcome(reward){
     if(jumpState && jumpAction){
-        // 跳了：更新起跳时的状态
-        var q=qGet(jumpState);
-        q[jumpAction]+=LR*(reward-q[jumpAction]);
+        // 跳了：更新起跳状态 + 相邻距离桶泛化
+        updateWithGeneralization(jumpState,jumpAction,reward);
         updateDebug(jumpAction,jumpState,reward);
     }else if(closestWaitState && reward>0){
-        // 没跳但通过了(横梁正确躲避)：奖励wait
-        var q3=qGet(closestWaitState);
-        q3.wait+=LR*(reward-q3.wait);
+        // 没跳但通过了(横梁)：奖励wait + 泛化
+        updateWithGeneralization(closestWaitState,'wait',reward);
         updateDebug('wait(未跳)',closestWaitState,reward);
     }else if(closestWaitState && reward<0){
         // 没跳撞了：找"最该跳却没跳"的距离桶惩罚wait
@@ -288,12 +286,27 @@ function learnFromOutcome(reward){
             }
         }
         if(!bestS)bestS=closestWaitState;
-        var q2=qGet(bestS);
-        q2.wait+=LR*(reward-q2.wait);
+        updateWithGeneralization(bestS,'wait',reward);
         updateDebug('wait(未跳)',bestS,reward);
     }
     settled=true;
-    if(explore>0.03)explore*=0.85;
+    if(explore>0.03)explore*=0.80;
+}
+
+// 一次经验同时更新相邻距离桶(±1用1/2学习率, ±2用1/4)
+function updateWithGeneralization(state,action,reward){
+    var parts=state.split(',');
+    var db=parseInt(parts[0]);
+    var obType=parts[1];
+    var jmp=parts[2];
+    for(var offset=-2;offset<=2;offset++){
+        var nd=db+offset;
+        if(nd<0||nd>5)continue;
+        var ns=nd+','+obType+','+jmp;
+        var q=qGet(ns);
+        var rate=LR/(1<<Math.abs(offset)); // LR, LR/2, LR/4
+        q[action]+=rate*(reward-q[action]);
+    }
 }
 
 // ============ 辅助 ============
