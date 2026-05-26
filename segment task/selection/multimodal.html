@@ -82,27 +82,29 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-body">
-        <div class="section-title">向AI提问</div>
-        <textarea id="questionInput" placeholder="例如：这张图片里有什么？" rows="2"></textarea>
-        <div style="display:flex;flex-wrap:wrap;gap:.375rem;margin-top:.5rem">
-          <span class="chip" onclick="setQuestion('这张图片里有什么？')">这张图片里有什么？</span>
-          <span class="chip" onclick="setQuestion('描述一下这个场景')">描述一下这个场景</span>
-          <span class="chip" onclick="setQuestion('有什么特别之处？')">有什么特别之处？</span>
+    <div class="question-answer-row">
+      <div class="card" style="flex:1">
+        <div class="card-body">
+          <div class="section-title">向AI提问</div>
+          <textarea id="questionInput" placeholder="例如：这张图片里有什么？" rows="4"></textarea>
+          <div style="display:flex;flex-wrap:wrap;gap:.375rem;margin-top:.5rem">
+            <span class="chip" onclick="setQuestion('这张图片里有什么？')">这张图片里有什么？</span>
+            <span class="chip" onclick="setQuestion('描述一下这个场景')">描述一下这个场景</span>
+            <span class="chip" onclick="setQuestion('有什么特别之处？')">有什么特别之处？</span>
+          </div>
+          <button id="submitBtn" class="btn btn-primary w-full" style="margin-top:.75rem" onclick="submitQuestion()">提交问题</button>
         </div>
-        <button id="submitBtn" class="btn btn-primary w-full" style="margin-top:.75rem" onclick="submitQuestion()">提交问题</button>
       </div>
-    </div>
 
-    <div class="card">
-      <div class="card-body">
-        <div class="section-title">AI回答</div>
-        <div id="responseArea" class="response-area">
-          <p class="text-sm text-muted" id="responsePlaceholder">AI的回答将显示在这里...</p>
-        </div>
-        <div id="loadingArea" class="hidden loading-area">
-          <p class="text-sm">AI正在思考中<span class="typing-cursor">...</span></p>
+      <div class="card" style="flex:1">
+        <div class="card-body">
+          <div class="section-title">AI回答</div>
+          <div id="responseArea" class="response-area">
+            <p class="text-sm text-muted" id="responsePlaceholder">AI的回答将显示在这里...</p>
+          </div>
+          <div id="loadingArea" class="hidden loading-area">
+            <p class="text-sm">AI正在思考中<span class="typing-cursor">...</span></p>
+          </div>
         </div>
       </div>
     </div>
