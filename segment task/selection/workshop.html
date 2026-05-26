@@ -500,8 +500,8 @@
         if (!sensors.imu) {
           robot.y += Math.sin(frame * 0.12) * (sensors.lidar ? 1.0 : 0.6);
         }
-        // 仅激光雷达：下直道接近弯道入口时提前超时
-        if (sensors.lidar && !sensors.imu && robot.x <= T.leftX + 50) {
+        // 仅激光雷达：下直道跑一段就提示超时（弯道太慢）
+        if (sensors.lidar && !sensors.imu && robot.x <= T.leftX + 130) {
           animState = 'done';
           endRun('timeout');
           return;
