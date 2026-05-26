@@ -1027,26 +1027,17 @@
 只返回JSON数组：[{"title":"","desc":"","url":""},...]，不要其他文字`;
 
             try {
-                const apiKey = 'sk-xmpjjillfsfgaklhpvxihtfpsivxhmihscpohlbtzfupujiv';
                 const model = 'deepseek-ai/DeepSeek-V4-Flash';
-                
-                console.log('调用API:', model);
-                
-                const response = await fetch('https://api.siliconflow.cn/v1/chat/completions', {
+
+                const response = await fetch('/api/report', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + apiKey
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         model: model,
                         messages: [{ role: 'user', content: prompt }],
-                        stream: false,
                         max_tokens: 500
                     })
                 });
-                
-                console.log('API响应状态:', response.status);
                 
                 if (!response.ok) {
                     console.error('API请求失败:', response.status);
