@@ -770,6 +770,7 @@
             localStorage.setItem('currentModule', currentModule.toString());
             localStorage.setItem('currentCourse', currentCourse.toString());
             localStorage.setItem('currentPage', currentPage.toString());
+            updateHash();
             
             if (currentModule === 1 && currentCourse === 0) {
                 fillAnswersToPage(4);
