@@ -488,11 +488,14 @@
 
     function loop() {
       frame++;
-      fpvScroll += sensors.lidar && !sensors.imu ? 1.6 : 2.5;
+      
+      const hasAllSensors = sensors.lidar && sensors.imu && sensors.force;
+      const straightSpeed = hasAllSensors ? 0.8 : (sensors.lidar && !sensors.imu ? 0.38 : 0.55);
+      fpvScroll += hasAllSensors ? 3.5 : (sensors.lidar && !sensors.imu ? 1.6 : 2.5);
 
       if (phase === 0) {
         // 下直道：从右往左
-        robot.x -= sensors.lidar && !sensors.imu ? 0.38 : 0.55;
+        robot.x -= straightSpeed;
         if (!sensors.imu) {
           robot.y += Math.sin(frame * 0.12) * (sensors.lidar ? 1.0 : 0.6);
         }
@@ -527,8 +530,9 @@
             statusText.textContent = '上直道行驶中...';
             statusText.style.color = '#3b82f6';
           }
-        } else {
-          const speed = sensors.lidar && !sensors.imu ? 0.0042 : 0.028;
+        } else if (sensors.lidar && !sensors.imu) {
+          // 仅激光雷达：慢速跑，提前超时
+          const speed = straightSpeed / 90;
           curveT += speed;
           const theta = Math.PI / 2 + curveT;
           const r = T.curveR;
@@ -536,9 +540,21 @@
           robot.y = T.cy + r * Math.sin(theta);
           fpvCurve = Math.min(1, fpvCurve + 0.02);
           fpvOfftrack = 0;
-          if (!sensors.imu) {
-            robot.y += Math.sin(frame * 0.12) * 1.0;
+          robot.y += Math.sin(frame * 0.12) * 1.0;
+          if (curveT >= 1.0) {
+            animState = 'done';
+            endRun('timeout');
+            return;
           }
+        } else {
+          const speed = straightSpeed / 90;
+          curveT += speed;
+          const theta = Math.PI / 2 + curveT;
+          const r = T.curveR;
+          robot.x = T.leftX + r * Math.cos(theta);
+          robot.y = T.cy + r * Math.sin(theta);
+          fpvCurve = Math.min(1, fpvCurve + 0.02);
+          fpvOfftrack = 0;
           if (curveT >= Math.PI) {
             phase = 2;
             robot.x = T.leftX;
@@ -549,7 +565,7 @@
         }
       } else if (phase === 2) {
         // 上直道：从左往右
-        robot.x += sensors.lidar && !sensors.imu ? 0.38 : 0.55;
+        robot.x += straightSpeed;
         if (!sensors.imu) {
           robot.y += Math.sin(frame * 0.12) * (sensors.lidar ? 1.2 : 0.6);
         }
@@ -562,47 +578,27 @@
           robot.y = T.cy - T.curveR;
           statusText.textContent = '进入右弯道...';
           statusText.style.color = '#f59e0b';
-          // 颠簸路段警告
-          if (!sensors.force && sensors.lidar && sensors.imu && !bumpWarned) {
-            bumpWarned = true;
-            equipOverlayContent.innerHTML = '<div style="font-size:2.5rem;margin-bottom:.5rem">⚠️</div><h3 style="color:#e65100;font-weight:700;font-size:1.2rem;margin-bottom:.4rem">颠簸路段</h3><p style="color:#64748b;font-size:.9rem;margin-bottom:.8rem">右弯道路面颠簸，可能导致滑出赛道</p><button id="bumpContinueBtn" class="btn btn-primary" style="min-width:120px" disabled>继续 <span id="bumpCountdown">(3s)</span></button>';
-            equipOverlay.classList.remove('hidden');
-            let bumpSec = 3;
-            const cdInterval = setInterval(() => {
-              bumpSec--;
-              const cdEl = document.getElementById('bumpCountdown');
-              if (cdEl) cdEl.textContent = '(' + bumpSec + 's)';
-              if (bumpSec <= 0) {
-                clearInterval(cdInterval);
-                const btn = document.getElementById('bumpContinueBtn');
-                if (btn) { btn.disabled = false; btn.textContent = '继续'; }
-              }
-            }, 1000);
-            setTimeout(() => {
-              const btn = document.getElementById('bumpContinueBtn');
-              if (btn) btn.addEventListener('click', () => {
-                clearInterval(cdInterval);
-                equipOverlay.classList.add('hidden');
-              });
-            }, 100);
-          }
         }
       } else if (phase === 3) {
         // 右弯道：绕右侧圆心从顶部走到底部
         if (!sensors.force && sensors.lidar && sensors.imu) {
-          // LiDAR+IMU但无力觉传感器 → 颠簸
-          const speed = 0.028;
+          // LiDAR+IMU但无力觉传感器 → 颠簸冲出
+          const speed = straightSpeed / 90;
           curveT += speed;
           const theta = -Math.PI / 2 + curveT;
           const r = T.curveR;
           robot.x = T.rightX + r * Math.cos(theta);
           robot.y = T.cy + r * Math.sin(theta);
-          robot.y += Math.sin(frame * 0.3) * 1.8;
+          robot.y += Math.sin(frame * 0.3) * 4.0;
           bumpShake = Math.sin(frame * 0.5) * 4;
           fpvOfftrack = Math.min(1, fpvOfftrack + 0.03);
           fpvCurve = Math.max(0, fpvCurve - 0.015);
-          if (!isOnTrack(robot.x, robot.y) && !hadBumpIssue) {
+          if (!isOnTrack(robot.x, robot.y)) {
             hadBumpIssue = true;
+            animState = 'offtrack';
+            if (animId) { cancelAnimationFrame(animId); animId = null; }
+            endRun('bump');
+            return;
           }
           if (curveT >= Math.PI) {
             phase = 4;
@@ -610,9 +606,9 @@
             robot.y = T.cy + T.curveR;
           }
         } else if (sensors.lidar) {
-          const speed = sensors.force ? 0.028 : 0.0042;
+          const speed = straightSpeed / 90;
           curveT += speed;
-          const theta = -Math.PI / 2 + curveT;  // -π/2→0→π/2
+          const theta = -Math.PI / 2 + curveT;
           const r = T.curveR;
           robot.x = T.rightX + r * Math.cos(theta);
           robot.y = T.cy + r * Math.sin(theta);
@@ -624,7 +620,7 @@
           if (curveT >= Math.PI) {
             phase = 4;
             robot.x = T.rightX;
-            robot.y = T.cy + T.curveR;
+            robot.y = T.cy + r * Math.sin(Math.PI / 2);
           }
         } else {
           // 无LiDAR：右弯道偏离跑道
