@@ -493,7 +493,7 @@
             statusText.style.color = '#3b82f6';
           }
         } else {
-          const speed = sensors.lidar && !sensors.imu ? 0.022 : 0.028;
+          const speed = sensors.lidar && !sensors.imu ? 0.0042 : 0.028;
           curveT += speed;
           const theta = Math.PI / 2 + curveT;
           const r = T.curveR;
@@ -502,7 +502,7 @@
           fpvCurve = Math.min(1, fpvCurve + 0.02);
           fpvOfftrack = 0;
           if (!sensors.imu) {
-            robot.y += Math.sin(frame * 0.1) * 0.5;
+            robot.y += Math.sin(frame * 0.12) * 1.0;
           }
           if (curveT >= Math.PI) {
             phase = 2;
