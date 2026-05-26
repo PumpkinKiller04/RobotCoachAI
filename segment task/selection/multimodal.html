@@ -44,16 +44,13 @@
     .typing-cursor{animation:blink 1s infinite}@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
     .btn:disabled{opacity:.6;cursor:not-allowed}
     .hidden{display:none!important}
-    .response-area{min-height:8rem;padding:.75rem;background:var(--muted);border-radius:.375rem;font-size:.875rem;line-height:1.5}
+    .response-area{min-height:5rem;padding:.75rem;background:var(--muted);border-radius:.375rem;font-size:.875rem;line-height:1.5}
     .loading-area{padding:.75rem;background:var(--muted);border-radius:.375rem}
-    .chip{display:inline-flex;align-items:center;gap:.25rem;padding:.375rem .5rem;border-radius:9999px;font-size:.7rem;font-weight:500;border:1px solid var(--border);background:var(--bg);margin-bottom:.375rem;transition:all .2s}
+    .chip{display:inline-flex;align-items:center;gap:.25rem;padding:.375rem .75rem;border-radius:9999px;font-size:.75rem;font-weight:500;border:1px solid var(--border);background:var(--bg);margin-bottom:.375rem;transition:all .2s}
     .chip:hover{border-color:var(--primary);color:var(--primary)}
-    .section-title{display:flex;align-items:center;gap:.5rem;font-size:.9rem;font-weight:600;color:var(--fg);margin-bottom:.5rem}
-    .qa-split{display:flex;gap:.5rem}
-    .qa-split>*{flex:1;min-width:0}
-    @media (max-width:700px){
+    .section-title{display:flex;align-items:center;gap:.5rem;font-size:1rem;font-weight:600;color:var(--fg);margin-bottom:.75rem}
+    @media (max-width:500px){
       .source-split{flex-direction:column}
-      .qa-split{flex-direction:column}
     }
   </style>
 </head>
@@ -83,29 +80,27 @@
       </div>
     </div>
 
-    <div class="qa-split">
-      <div class="card">
-        <div class="card-body">
-          <div class="section-title">向AI提问</div>
-          <textarea id="questionInput" placeholder="例如：这张图片里有什么？" rows="3"></textarea>
-          <div style="display:flex;flex-wrap:wrap;gap:.25rem;margin-top:.375rem">
-            <span class="chip" onclick="setQuestion('这张图片里有什么？')">这张图片里有什么？</span>
-            <span class="chip" onclick="setQuestion('描述一下这个场景')">描述场景</span>
-            <span class="chip" onclick="setQuestion('有什么特别之处？')">特别之处</span>
-          </div>
-          <button id="submitBtn" class="btn btn-primary w-full" style="margin-top:.5rem" onclick="submitQuestion()">提交问题</button>
+    <div class="card">
+      <div class="card-body">
+        <div class="section-title">向AI提问</div>
+        <textarea id="questionInput" placeholder="例如：这张图片里有什么？" rows="2"></textarea>
+        <div style="display:flex;flex-wrap:wrap;gap:.375rem;margin-top:.5rem">
+          <span class="chip" onclick="setQuestion('这张图片里有什么？')">这张图片里有什么？</span>
+          <span class="chip" onclick="setQuestion('描述一下这个场景')">描述一下这个场景</span>
+          <span class="chip" onclick="setQuestion('有什么特别之处？')">有什么特别之处？</span>
         </div>
+        <button id="submitBtn" class="btn btn-primary w-full" style="margin-top:.75rem" onclick="submitQuestion()">提交问题</button>
       </div>
+    </div>
 
-      <div class="card">
-        <div class="card-body">
-          <div class="section-title">AI回答</div>
-          <div id="responseArea" class="response-area">
-            <p class="text-sm text-muted" id="responsePlaceholder">AI的回答将显示在这里...</p>
-          </div>
-          <div id="loadingArea" class="hidden loading-area">
-            <p class="text-sm">AI正在思考中<span class="typing-cursor">...</span></p>
-          </div>
+    <div class="card">
+      <div class="card-body">
+        <div class="section-title">AI回答</div>
+        <div id="responseArea" class="response-area">
+          <p class="text-sm text-muted" id="responsePlaceholder">AI的回答将显示在这里...</p>
+        </div>
+        <div id="loadingArea" class="hidden loading-area">
+          <p class="text-sm">AI正在思考中<span class="typing-cursor">...</span></p>
         </div>
       </div>
     </div>
