@@ -252,11 +252,10 @@
           content = q;
         }
 
-        var response = await fetch(API_CONFIG.baseUrl + '/chat/completions', {
+        var response = await fetch('/api/chat', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + API_CONFIG.apiKey
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             model: API_CONFIG.model,
