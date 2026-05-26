@@ -358,14 +358,13 @@
                 var ob = obstacles[i];
                 if (!(ROBOT_X < ob.x + ob.width && ROBOT_X + ROBOT_W > ob.x)) continue;
 
-                var hit = false;
-                if (ob.typeId === OT.BEAM) {
-                    hit = robot.jumping && robot.y < ob.y + ob.height && robot.y - ROBOT_H < ob.y + ob.height;
-                } else {
-                    hit = robot.y - ROBOT_H < ob.y + ob.height && robot.y > ob.y;
-                }
+                // 统一的AABB碰撞检测：机器人[head, feet] 与 障碍物[top, bottom] 重叠
+                var robotTop = robot.y - ROBOT_H;
+                var robotBottom = robot.y;
+                var obTop = ob.y;
+                var obBottom = ob.y + ob.height;
 
-                if (hit) {
+                if (robotTop < obBottom && robotBottom > obTop) {
                     if (ob._id === trackId && !trackDone) {
                         trackDone = true;
                         learn(trackState, trackAction, -25);
