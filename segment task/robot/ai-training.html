@@ -195,23 +195,28 @@
         let score = 0;
 
         const Q_LEARNING = {
-            LEARNING_RATE: 0.1,
+            LEARNING_RATE: 0.15,
             DISCOUNT_FACTOR: 0.95,
-            EXPLORATION_RATE: 0.1,
-            EXPLORATION_DECAY: 0.999,
-            MIN_EXPLORATION: 0.01
+            EXPLORATION_RATE: 0.25,
+            EXPLORATION_DECAY: 0.9993,
+            MIN_EXPLORATION: 0.02
         };
+
+        // 障碍物类型: 0=红色地面, 1=黄色地面, 2=蓝色地面, 3=横梁
+        const OBSTACLE_TYPES = { RED: 0, YELLOW: 1, BLUE: 2, BEAM: 3 };
 
         let qTable = {};
 
         function initializeQTableWithCommonSense() {
-            for (let distance = 0; distance < 10; distance++) {
-                for (let speed = 0; speed < 5; speed++) {
-                    for (let jump = 0; jump < 2; jump++) {
-                        let normalState = `${distance},0,${speed},${jump}`;
-                        qTable[normalState] = { jump: 0, wait: 0 };
-                        let beamState = `${distance},1,${speed},${jump}`;
-                        qTable[beamState] = { jump: -50, wait: 0 };
+            for (let d = 0; d < 10; d++) {
+                for (let s = 0; s < 5; s++) {
+                    for (let j = 0; j < 2; j++) {
+                        // 地面障碍物(类型0-2)：正常从零开始，AI自己试错学习
+                        for (let t = 0; t < 3; t++) {
+                            qTable[d + ',' + t + ',' + s + ',' + j] = { jump: 0, wait: 0 };
+                        }
+                        // 横梁(类型3)：跳跃初始化为负值，AI学会不跳
+                        qTable[d + ',3,' + s + ',' + j] = { jump: -50, wait: 0 };
                     }
                 }
             }
