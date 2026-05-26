@@ -134,7 +134,7 @@ document.getElementById('resetAiButton').addEventListener('click',function(){
         attempts=0;hiScore=0;
         document.getElementById('attempts').textContent=0;
         document.getElementById('aiHighScore').textContent=0;
-        qTable={};initQ();explore=0.25;
+        qTable={};initQ();explore=0.30;
         restart();
         alert('AI训练数据已重置');
     }
@@ -255,7 +255,7 @@ function checkCol(){
         var ot=ob.y,ob_b=ob.y+ob.height;
         if(rt<ob_b&&rb>ot){
             if(ob._uid===curObsId&&!settled){
-                learnFromOutcome(-60);
+                learnFromOutcome(-40);
             }
             gs='over';
             return;
@@ -358,7 +358,7 @@ var lastDebug='';
 function updateDebug(action,state,reward){
     if(!state){document.getElementById('debugPanel').innerHTML=lastDebug;return;}
     var q=qGet(state);
-    var typeNames=['红','黄','蓝','横梁'];
+    var typeNames=['地面','横梁'];
     var parts=state.split(',');
     var tn=typeNames[parseInt(parts[1])]||'?';
     var dist=parseInt(parts[0])*60;
