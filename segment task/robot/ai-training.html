@@ -107,11 +107,10 @@ var attempts=0,hiScore=0;
 var robot={x:RX,y:GY,vy:0,jumping:false,frame:0};
 var obs=[],otimer=0,ocount=0,ouid=0;
 
-// 每个障碍物只追踪最关键的一次决策
-var firstJumpState=null, firstJumpAction=null;  // 第一次起跳时的状态
-var closestGroundState=null;  // 离障碍物最近时的状态（用于惩罚"该跳不跳"）
-var curObsId=-1;
-var settled=false;
+// 每障碍物追踪：只能跳一次，记录那次决策
+var jumpState=null, jumpAction=null;   // 起跳时的状态和动作
+var closestWaitState=null;            // 最近一次地面的状态（没跳时用）
+var curObsId=-1, canJump=false, settled=false;
 
 // ============ DOM ============
 var cv=document.getElementById('gameCanvas');
@@ -163,10 +162,10 @@ function aiDecide(){
     var dist=ob.x-RX;
     if(dist<=0||dist>360){curObsId=-1;resetTrack();return;}
 
-    // 新障碍物 → 重置追踪
     if(ob._uid!==curObsId){
         curObsId=ob._uid;
         settled=false;
+        canJump=true;
         resetTrack();
     }
     if(settled)return;
@@ -183,24 +182,22 @@ function aiDecide(){
         action=q.jump>q.wait?'jump':'wait';
     }
 
-    // 记录第一次起跳的状态（最关键决策）
-    if(action==='jump'&&!robot.jumping&&!firstJumpState){
-        firstJumpState=state;
-        firstJumpAction='jump';
-    }
-    // 记录离障碍物最近的"该跳不跳"状态
+    // 在地面上时持续更新"最近等待位置"
     if(!robot.jumping){
-        closestGroundState=state;
+        closestWaitState=state;
     }
 
-    // 执行跳跃
-    if(action==='jump'&&!robot.jumping){
+    // 只能跳一次：起跳时记录状态
+    if(action==='jump'&&canJump&&!robot.jumping){
+        jumpState=state;
+        jumpAction='jump';
+        canJump=false;
         robot.vy=JV;
         robot.jumping=true;
     }
 }
 function resetTrack(){
-    firstJumpState=null;firstJumpAction=null;closestGroundState=null;
+    jumpState=null;jumpAction=null;closestWaitState=null;
 }
 
 // ============ 障碍物 ============
