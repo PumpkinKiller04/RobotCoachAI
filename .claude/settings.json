@@ -31,7 +31,8 @@
       "Read(//tmp/**)",
       "Bash(awk 'NR>=2095 && NR<=2115' /tmp/course_script.js)",
       "Bash(node --check -)",
-      "Bash(echo \"Exit: $?\")"
+      "Bash(echo \"Exit: $?\")",
+      "Bash(node --check /tmp/course_script2.js)"
     ]
   }
 }
