@@ -304,9 +304,9 @@
     function showEquipOverlay(title, subtitle, onSelect, onSkip, skipLabel) {
       const remaining = availableSensors();
       const cardDefs = {
-        lidar:   { emoji:'📡', name:'激光雷达', desc:'发射激光束测量距离，看清弯道远近', cls:'card-lidar' },
-        imu:     { emoji:'🧭', name:'IMU惯性测量', desc:'感知身体倾斜角度，保持平衡不摇晃', cls:'card-imu' },
-        force:   { emoji:'🦶', name:'力觉传感器', desc:'感知脚底触地力度，适应颠簸路面', cls:'card-force' }
+        lidar:   { emoji:'📡', name:'激光雷达', desc:'测距离 → 解决"看不清远近"', cls:'card-lidar' },
+        imu:     { emoji:'🧭', name:'IMU', desc:'感知身体倾斜 → 解决"不知道自己歪了"', cls:'card-imu' },
+        force:   { emoji:'🦶', name:'力觉传感器', desc:'感知脚底触地力度 → 解决"脚底没感觉"', cls:'card-force' }
       };
 
       let cardsHtml = '';
