@@ -73,8 +73,8 @@ var OT={RED:0,YELLOW:1,BLUE:2,BEAM:3};
 
 // ============ Q-learning：24状态(6距离×2类型×2跳跃) ============
 var qTable={};
-var explore=0.30;
-var LR=0.7;
+var explore=0.25;
+var LR=0.8;
 
 // obstacleIsBeam: 0=地面障碍, 1=横梁
 function initQ(){
@@ -134,7 +134,7 @@ document.getElementById('resetAiButton').addEventListener('click',function(){
         attempts=0;hiScore=0;
         document.getElementById('attempts').textContent=0;
         document.getElementById('aiHighScore').textContent=0;
-        qTable={};initQ();explore=0.30;
+        qTable={};initQ();explore=0.25;
         restart();
         alert('AI训练数据已重置');
     }
