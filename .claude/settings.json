@@ -35,7 +35,8 @@
       "Bash(node --check /tmp/course_script2.js)",
       "Bash(node --check /tmp/course_script3.js)",
       "Bash(node --check /tmp/course_script4.js)",
-      "Bash(node --check /tmp/course_script5.js)"
+      "Bash(node --check /tmp/course_script5.js)",
+      "Bash(node --check /tmp/course_script6.js)"
     ]
   }
 }
