@@ -273,6 +273,7 @@
                 resetAiTraining();
                 qTable = {};
                 initializeQTableWithCommonSense();
+                Q_LEARNING.EXPLORATION_RATE = 0.25;
                 restartGame();
                 alert('AI训练数据已重置');
             }
@@ -567,11 +568,10 @@
         }
 
         function calculateReward() {
-            let reward = 0;
-            reward += 0.1;
-            reward += score * 0.01;
+            let reward = 0.1;
+            reward += score * 0.02;
             if (gameState === GAME_STATES.GAME_OVER) {
-                reward -= 10;
+                reward -= 15;
             }
             return reward;
         }
