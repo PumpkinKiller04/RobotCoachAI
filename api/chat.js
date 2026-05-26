@@ -79,8 +79,16 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
     res.setHeader('Access-Control-Allow-Origin', '*');
+    res.flushHeaders();
 
-    Readable.fromWeb(response.body).pipe(res);
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      res.write(decoder.decode(value));
+    }
+    res.end();
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
