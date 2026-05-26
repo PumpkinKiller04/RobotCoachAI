@@ -324,6 +324,20 @@ function drawObs(){
         ctx.fillStyle='#000';ctx.fillRect(ob.x+3,ob.y+3,ob.width-6,ob.height-6);
     }
 }
+
+// 调试面板：显示最近一次决策和Q值
+var lastDebug='';
+function updateDebug(action,state,reward){
+    if(!state){document.getElementById('debugPanel').innerHTML=lastDebug;return;}
+    var q=qGet(state);
+    var typeNames=['红','黄','蓝','横梁'];
+    var parts=state.split(',');
+    var tn=typeNames[parseInt(parts[1])]||'?';
+    var dist=parseInt(parts[0])*60;
+    var r=reward!==undefined?' → 奖惩:'+(reward>0?'+'+reward:reward):'';
+    lastDebug='障碍:'+tn+' 距离:'+dist+'px '+action+' | Q.jump='+q.jump.toFixed(1)+' Q.wait='+q.wait.toFixed(1)+r+' | 探索率:'+(explore*100).toFixed(1)+'%';
+    document.getElementById('debugPanel').innerHTML=lastDebug;
+}
 requestAnimationFrame(loop);
 </script>
 </body>
