@@ -406,24 +406,26 @@
             obstacleCounter++;
             let type;
 
+            // 每4个障碍物中的第4个是横梁，形成可学习的规律
             if (obstacleCounter % 4 === 0) {
-                type = { width: 70, height: 14, color: '#ff00ff', type: 'beam', y: GAME_CONSTANTS.GROUND_Y - 65 };
+                type = { width: 70, height: 14, color: '#ff00ff', typeId: OBSTACLE_TYPES.BEAM, y: GAME_CONSTANTS.GROUND_Y - 65 };
             } else {
+                // 红黄蓝各有独立类型ID，AI能分别学习每种障碍物的跳跃策略
                 const groundObstacles = [
-                    { width: 20, height: 26, color: '#ff0000', type: 'ground' },
-                    { width: 26, height: 20, color: '#ffaa00', type: 'ground' },
-                    { width: 16, height: 32, color: '#0000ff', type: 'ground' }
+                    { width: 24, height: 26, color: '#ff0000', typeId: OBSTACLE_TYPES.RED },
+                    { width: 28, height: 20, color: '#ffaa00', typeId: OBSTACLE_TYPES.YELLOW },
+                    { width: 22, height: 32, color: '#0000ff', typeId: OBSTACLE_TYPES.BLUE }
                 ];
                 type = groundObstacles[Math.floor(Math.random() * groundObstacles.length)];
             }
 
             obstacles.push({
                 x: GAME_CONSTANTS.WIDTH,
-                y: type.type === 'beam' ? type.y : GAME_CONSTANTS.GROUND_Y - type.height,
+                y: type.typeId === OBSTACLE_TYPES.BEAM ? type.y : GAME_CONSTANTS.GROUND_Y - type.height,
                 width: type.width,
                 height: type.height,
                 color: type.color,
-                type: type.type,
+                typeId: type.typeId,
                 speed: currentSpeed
             });
         }
