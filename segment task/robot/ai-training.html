@@ -82,7 +82,10 @@ function initQ(){
             for(var j=0;j<2;j++){
                 var k=d+','+t+','+j;
                 var dist=d*60;
-                if(t===OT.BEAM){
+                if(j===1){
+                    // 已经在空中：jump 没效果，应偏好 wait
+                    qTable[k]={jump:-10,wait:5};
+                }else if(t===OT.BEAM){
                     // 横梁：死也不跳
                     qTable[k]={jump:-60,wait:30};
                 }else if(dist<60){
