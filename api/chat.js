@@ -69,10 +69,15 @@ export default async function handler(req, res) {
     });
 
     if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      return res.status(response.status).json({
-        error: err.error?.message || `API error ${response.status}`,
-      });
+      const body = await response.text();
+      let msg = `SiliconFlow ${response.status}`;
+      try {
+        const err = JSON.parse(body);
+        msg = err.error?.message || err.message || msg;
+      } catch (_) {
+        if (body) msg = body.slice(0, 200);
+      }
+      return res.status(response.status).json({ error: msg });
     }
 
     res.setHeader('Content-Type', 'text/event-stream');
