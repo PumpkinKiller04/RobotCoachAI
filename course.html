@@ -1087,7 +1087,7 @@
             if (!items.length || !dots.length) return;
             
             items.forEach((item, i) => {
-                item.style.display = i === currentCarouselIndex ? 'flex' : 'none';
+                item.style.display = i === currentCarouselIndex ? 'block' : 'none';
             });
             dots.forEach((dot, i) => {
                 dot.style.background = i === currentCarouselIndex ? '#ffd700' : 'rgba(255,255,255,0.5)';
