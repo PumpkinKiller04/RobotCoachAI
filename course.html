@@ -957,17 +957,27 @@
         let currentCarouselIndex = 0;
         let carouselInterval = null;
 
-        // 初始化轮播
+        // 备用数据 — 页面秒开
+        var BACKUP_NEWS = [
+            {"title":"ChatGPT看图说话","desc":"拍一张照片发给ChatGPT，它就能看懂画面内容并和你聊天讨论","summary":"AI有了眼睛"},
+            {"title":"Sora生成视频","desc":"输入一句话，AI直接生成逼真的视频片段，画面细腻到可以乱真","summary":"一句话变电影"},
+            {"title":"豆包识别万物","desc":"拍照识别植物、动物、菜品，还能翻译外文菜单和路牌","summary":"口袋里的万能眼睛"},
+            {"title":"AI作曲助手","desc":"哼一段旋律，AI帮你编曲、配器，不会乐器也能创作音乐","summary":"人人都是作曲家"},
+            {"title":"AR翻译眼镜","desc":"戴上眼镜看外文，眼前直接显示中文翻译，出国交流无障碍","summary":"打破语言壁垒"}
+        ];
+
+        // 初始化轮播 — 先用备用数据秒开，再异步刷新
         let carouselIniting = false;
         function initCarousel() {
             if (carouselIniting) return;
             carouselIniting = true;
-            const checkAndInit = () => {
-                const innerEl = document.getElementById('carouselInner');
-                const dotsEl = document.getElementById('carouselDots');
-
+            var checkAndInit = function() {
+                var innerEl = document.getElementById('carouselInner');
+                var dotsEl = document.getElementById('carouselDots');
                 if (innerEl && dotsEl) {
-                    fetchAndRender();
+                    carouselNews = BACKUP_NEWS;
+                    renderCarousel();
+                    fetchAndUpdateCarousel();
                 } else {
                     setTimeout(checkAndInit, 200);
                 }
@@ -975,27 +985,13 @@
             checkAndInit();
         }
 
-        // 获取数据并渲染
-        async function fetchAndRender() {
-            const innerEl = document.getElementById('carouselInner');
-            if (!innerEl) return;
-
-            innerEl.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: white;"><p>正在搜索最新案例...</p></div>';
-
+        // 后台异步获取 AI 新闻并更新轮播
+        async function fetchAndUpdateCarousel() {
             await fetchMultimodalNews();
-
             if (carouselNews.length > 0) {
                 renderCarousel();
-            } else {
-                carouselNews = [
-                    {"title":"ChatGPT看图说话","desc":"拍一张照片发给ChatGPT，它就能看懂画面内容并和你聊天讨论","summary":"AI有了眼睛","url":"https://openai.com/index/chatgpt-can-now-see-hear-and-speak/"},
-                    {"title":"Sora生成视频","desc":"输入一句话，AI直接生成逼真的视频片段，画面细腻到可以乱真","summary":"一句话变电影","url":"https://openai.com/index/sora/"},
-                    {"title":"豆包识别万物","desc":"拍照识别植物、动物、菜品，还能翻译外文菜单和路牌","summary":"口袋里的万能眼睛","url":"https://www.doubao.com/"},
-                    {"title":"AI作曲助手","desc":"哼一段旋律，AI帮你编曲、配器，不会乐器也能创作音乐","summary":"人人都是作曲家","url":"https://suno.ai/"},
-                    {"title":"AR翻译眼镜","desc":"戴上眼镜看外文，眼前直接显示中文翻译，出国交流无障碍","summary":"打破语言壁垒","url":"https://www.meta.com/smart-glasses/"}
-                ];
-                renderCarousel();
             }
+        }
         }
 
         // 从AI获取多模态新闻
