@@ -1001,13 +1001,13 @@
         // 从AI获取多模态新闻
         async function fetchMultimodalNews() {
             const prompt = `搜索全网近一个月的真实新闻，为初中生推荐5条多模态AI应用案例。要求：
-1. 必须是有真实新闻链接报道的、初中生能看懂并感兴趣的案例
+1. 必须是真实报道的、初中生能看懂并感兴趣的AI应用案例
 2. 案例来源：公众号、科技媒体、新闻网站等，优先中文来源
 3. title：标题15字内，吸引初中生
-4. desc：50字内描述这个AI能做什么，语言生动接地气
-5. summary：卡片底部一行总结（15字内），点出最厉害的地方
-6. url：必须是真实可访问的新闻原文链接，不要百度搜索链接
-只返回JSON数组：[{"title":"","desc":"","summary":"","url":""},...]，不要其他文字`;
+4. desc：50字内描述这个AI能做什么
+5. summary：10字内一句话点出最厉害的地方
+6. url：真实可访问的新闻链接
+只返回JSON：{"items":[{"title":"","desc":"","summary":"","url":""}]}`;
 
             try {
                 const model = 'deepseek-ai/DeepSeek-V4-Flash';
@@ -1018,23 +1018,29 @@
                     body: JSON.stringify({
                         model: model,
                         messages: [{ role: 'user', content: prompt }],
-                        max_tokens: 800
+                        max_tokens: 1200
                     })
                 });
 
                 if (!response.ok) {
-                    console.error('API请求失败:', response.status);
+                    console.error('新闻API请求失败:', response.status);
                     return;
                 }
 
                 const data = await response.json();
-                const content = data.choices?.[0]?.message?.content || '';
+                var content = data.choices?.[0]?.message?.content || '';
 
-                const jsonMatch = content.match(/\[[\s\S]*\]/);
+                // 去掉可能的 markdown 代码块包裹
+                content = content.replace(/```json\s*/g, '').replace(/```\s*/g, '');
+
+                var jsonMatch = content.match(/\{[\s\S]*\}/);
                 if (jsonMatch) {
-                    carouselNews = JSON.parse(jsonMatch[0]);
-                } else {
-                    console.warn('未找到JSON内容');
+                    var parsed = JSON.parse(jsonMatch[0]);
+                    if (parsed.items && parsed.items.length > 0) {
+                        carouselNews = parsed.items;
+                    } else if (Array.isArray(parsed)) {
+                        carouselNews = parsed;
+                    }
                 }
             } catch (error) {
                 console.error('获取多模态新闻失败:', error);
