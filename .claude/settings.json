@@ -24,7 +24,9 @@
       "Bash(where bash *)",
       "Read(//c/Program Files/Git/usr/bin/**)",
       "Bash(xxd multimodal.html)",
-      "Bash(node --check \"c:/Users/13241/Desktop/导学单网站/course.html\")"
+      "Bash(node --check \"c:/Users/13241/Desktop/导学单网站/course.html\")",
+      "Bash(sed '1d;$d')",
+      "Bash(node --check /tmp/course_script.js)"
     ]
   }
 }
