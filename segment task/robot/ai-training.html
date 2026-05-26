@@ -1,482 +1,327 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>AI训练模式</title>
-        <style>
-            body {
-                margin: 0;
-                padding: 0;
-                font-family: Arial, sans-serif;
-                background-color: transparent;
-                display: flex;
-                justify-content: center;
-                align-items: flex-start;
-                min-height: 100%;
-                overflow: hidden;
-            }
-
-            .game-container {
-                position: relative;
-                text-align: center;
-                background-color: #000;
-                border-radius: 10px;
-                padding: 15px;
-                box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
-                display: inline-block;
-            }
-
-            .game-title {
-                color: #00ff00;
-                font-size: 18px;
-                font-weight: bold;
-                margin-bottom: 12px;
-                text-shadow: 0 0 10px #00ff00;
-            }
-
-            canvas {
-                background-color: #111;
-                border: 2px solid #00ff00;
-                border-radius: 5px;
-            }
-
-            .game-info {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 8px;
-                color: #00ff00;
-                font-size: 13px;
-            }
-
-            .score {
-                font-weight: bold;
-            }
-
-            .instructions {
-                font-style: italic;
-            }
-
-            .game-over {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background-color: rgba(0, 0, 0, 0.8);
-                border: 2px solid #ff0000;
-                border-radius: 10px;
-                padding: 20px;
-                color: #ff0000;
-                display: none;
-            }
-
-            .game-over-text {
-                font-size: 24px;
-                font-weight: bold;
-                margin-bottom: 10px;
-            }
-
-            .final-score {
-                margin-bottom: 20px;
-                font-size: 18px;
-            }
-
-            #restartButton {
-                background-color: #ff0000;
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                font-size: 16px;
-                border-radius: 5px;
-                cursor: pointer;
-                transition: background-color 0.3s;
-            }
-
-            #restartButton:hover {
-                background-color: #cc0000;
-            }
-
-            .ai-stats {
-                display: flex;
-                justify-content: space-between;
-                margin-top: 8px;
-                color: #00ff00;
-                font-size: 12px;
-            }
-
-            .attempts, .ai-high-score {
-                font-weight: bold;
-            }
-            
-            #resetAiButton {
-                background-color: #ff6600;
-                color: white;
-                border: none;
-                padding: 4px 8px;
-                font-size: 10px;
-                border-radius: 3px;
-                cursor: pointer;
-                margin-left: 8px;
-            }
-            
-            #resetAiButton:hover {
-                background-color: #cc5200;
-            }
-
-            .start-screen {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background-color: rgba(0, 0, 0, 0.8);
-                border: 2px solid #00ff00;
-                border-radius: 8px;
-                padding: 15px;
-                color: #00ff00;
-            }
-
-            .start-text {
-                font-size: 16px;
-                font-weight: bold;
-            }
-        </style>
-    </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI训练模式</title>
+    <style>
+        body {
+            margin:0;padding:0;font-family:Arial,sans-serif;
+            background:transparent;display:flex;justify-content:center;align-items:flex-start;
+            min-height:100%;overflow:hidden;
+        }
+        .game-container {
+            position:relative;text-align:center;background:#000;
+            border-radius:10px;padding:12px;box-shadow:0 0 15px rgba(0,0,0,0.6);display:inline-block;
+        }
+        .game-title{color:#00ff00;font-size:16px;font-weight:bold;margin-bottom:8px;text-shadow:0 0 10px #00ff00}
+        canvas{background:#111;border:2px solid #00ff00;border-radius:5px}
+        .game-info{display:flex;justify-content:space-between;margin-top:6px;color:#00ff00;font-size:12px}
+        .score{font-weight:bold}.instructions{font-style:italic}
+        .game-over{
+            position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+            background:rgba(0,0,0,0.85);border:2px solid #ff0000;border-radius:10px;
+            padding:18px;color:#ff0000;display:none;z-index:10;
+        }
+        .game-over-text{font-size:22px;font-weight:bold;margin-bottom:8px}
+        .final-score{margin-bottom:16px;font-size:16px}
+        #restartButton{background:#ff0000;color:#fff;border:none;padding:8px 16px;font-size:14px;border-radius:5px;cursor:pointer}
+        #restartButton:hover{background:#cc0000}
+        .ai-stats{display:flex;justify-content:space-between;align-items:center;margin-top:6px;color:#00ff00;font-size:11px}
+        #resetAiButton{background:#ff6600;color:#fff;border:none;padding:3px 7px;font-size:10px;border-radius:3px;cursor:pointer}
+        #resetAiButton:hover{background:#cc5200}
+        .start-screen{
+            position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+            background:rgba(0,0,0,0.85);border:2px solid #00ff00;border-radius:8px;
+            padding:14px;color:#00ff00;z-index:10;
+        }
+        .start-text{font-size:15px;font-weight:bold}
+    </style>
+</head>
 <body>
-    <div class="game-container">
-        <div class="game-title">AI训练模式</div>
-        <canvas id="gameCanvas" width="480" height="180"></canvas>
-        <div class="game-info">
-            <div class="score">得分: <span id="score">0</span></div>
-            <div class="instructions">AI正在自动训练...</div>
-        </div>
-        <div class="ai-stats" id="aiStats">
-            <div class="attempts">尝试次数: <span id="attempts">0</span></div>
-            <div class="ai-high-score">最高得分: <span id="aiHighScore">0</span></div>
-            <button id="resetAiButton">重置AI训练</button>
-        </div>
-        <div class="game-over" id="gameOver">
-            <div class="game-over-text">游戏结束</div>
-            <div class="final-score">最终得分: <span id="finalScore">0</span></div>
-            <button id="restartButton">重新开始</button>
-        </div>
-        <div class="start-screen" id="startScreen">
-            <div class="start-text">按空格键开始AI训练</div>
-        </div>
+<div class="game-container">
+    <div class="game-title">AI训练模式</div>
+    <canvas id="gameCanvas" width="480" height="180"></canvas>
+    <div class="game-info">
+        <div class="score">得分: <span id="score">0</span></div>
+        <div class="instructions">AI正在自动训练...</div>
     </div>
-    <script>
-        var GW = 480, GH = 180;
-        var GRAVITY = 0.6;
-        var JUMP_V = -11;
-        var GROUND_Y = 115;
-        var RX = 35, RW = 32, RH = 32;
-        var SPEED = 7;
-        var OBS_INTV = 750;  // 障碍物间隔，稍快一点增加训练密度
+    <div class="ai-stats" id="aiStats">
+        <span>尝试: <span id="attempts">0</span></span>
+        <span>最高: <span id="aiHighScore">0</span></span>
+        <button id="resetAiButton">重置AI训练</button>
+    </div>
+    <div class="game-over" id="gameOver">
+        <div class="game-over-text">游戏结束</div>
+        <div class="final-score">最终得分: <span id="finalScore">0</span></div>
+        <button id="restartButton">重新开始</button>
+    </div>
+    <div class="start-screen" id="startScreen">
+        <div class="start-text">按空格键开始AI训练</div>
+    </div>
+</div>
 
-        var OT = { RED: 0, YELLOW: 1, BLUE: 2, BEAM: 3 };
-        var TYPE_NAMES = ['红','黄','蓝','横梁'];
+<script>
+// ============ 常量 ============
+var GW=480, GH=180, GY=115;
+var GRAV=0.6, JV=-11;
+var RX=35, RW=32, RH=32;
+var SPD=7;
+var OBS_INTV=750;
+var OT={RED:0,YELLOW:1,BLUE:2,BEAM:3};
 
-        // ============ Q-learning 参数 ============
-        var qTable = {};
-        var exploreRate = 0.20;  // 初始探索率 20%
-        var LR = 0.5;            // 学习率，高一点让每次经验影响更大
+// ============ Q-learning：超小状态空间 + 完整序列学习 ============
+var qTable={};
+var explore=0.20;
+var LR=0.6;  // 高学习率
 
-        function initQTable() {
-            for (var d = 0; d < 10; d++) {
-                for (var t = 0; t < 4; t++) {
-                    for (var j = 0; j < 2; j++) {
-                        var k = d + ',' + t + ',' + j;
-                        var dist = d * 36;  // 0-324px, 每36px一档
-                        if (t === OT.BEAM) {
-                            // 横梁：从不该跳
-                            qTable[k] = { jump: -50, wait: 20 };
-                        } else if (dist < 36) {
-                            // 0-36px: 太近，跳也来不及了但还是要跳
-                            qTable[k] = { jump: 3, wait: -50 };
-                        } else if (dist < 200) {
-                            // 36-200px: 最佳起跳窗口
-                            qTable[k] = { jump: 25, wait: -50 };
-                        } else {
-                            // 200-324px: 太远，跳了提前落地
-                            qTable[k] = { jump: -30, wait: 15 };
-                        }
-                    }
+// 6个距离桶(每60px)，4种障碍物，2种跳跃状态 = 48个状态
+function initQ(){
+    for(var d=0;d<6;d++){
+        for(var t=0;t<4;t++){
+            for(var j=0;j<2;j++){
+                var k=d+','+t+','+j;
+                var dist=d*60;
+                if(t===OT.BEAM){
+                    // 横梁：死也不跳
+                    qTable[k]={jump:-60,wait:30};
+                }else if(dist<60){
+                    // 0-60px：太晚，但跳总比不跳好
+                    qTable[k]={jump:5,wait:-60};
+                }else if(dist<240){
+                    // 60-240px：最佳起跳窗口
+                    qTable[k]={jump:30,wait:-60};
+                }else{
+                    // 240-360px：太远，落地了障碍物还没到
+                    qTable[k]={jump:-40,wait:20};
                 }
             }
         }
-        initQTable();
+    }
+}
+initQ();
+function qGet(s){if(!qTable[s])qTable[s]={jump:0,wait:0};return qTable[s];}
 
-        function qGet(s) {
-            if (!qTable[s]) qTable[s] = { jump: 0, wait: 0 };
-            return qTable[s];
-        }
+// ============ 游戏状态 ============
+var gs='start';
+var score=0,st=0;
+var attempts=0,hiScore=0;
+var robot={x:RX,y:GY,vy:0,jumping:false,frame:0};
+var obs=[],otimer=0,ocount=0,ouid=0;
 
-        // ============ 游戏状态 ============
-        var gameState = 'start';
-        var score = 0, scoreTimer = 0;
-        var aiAttempts = 0, aiHighScore = 0;
-        var robot = { x: RX, y: GROUND_Y, vy: 0, jumping: false, frame: 0 };
-        var obstacles = [];
-        var obsTimer = 0, obsCounter = 0, obsUid = 0;
+// 当前障碍物的决策历史：[{state,action},...]
+var history=[];
+var curObsId=-1;
+var settled=false;
 
-        // 当前障碍物的学习追踪
-        var curObsId = -1;
-        var curJumpState = null;   // 起跳时的状态（若跳了）
-        var curCloseState = null;  // 最近一帧的状态（若一直没跳）
-        var curSettled = false;
-        var curHasJumped = false;  // 当前障碍物是否已经跳过一次
+// ============ DOM ============
+var cv=document.getElementById('gameCanvas');
+var ctx=cv.getContext('2d');
+var sel=document.getElementById('score');
+var gel=document.getElementById('gameOver');
+var startEl=document.getElementById('startScreen');
 
-        // ============ DOM ============
-        var canvas = document.getElementById('gameCanvas');
-        var ctx = canvas.getContext('2d');
-        var scoreEl = document.getElementById('score');
-        var gameOverEl = document.getElementById('gameOver');
-        var startEl = document.getElementById('startScreen');
+document.getElementById('restartButton').addEventListener('click',restart);
+document.addEventListener('keydown',function(e){
+    if(e.code==='Space'){e.preventDefault();if(gs==='start'){gs='playing';startEl.style.display='none';}}
+});
+document.getElementById('resetAiButton').addEventListener('click',function(){
+    if(confirm('确定要重置AI训练数据吗？')){
+        attempts=0;hiScore=0;
+        document.getElementById('attempts').textContent=0;
+        document.getElementById('aiHighScore').textContent=0;
+        qTable={};initQ();explore=0.20;
+        restart();
+        alert('AI训练数据已重置');
+    }
+});
 
-        document.getElementById('restartButton').addEventListener('click', restartGame);
-        document.addEventListener('keydown', function(e) {
-            if (e.code === 'Space') { e.preventDefault(); if (gameState === 'start') { gameState = 'playing'; startEl.style.display = 'none'; } }
-        });
-        document.getElementById('resetAiButton').addEventListener('click', function() {
-            if (confirm('确定要重置AI训练数据吗？')) {
-                aiAttempts = 0; aiHighScore = 0;
-                document.getElementById('attempts').textContent = 0;
-                document.getElementById('aiHighScore').textContent = 0;
-                qTable = {}; initQTable(); exploreRate = 0.20;
-                restartGame();
-                alert('AI训练数据已重置');
-            }
-        });
+// ============ 主循环 ============
+function loop(){
+    ctx.clearRect(0,0,GW,GH);
+    drawBg();
+    if(gs==='start'){drawRobot();}
+    else if(gs==='playing'){
+        updateRobot();drawRobot();
+        updateObs();drawObs();
+        checkCol();updateScore();
+        aiDecide();
+    }else if(gs==='over'){
+        drawRobot();drawObs();
+        attempts++;
+        if(score>hiScore)hiScore=score;
+        document.getElementById('attempts').textContent=attempts;
+        document.getElementById('aiHighScore').textContent=hiScore;
+        restart();
+    }
+    requestAnimationFrame(loop);
+}
 
-        // ============ 主循环 ============
-        function gameLoop() {
-            ctx.clearRect(0, 0, GW, GH);
-            drawBg();
+// ============ AI决策（每帧） ============
+function aiDecide(){
+    var ob=getClosest();
+    if(!ob){curObsId=-1;history=[];return;}
+    var dist=ob.x-RX;
+    if(dist<=0||dist>360){curObsId=-1;history=[];return;}
 
-            if (gameState === 'start') {
-                drawRobot();
-            } else if (gameState === 'playing') {
-                updateRobot();
-                drawRobot();
-                updateObstacles();
-                drawObstacles();
-                checkCollision();
-                updateScore();
-                aiDecide();
-            } else if (gameState === 'over') {
-                drawRobot(); drawObstacles();
-                aiAttempts++;
-                if (score > aiHighScore) aiHighScore = score;
-                document.getElementById('attempts').textContent = aiAttempts;
-                document.getElementById('aiHighScore').textContent = aiHighScore;
-                restartGame();
-            }
+    // 新障碍物 → 清空决策历史
+    if(ob._uid!==curObsId){
+        curObsId=ob._uid;
+        settled=false;
+        history=[];
+    }
+    if(settled)return;
 
-            requestAnimationFrame(gameLoop);
-        }
+    var db=Math.min(5,Math.floor(dist/60));
+    var state=db+','+ob.typeId+','+(robot.jumping?1:0);
 
-        // ============ AI 每帧决策 ============
-        function aiDecide() {
-            var ob = getClosest();
-            if (!ob) { curObsId = -1; return; }
+    // 选动作
+    var action;
+    if(Math.random()<explore){
+        action=Math.random()<0.5?'jump':'wait';
+    }else{
+        var q=qGet(state);
+        action=q.jump>q.wait?'jump':'wait';
+    }
 
-            var dist = ob.x - RX;
-            if (dist <= 0 || dist > 324) { curObsId = -1; return; }
+    // 记录决策
+    history.push({state:state,action:action});
 
-            var db = Math.min(9, Math.floor(dist / 36));  // 0-9 档
-            var state = db + ',' + ob.typeId + ',' + (robot.jumping ? 1 : 0);
+    // 执行跳跃
+    if(action==='jump'&&!robot.jumping){
+        robot.vy=JV;
+        robot.jumping=true;
+    }
+}
 
-            // 新障碍物，重置追踪
-            if (ob._uid !== curObsId) {
-                curObsId = ob._uid;
-                curSettled = false;
-                curJumpState = null;
-                curCloseState = null;
-                curHasJumped = false;
-            }
+// ============ 障碍物 ============
+function updateObs(){
+    otimer+=16;
+    if(otimer>=OBS_INTV){createObs();otimer=0;}
+    for(var i=0;i<obs.length;i++){
+        var ob=obs[i];
+        ob.x-=ob.speed;
 
-            if (curSettled) return;
-
-            // 每帧更新"最近状态"（用于没跳的情况）
-            curCloseState = state;
-
-            // 选择动作
-            var action;
-            if (Math.random() < exploreRate) {
-                action = Math.random() < 0.5 ? 'jump' : 'wait';
-            } else {
-                var q = qGet(state);
-                action = q.jump > q.wait ? 'jump' : 'wait';
-            }
-
-            // 执行跳跃 —— 每个障碍物只能跳一次
-            if (action === 'jump' && !robot.jumping && !curHasJumped) {
-                robot.vy = JUMP_V;
-                robot.jumping = true;
-                curHasJumped = true;
-                curJumpState = state;  // 记录起跳时的状态
-            }
-        }
-
-        // ============ 障碍物更新 ============
-        function updateObstacles() {
-            obsTimer += 16;
-            if (obsTimer >= OBS_INTV) {
-                createObstacle();
-                obsTimer = 0;
-            }
-            for (var i = 0; i < obstacles.length; i++) {
-                var ob = obstacles[i];
-                ob.x -= ob.speed;
-
-                // 障碍物通过 → 成功
-                if (!ob._settled && ob.x + ob.width < RX) {
-                    ob._settled = true;
-                    if (ob._uid === curObsId && !curSettled) {
-                        curSettled = true;
-                        // 用起跳状态（若跳了）或最近状态（若没跳）
-                        var s = curJumpState || curCloseState;
-                        var a = curJumpState ? 'jump' : 'wait';
-                        var r = ob.typeId === OT.BEAM ? 20 : 25;
-                        learn(s, a, r);
-                    }
-                }
-
-                if (ob.x + ob.width < 0) {
-                    obstacles.splice(i, 1);
-                    i--;
-                }
+        // 通过 → 成功！
+        if(!ob._settled&&ob.x+ob.width<RX){
+            ob._settled=true;
+            if(ob._uid===curObsId&&!settled){
+                settled=true;
+                var r=ob.typeId===OT.BEAM?25:30;
+                learnAll(r);
             }
         }
+        if(ob.x+ob.width<0){obs.splice(i,1);i--;}
+    }
+}
 
-        // ============ 碰撞检测 ============
-        function checkCollision() {
-            for (var i = 0; i < obstacles.length; i++) {
-                var ob = obstacles[i];
-                if (!(RX < ob.x + ob.width && RX + RW > ob.x)) continue;
-
-                var rt = robot.y - RH, rb = robot.y;
-                var ot = ob.y, obb = ob.y + ob.height;
-
-                if (rt < obb && rb > ot) {
-                    if (ob._uid === curObsId && !curSettled) {
-                        curSettled = true;
-                        var s = curJumpState || curCloseState;
-                        var a = curJumpState ? 'jump' : 'wait';
-                        learn(s, a, -50);
-                    }
-                    gameState = 'over';
-                    return;
-                }
+function checkCol(){
+    for(var i=0;i<obs.length;i++){
+        var ob=obs[i];
+        if(!(RX<ob.x+ob.width&&RX+RW>ob.x))continue;
+        var rt=robot.y-RH,rb=robot.y;
+        var ot=ob.y,ob=ob.y+ob.height;
+        if(rt<ob&&rb>ot){
+            if(ob._uid===curObsId&&!settled){
+                settled=true;
+                learnAll(-60);
             }
+            gs='over';
+            return;
         }
+    }
+}
 
-        // ============ 学习函数 ============
-        function learn(state, action, reward) {
-            if (!state || !action) return;
+// ============ 学习：对历史中所有决策进行奖惩 ============
+function learnAll(reward){
+    for(var i=0;i<history.length;i++){
+        var h=history[i];
+        // 越靠近结果的决策权重越大
+        var w=(i+1)/history.length;
+        var q=qGet(h.state);
+        q[h.action]+=LR*w*(reward-q[h.action]);
+    }
+    history=[];
 
-            var q = qGet(state);
-            var old = q[action];
-            q[action] = old + LR * (reward - old);
+    // 衰减探索率
+    if(explore>0.03)explore*=0.94;
+}
 
-            // 快速衰减探索率
-            if (exploreRate > 0.04) {
-                exploreRate *= 0.93;
-            }
-        }
+// ============ 辅助 ============
+function getClosest(){
+    var b=null,m=Infinity;
+    for(var i=0;i<obs.length;i++){var d=obs[i].x-RX;if(d>0&&d<m){m=d;b=obs[i];}}
+    return b;
+}
+function createObs(){
+    ocount++;
+    var t;
+    if(ocount%4===0){
+        t={w:70,h:14,c:'#ff00ff',tid:OT.BEAM,y:GY-65};
+    }else{
+        var pool=[
+            {w:24,h:26,c:'#ff0000',tid:OT.RED},
+            {w:28,h:20,c:'#ffaa00',tid:OT.YELLOW},
+            {w:22,h:32,c:'#0000ff',tid:OT.BLUE}
+        ];
+        t=pool[Math.floor(Math.random()*pool.length)];
+    }
+    obs.push({
+        _uid:++ouid,_settled:false,
+        x:GW,y:t.tid===OT.BEAM?t.y:GY-t.h,
+        width:t.w,height:t.h,
+        color:t.c,typeId:t.tid,
+        speed:SPD
+    });
+}
+function updateScore(){st+=16;if(st>=100){score++;sel.textContent=score;st=0;}}
+function restart(){
+    gs='playing';score=0;sel.textContent=0;st=0;
+    robot.y=GY;robot.vy=0;robot.jumping=false;
+    obs=[];otimer=0;ocount=0;
+    curObsId=-1;history=[];settled=false;
+    gel.style.display='none';
+}
+function updateRobot(){
+    robot.vy+=GRAV;robot.y+=robot.vy;
+    if(robot.y>GY){robot.y=GY;robot.vy=0;robot.jumping=false;}
+}
 
-        // ============ 辅助 ============
-        function getClosest() {
-            var best = null, min = Infinity;
-            for (var i = 0; i < obstacles.length; i++) {
-                var d = obstacles[i].x - RX;
-                if (d > 0 && d < min) { min = d; best = obstacles[i]; }
-            }
-            return best;
-        }
-
-        function createObstacle() {
-            obsCounter++;
-            var t;
-            if (obsCounter % 4 === 0) {
-                t = { w: 70, h: 14, c: '#ff00ff', tid: OT.BEAM, y: GROUND_Y - 65 };
-            } else {
-                var pool = [
-                    { w: 24, h: 26, c: '#ff0000', tid: OT.RED },
-                    { w: 28, h: 20, c: '#ffaa00', tid: OT.YELLOW },
-                    { w: 22, h: 32, c: '#0000ff', tid: OT.BLUE }
-                ];
-                t = pool[Math.floor(Math.random() * pool.length)];
-            }
-            obstacles.push({
-                _uid: ++obsUid, _settled: false,
-                x: GW,
-                y: t.tid === OT.BEAM ? t.y : GROUND_Y - t.h,
-                width: t.w, height: t.h,
-                color: t.c, typeId: t.tid,
-                speed: SPEED
-            });
-        }
-
-        function updateScore() {
-            scoreTimer += 16;
-            if (scoreTimer >= 100) { score++; scoreEl.textContent = score; scoreTimer = 0; }
-        }
-
-        function restartGame() {
-            gameState = 'playing';
-            score = 0; scoreEl.textContent = 0; scoreTimer = 0;
-            robot.y = GROUND_Y; robot.vy = 0; robot.jumping = false;
-            obstacles = []; obsTimer = 0; obsCounter = 0;
-            curObsId = -1; curJumpState = null; curCloseState = null; curSettled = false; curHasJumped = false;
-            gameOverEl.style.display = 'none';
-        }
-
-        function updateRobot() {
-            robot.vy += GRAVITY;
-            robot.y += robot.vy;
-            if (robot.y > GROUND_Y) { robot.y = GROUND_Y; robot.vy = 0; robot.jumping = false; }
-        }
-
-        // ============ 渲染 ============
-        function drawBg() {
-            ctx.fillStyle = '#111';
-            ctx.fillRect(0, 0, GW, GROUND_Y);
-            ctx.fillStyle = '#333';
-            ctx.fillRect(0, GROUND_Y, GW, GH - GROUND_Y);
-            ctx.strokeStyle = '#444'; ctx.lineWidth = 1;
-            for (var x = 0; x < GW; x += 16) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, GROUND_Y); ctx.stroke(); }
-            for (var y = 0; y < GROUND_Y; y += 16) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(GW, y); ctx.stroke(); }
-        }
-
-        function drawRobot() {
-            var rx = RX, ry = robot.y, rh = RH, rw = RW;
-            ctx.fillStyle = '#00ff00'; ctx.fillRect(rx, ry - rh, rw, rh);
-            ctx.fillStyle = '#00cc00'; ctx.fillRect(rx + 10, ry - rh - 10, 12, 10);
-            ctx.fillStyle = '#000'; ctx.fillRect(rx + 13, ry - rh - 7, 3, 3); ctx.fillRect(rx + 16, ry - rh - 7, 3, 3);
-            ctx.fillStyle = '#00ff00';
-            if (robot.jumping) {
-                ctx.fillRect(rx - 3, ry - rh + 6, 3, 10); ctx.fillRect(rx + rw, ry - rh + 6, 3, 10);
-            } else {
-                if (robot.frame % 2 === 0) { ctx.fillRect(rx - 3, ry - rh + 3, 3, 10); ctx.fillRect(rx + rw, ry - rh + 10, 3, 10); }
-                else { ctx.fillRect(rx - 3, ry - rh + 10, 3, 10); ctx.fillRect(rx + rw, ry - rh + 3, 3, 10); }
-            }
-            if (!robot.jumping) {
-                ctx.fillStyle = '#00ff00';
-                if (robot.frame % 2 === 0) { ctx.fillRect(rx + 6, ry, 6, 10); ctx.fillRect(rx + 20, ry - 3, 6, 10); }
-                else { ctx.fillRect(rx + 6, ry - 3, 6, 10); ctx.fillRect(rx + 20, ry, 6, 10); }
-            }
-            robot.frame++;
-        }
-
-        function drawObstacles() {
-            for (var i = 0; i < obstacles.length; i++) {
-                var ob = obstacles[i];
-                ctx.fillStyle = ob.color; ctx.fillRect(ob.x, ob.y, ob.width, ob.height);
-                ctx.fillStyle = '#000'; ctx.fillRect(ob.x + 3, ob.y + 3, ob.width - 6, ob.height - 6);
-            }
-        }
-
-        requestAnimationFrame(gameLoop);
-    </script>
+// ============ 渲染 ============
+function drawBg(){
+    ctx.fillStyle='#111';ctx.fillRect(0,0,GW,GY);
+    ctx.fillStyle='#333';ctx.fillRect(0,GY,GW,GH-GY);
+    ctx.strokeStyle='#444';ctx.lineWidth=1;
+    for(var x=0;x<GW;x+=16){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,GY);ctx.stroke();}
+    for(var y=0;y<GY;y+=16){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(GW,y);ctx.stroke();}
+}
+function drawRobot(){
+    var rx=RX,ry=robot.y,rh=RH,rw=RW;
+    ctx.fillStyle='#00ff00';ctx.fillRect(rx,ry-rh,rw,rh);
+    ctx.fillStyle='#00cc00';ctx.fillRect(rx+10,ry-rh-10,12,10);
+    ctx.fillStyle='#000';ctx.fillRect(rx+13,ry-rh-7,3,3);ctx.fillRect(rx+16,ry-rh-7,3,3);
+    ctx.fillStyle='#00ff00';
+    if(robot.jumping){
+        ctx.fillRect(rx-3,ry-rh+6,3,10);ctx.fillRect(rx+rw,ry-rh+6,3,10);
+    }else{
+        if(robot.frame%2===0){ctx.fillRect(rx-3,ry-rh+3,3,10);ctx.fillRect(rx+rw,ry-rh+10,3,10);}
+        else{ctx.fillRect(rx-3,ry-rh+10,3,10);ctx.fillRect(rx+rw,ry-rh+3,3,10);}
+    }
+    if(!robot.jumping){
+        ctx.fillStyle='#00ff00';
+        if(robot.frame%2===0){ctx.fillRect(rx+6,ry,6,10);ctx.fillRect(rx+20,ry-3,6,10);}
+        else{ctx.fillRect(rx+6,ry-3,6,10);ctx.fillRect(rx+20,ry,6,10);}
+    }
+    robot.frame++;
+}
+function drawObs(){
+    for(var i=0;i<obs.length;i++){
+        var ob=obs[i];
+        ctx.fillStyle=ob.color;ctx.fillRect(ob.x,ob.y,ob.width,ob.height);
+        ctx.fillStyle='#000';ctx.fillRect(ob.x+3,ob.y+3,ob.width-6,ob.height-6);
+    }
+}
+requestAnimationFrame(loop);
+</script>
 </body>
 </html>
