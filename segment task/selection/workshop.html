@@ -597,14 +597,19 @@
           const r = T.curveR;
           robot.x = T.rightX + r * Math.cos(theta);
           robot.y = T.cy + r * Math.sin(theta);
-          robot.y += Math.sin(frame * 0.5) * 8.0;
-          bumpShake = Math.sin(frame * 0.5) * 8;
-          fpvOfftrack = Math.min(1, fpvOfftrack + 0.03);
+          // 晃动幅度随弯道进度递增，确保冲出跑道
+          const wobbleAmp = 12 + curveT * 18;
+          robot.y += Math.sin(frame * 0.5) * wobbleAmp;
+          robot.x += Math.cos(frame * 0.4) * 6;
+          bumpShake = Math.sin(frame * 0.5) * 10;
+          fpvOfftrack = Math.min(1, fpvOfftrack + 0.04);
           fpvCurve = Math.max(0, fpvCurve - 0.015);
           if (!isOnTrack(robot.x, robot.y)) {
             hadBumpIssue = true;
             animState = 'offtrack';
+            running = false;
             if (animId) { cancelAnimationFrame(animId); animId = null; }
+            drawTPV();
             endRun('bump_offtrack');
             return;
           }
