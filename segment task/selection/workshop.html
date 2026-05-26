@@ -537,7 +537,7 @@
             statusText.style.color = '#3b82f6';
           }
         } else if (sensors.lidar && !sensors.imu) {
-          // 仅激光雷达：慢速跑，提前超时
+          // 仅激光雷达：慢速跑（已在phase 0提前超时）
           const speed = straightSpeed / 90;
           curveT += speed;
           const theta = Math.PI / 2 + curveT;
@@ -546,11 +546,12 @@
           robot.y = T.cy + r * Math.sin(theta);
           fpvCurve = Math.min(1, fpvCurve + 0.02);
           fpvOfftrack = 0;
-          robot.y += Math.sin(frame * 0.12) * 1.0;
-          if (curveT >= 1.0) {
-            animState = 'done';
-            endRun('timeout');
-            return;
+          if (curveT >= Math.PI) {
+            phase = 2;
+            robot.x = T.leftX;
+            robot.y = T.cy - T.curveR;
+            statusText.textContent = '上直道行驶中...';
+            statusText.style.color = '#3b82f6';
           }
         } else {
           const speed = straightSpeed / 90;
