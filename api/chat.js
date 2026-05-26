@@ -40,11 +40,11 @@ export default async function handler(req, res) {
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ error: { message:'Method not allowed' });
   }
 
   if (!process.env.SILICONFLOW_API_KEY) {
-    return res.status(500).json({ error: 'API Key 未配置，请在 Vercel 环境变量中设置 SILICONFLOW_API_KEY' });
+    return res.status(500).json({ error: { message:'API Key 未配置，请在 Vercel 环境变量中设置 SILICONFLOW_API_KEY' });
   }
 
   try {
@@ -77,7 +77,7 @@ export default async function handler(req, res) {
       } catch (_) {
         if (body) msg = body.slice(0, 200);
       }
-      return res.status(response.status).json({ error: msg });
+      return res.status(response.status).json({ error: { message:msg });
     }
 
     res.setHeader('Content-Type', 'text/event-stream');
@@ -95,6 +95,6 @@ export default async function handler(req, res) {
     }
     res.end();
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: { message:error.message });
   }
 }
