@@ -220,8 +220,8 @@ function checkCol(){
         var ob=obs[i];
         if(!(RX<ob.x+ob.width&&RX+RW>ob.x))continue;
         var rt=robot.y-RH,rb=robot.y;
-        var ot=ob.y,ob=ob.y+ob.height;
-        if(rt<ob&&rb>ot){
+        var ot=ob.y,ob_b=ob.y+ob.height;
+        if(rt<ob_b&&rb>ot){
             if(ob._uid===curObsId&&!settled){
                 settled=true;
                 learnAll(-60);
