@@ -28,7 +28,8 @@
       "Bash(sed '1d;$d')",
       "Bash(node --check /tmp/course_script.js)",
       "Bash(sed -n '2105,2120p' /tmp/course_script.js)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(awk 'NR>=2095 && NR<=2115' /tmp/course_script.js)"
     ]
   }
 }
