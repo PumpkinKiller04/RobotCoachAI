@@ -44,13 +44,16 @@
     .typing-cursor{animation:blink 1s infinite}@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
     .btn:disabled{opacity:.6;cursor:not-allowed}
     .hidden{display:none!important}
-    .response-area{min-height:5rem;padding:.75rem;background:var(--muted);border-radius:.375rem;font-size:.875rem;line-height:1.5}
+    .response-area{min-height:8rem;padding:.75rem;background:var(--muted);border-radius:.375rem;font-size:.875rem;line-height:1.5}
     .loading-area{padding:.75rem;background:var(--muted);border-radius:.375rem}
-    .chip{display:inline-flex;align-items:center;gap:.25rem;padding:.375rem .75rem;border-radius:9999px;font-size:.75rem;font-weight:500;border:1px solid var(--border);background:var(--bg);margin-bottom:.375rem;transition:all .2s}
+    .chip{display:inline-flex;align-items:center;gap:.25rem;padding:.375rem .5rem;border-radius:9999px;font-size:.7rem;font-weight:500;border:1px solid var(--border);background:var(--bg);margin-bottom:.375rem;transition:all .2s}
     .chip:hover{border-color:var(--primary);color:var(--primary)}
-    .section-title{display:flex;align-items:center;gap:.5rem;font-size:1rem;font-weight:600;color:var(--fg);margin-bottom:.75rem}
-    @media (max-width:500px){
+    .section-title{display:flex;align-items:center;gap:.5rem;font-size:.9rem;font-weight:600;color:var(--fg);margin-bottom:.5rem}
+    .qa-split{display:flex;gap:.5rem}
+    .qa-split>*{flex:1;min-width:0}
+    @media (max-width:700px){
       .source-split{flex-direction:column}
+      .qa-split{flex-direction:column}
     }
   </style>
 </head>
