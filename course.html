@@ -1911,21 +1911,9 @@ ${(() => {
             }
             
             loadSavedAnswers().then(() => {
-                console.log('========== 初始化完成 ==========');
-                console.log('当前用户:', username);
-                console.log('当前模块:', currentModule);
-                console.log('当前课程:', currentCourse);
-                console.log('当前页面:', currentPage);
-                console.log('已加载的答案:', JSON.stringify(savedAnswers));
                 document.getElementById('loadingOverlay').style.display = 'none';
                 updateModuleInfo();
-                switchModule(currentModule);
-                const savedCourse = localStorage.getItem('currentCourse');
-                const savedPage = localStorage.getItem('currentPage');
-                currentCourse = savedCourse ? parseInt(savedCourse) : 0;
-                currentPage = savedPage ? parseInt(savedPage) : 0;
-                console.log(`恢复到模块${currentModule}, 环节${currentCourse + 1}, 页面${currentPage + 1}`);
-                console.log(`getCurrentSection() = ${getCurrentSection()}`);
+                updateBookTitle();
                 showCourse();
                 updatePage();
             });
