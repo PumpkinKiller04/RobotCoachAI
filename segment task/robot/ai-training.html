@@ -112,8 +112,9 @@ var attempts=0,hiScore=0;
 var robot={x:RX,y:GY,vy:0,jumping:false,frame:0};
 var obs=[],otimer=0,ocount=0,ouid=0;
 
-// 当前障碍物的决策历史：[{state,action},...]
-var history=[];
+// 每个障碍物只追踪最关键的一次决策
+var firstJumpState=null, firstJumpAction=null;  // 第一次起跳时的状态
+var closestGroundState=null;  // 离障碍物最近时的状态（用于惩罚"该跳不跳"）
 var curObsId=-1;
 var settled=false;
 
