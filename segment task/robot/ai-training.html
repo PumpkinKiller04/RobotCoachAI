@@ -459,7 +459,7 @@
 
         function checkCollision() {
             for (let obstacle of obstacles) {
-                if (obstacle.type === 'beam') {
+                if (obstacle.typeId === OBSTACLE_TYPES.BEAM) {
                     if (
                         robot.x < obstacle.x + obstacle.width &&
                         robot.x + robot.width > obstacle.x &&
@@ -527,7 +527,7 @@
                     STATE_PARAMS.DISTANCE_BUCKETS - 1,
                     Math.floor(minDistance / (STATE_PARAMS.MAX_DISTANCE / STATE_PARAMS.DISTANCE_BUCKETS))
                 );
-                obstacleType = closestObstacle.type === 'beam' ? 1 : 0;
+                obstacleType = closestObstacle.typeId;
             }
 
             let speedBucket = Math.min(
