@@ -195,6 +195,7 @@ function aiDecide(){
         canJump=false;
         robot.vy=JV;
         robot.jumping=true;
+        updateDebug('jump',state);
     }
 }
 function resetTrack(){
@@ -242,9 +243,11 @@ function learnFromOutcome(reward){
     if(jumpState && jumpAction){
         var q=qGet(jumpState);
         q[jumpAction]+=LR*(reward-q[jumpAction]);
+        updateDebug(jumpAction,jumpState,reward);
     }else if(closestWaitState){
         var q2=qGet(closestWaitState);
         q2.wait+=LR*(reward-q2.wait);
+        updateDebug('wait(未跳)',closestWaitState,reward);
     }
     settled=true;
     if(explore>0.03)explore*=0.92;
