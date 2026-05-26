@@ -490,14 +490,20 @@
       frame++;
       
       const hasAllSensors = sensors.lidar && sensors.imu && sensors.force;
-      const straightSpeed = hasAllSensors ? 0.8 : (sensors.lidar && !sensors.imu ? 0.38 : 0.55);
-      fpvScroll += hasAllSensors ? 3.5 : (sensors.lidar && !sensors.imu ? 1.6 : 2.5);
+      const straightSpeed = hasAllSensors ? 0.65 : (sensors.lidar && !sensors.imu ? 0.38 : 0.55);
+      fpvScroll += hasAllSensors ? 3.0 : (sensors.lidar && !sensors.imu ? 1.6 : 2.5);
 
       if (phase === 0) {
         // 下直道：从右往左
         robot.x -= straightSpeed;
         if (!sensors.imu) {
           robot.y += Math.sin(frame * 0.12) * (sensors.lidar ? 1.0 : 0.6);
+        }
+        // 仅激光雷达：下直道接近弯道入口时提前超时
+        if (sensors.lidar && !sensors.imu && robot.x <= T.leftX + 50) {
+          animState = 'done';
+          endRun('timeout');
+          return;
         }
         fpvCurve = 0; fpvOfftrack = 0;
         if (robot.x <= (sensors.lidar ? T.leftX + 5 : T.leftX + 45)) {
