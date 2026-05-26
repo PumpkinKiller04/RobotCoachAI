@@ -220,9 +220,8 @@ function updateObs(){
         if(!ob._settled&&ob.x+ob.width<RX){
             ob._settled=true;
             if(ob._uid===curObsId&&!settled){
-                settled=true;
                 var r=ob.typeId===OT.BEAM?25:30;
-                learnAll(r);
+                learnFromOutcome(r);
             }
         }
         if(ob.x+ob.width<0){obs.splice(i,1);i--;}
@@ -237,8 +236,7 @@ function checkCol(){
         var ot=ob.y,ob_b=ob.y+ob.height;
         if(rt<ob_b&&rb>ot){
             if(ob._uid===curObsId&&!settled){
-                settled=true;
-                learnAll(-60);
+                learnFromOutcome(-60);
             }
             gs='over';
             return;
@@ -246,18 +244,22 @@ function checkCol(){
     }
 }
 
-// ============ 学习：对历史中所有决策进行奖惩 ============
-function learnAll(reward){
-    for(var i=0;i<history.length;i++){
-        var h=history[i];
-        // 越靠近结果的决策权重越大
-        var w=(i+1)/history.length;
-        var q=qGet(h.state);
-        q[h.action]+=LR*w*(reward-q[h.action]);
+// ============ 学习：只更新关键决策，不污染无关状态 ============
+function learnFromOutcome(reward){
+    if(firstJumpState && firstJumpAction){
+        // 有起跳 → 奖励/惩罚起跳时的那个状态
+        var q=qGet(firstJumpState);
+        q[firstJumpAction]+=LR*(reward-q[firstJumpAction]);
+    }else if(closestGroundState && reward<0){
+        // 没起跳但撞了 → 惩罚"该跳不跳"
+        var q2=qGet(closestGroundState);
+        q2.wait+=LR*(reward-q2.wait);
+    }else if(closestGroundState && reward>0){
+        // 没起跳但通过了（横梁正确躲避）→ 奖励"等待"
+        var q3=qGet(closestGroundState);
+        q3.wait+=LR*(reward-q3.wait);
     }
-    history=[];
-
-    // 衰减探索率
+    settled=true;
     if(explore>0.03)explore*=0.94;
 }
 
