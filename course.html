@@ -444,38 +444,19 @@
         }
         .app-carousel-caption {
             position: absolute;
-            bottom: 3rem;
+            bottom: 2rem;
             left: 1rem;
             right: 1rem;
             color: #fff;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 1.15rem;
             text-shadow: 0 1px 4px rgba(0,0,0,0.5);
             z-index: 3;
             pointer-events: none;
             letter-spacing: 0.02em;
         }
         .app-carousel-progress {
-            position: absolute;
-            bottom: 2.4rem;
-            left: 1rem;
-            right: 1rem;
-            height: 2.5px;
-            background: rgba(255,255,255,0.25);
-            border-radius: 2px;
-            z-index: 3;
-            overflow: hidden;
-        }
-        .app-carousel-progress-bar {
-            height: 100%;
-            background: #fff;
-            border-radius: 2px;
-            width: 0%;
-            will-change: width;
-        }
-        .app-carousel-progress-bar.running {
-            transition: width 4s linear;
-            width: 100%;
+            display: none;
         }
         .app-carousel-dots {
             position: absolute;
@@ -565,8 +546,7 @@
                 height: 32px;
                 font-size: 15px;
             }
-            .app-carousel-caption { font-size: 0.8rem; bottom: 2.6rem; }
-            .app-carousel-progress { bottom: 2rem; }
+            .app-carousel-caption { font-size: 0.95rem; bottom: 1.8rem; }
             .app-carousel-dots { bottom: 0.7rem; }
         }
         @media (max-width: 900px) {
