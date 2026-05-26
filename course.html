@@ -2444,9 +2444,6 @@ ${(() => {
         document.addEventListener('DOMContentLoaded', function() {
             initializeRobotGame();
             setTimeout(() => {
-                if (document.getElementById('newsCarousel')) {
-                    initCarousel();
-                }
                 if (document.getElementById('appCarousel')) {
                     initAppCarousel();
                 }
@@ -2472,9 +2469,6 @@ ${(() => {
             setTimeout(() => {
                 robotGameInitialized = false;
                 initializeRobotGame();
-                if (document.getElementById('newsCarousel')) {
-                    initCarousel();
-                }
                 if (document.getElementById('appCarousel')) {
                     initAppCarousel();
                 }
