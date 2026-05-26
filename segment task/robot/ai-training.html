@@ -275,7 +275,7 @@ function learnFromOutcome(reward){
         updateDebug('wait(未跳)',closestWaitState,reward);
     }
     settled=true;
-    if(explore>0.03)explore*=0.92;
+    if(explore>0.03)explore*=0.85;
 }
 
 // ============ 辅助 ============
