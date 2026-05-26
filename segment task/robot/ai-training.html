@@ -266,13 +266,31 @@ function checkCol(){
 // ============ 学习：只更新一次关键决策 ============
 function learnFromOutcome(reward){
     if(jumpState && jumpAction){
+        // 跳了：更新起跳时的状态
         var q=qGet(jumpState);
         q[jumpAction]+=LR*(reward-q[jumpAction]);
         updateDebug(jumpAction,jumpState,reward);
-    }else if(closestWaitState){
-        var q2=qGet(closestWaitState);
-        q2.wait+=LR*(reward-q2.wait);
+    }else if(closestWaitState && reward>0){
+        // 没跳但通过了(横梁正确躲避)：奖励wait
+        var q3=qGet(closestWaitState);
+        q3.wait+=LR*(reward-q3.wait);
         updateDebug('wait(未跳)',closestWaitState,reward);
+    }else if(closestWaitState && reward<0){
+        // 没跳撞了：找"最该跳却没跳"的距离桶惩罚wait
+        var parts=closestWaitState.split(',');
+        var bestS=null,bestGap=0;
+        for(var d=0;d<6;d++){
+            var s=d+','+parts[1]+',0';
+            var qq=qGet(s);
+            if(qq.jump>qq.wait && qq.jump-qq.wait>bestGap){
+                bestGap=qq.jump-qq.wait;
+                bestS=s;
+            }
+        }
+        if(!bestS)bestS=closestWaitState;
+        var q2=qGet(bestS);
+        q2.wait+=LR*(reward-q2.wait);
+        updateDebug('wait(未跳)',bestS,reward);
     }
     settled=true;
     if(explore>0.03)explore*=0.85;
