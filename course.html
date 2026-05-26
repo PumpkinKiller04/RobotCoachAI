@@ -390,6 +390,184 @@
             background: rgba(139, 90, 43, 0.1); 
             border-radius: 0 4px 4px 0; 
         }
+        /* ========== 前沿应用轮播样式 ========== */
+        .app-carousel-wrapper {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.08);
+            aspect-ratio: 16 / 10;
+            background: #e8e8e8;
+            user-select: none;
+        }
+        .app-carousel-wrapper:hover .app-carousel-arrow {
+            opacity: 1;
+        }
+        .app-carousel-track {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        .app-carousel-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 0;
+        }
+        .app-carousel-slide.active {
+            opacity: 1;
+            z-index: 1;
+        }
+        .app-carousel-slide-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1);
+            transition: transform 7s cubic-bezier(0.25, 0, 0.1, 1);
+        }
+        .app-carousel-slide.active .app-carousel-slide-img {
+            transform: scale(1.08);
+        }
+        .app-carousel-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg,
+                transparent 40%,
+                rgba(0,0,0,0.15) 70%,
+                rgba(0,0,0,0.65) 100%);
+            pointer-events: none;
+            z-index: 2;
+        }
+        .app-carousel-caption {
+            position: absolute;
+            bottom: 3rem;
+            left: 1rem;
+            right: 1rem;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+            z-index: 3;
+            pointer-events: none;
+            letter-spacing: 0.02em;
+        }
+        .app-carousel-progress {
+            position: absolute;
+            bottom: 2.4rem;
+            left: 1rem;
+            right: 1rem;
+            height: 2.5px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 2px;
+            z-index: 3;
+            overflow: hidden;
+        }
+        .app-carousel-progress-bar {
+            height: 100%;
+            background: #fff;
+            border-radius: 2px;
+            width: 0%;
+            will-change: width;
+        }
+        .app-carousel-progress-bar.running {
+            transition: width 4s linear;
+            width: 100%;
+        }
+        .app-carousel-dots {
+            position: absolute;
+            bottom: 0.85rem;
+            right: 1rem;
+            display: flex;
+            gap: 6px;
+            z-index: 3;
+        }
+        .app-carousel-dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.45);
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(1);
+        }
+        .app-carousel-dot.active {
+            background: #fff;
+            transform: scale(1.4);
+            box-shadow: 0 0 6px rgba(255,255,255,0.5);
+        }
+        .app-carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.18);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 4;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255,255,255,0.2);
+            pointer-events: auto;
+        }
+        .app-carousel-arrow:hover {
+            background: rgba(255,255,255,0.35);
+            transform: translateY(-50%) scale(1.12);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .app-carousel-arrow.prev { left: 12px; }
+        .app-carousel-arrow.next { right: 12px; }
+        .app-carousel-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.88);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        .app-carousel-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 12px;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .app-carousel-modal.show {
+            display: flex;
+        }
+        .app-carousel-modal.show img {
+            transform: scale(1);
+        }
+        /* 移动端始终显示箭头 */
+        @media (max-width: 768px) {
+            .app-carousel-arrow {
+                opacity: 0.8;
+                width: 32px;
+                height: 32px;
+                font-size: 15px;
+            }
+            .app-carousel-caption { font-size: 0.8rem; bottom: 2.6rem; }
+            .app-carousel-progress { bottom: 2rem; }
+            .app-carousel-dots { bottom: 0.7rem; }
+        }
         @media (max-width: 900px) {
             .page-container { grid-template-columns: 1fr; }
             .course-selector { justify-content: center; }
