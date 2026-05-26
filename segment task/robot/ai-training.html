@@ -109,10 +109,14 @@ var attempts=0,hiScore=0;
 var robot={x:RX,y:GY,vy:0,jumping:false,frame:0};
 var obs=[],otimer=0,ocount=0,ouid=0;
 
-// 每障碍物追踪：只能跳一次，记录那次决策
-var jumpState=null, jumpAction=null;   // 起跳时的状态和动作
-var closestWaitState=null;            // 最近一次地面的状态（没跳时用）
+// 每障碍物追踪
+var jumpState=null, jumpAction=null;
+var closestWaitState=null;
 var curObsId=-1, canJump=false, settled=false;
+
+// 每障碍物一次的探索决策
+var exploreAction=null;  // 'jump'/'wait'/null(null=利用Q值)
+var exploreBucket=0;     // 探索时在哪个距离桶起跳
 
 // ============ DOM ============
 var cv=document.getElementById('gameCanvas');
