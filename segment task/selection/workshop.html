@@ -558,17 +558,20 @@
       } else if (phase === 1) {
         // 左弯道：绕左侧圆心逆时针走半圆
         if (!sensors.lidar) {
-          // 无LiDAR：沿弯道但严重偏离跑道
+          // 无LiDAR：第一个弯道就冲出赛道
           const speed = 0.025;
           curveT += speed;
           const theta = Math.PI / 2 + curveT;
           const r = T.curveR;
-          robot.x = T.leftX + r * Math.cos(theta) + Math.sin(frame * 0.15) * 10;
-          robot.y = T.cy + r * Math.sin(theta) + Math.cos(frame * 0.12) * 8;
+          robot.x = T.leftX + r * Math.cos(theta) + Math.sin(frame * 0.15) * 15;
+          robot.y = T.cy + r * Math.sin(theta) + Math.cos(frame * 0.12) * 12;
           fpvCurve = Math.min(1, fpvCurve + 0.022);
           fpvOfftrack = Math.min(1, fpvOfftrack + 0.015);
-          if (!isOnTrack(robot.x, robot.y) && !hadCurveFail) {
+          if (!isOnTrack(robot.x, robot.y)) {
             hadCurveFail = true;
+            animState = 'offtrack';
+            endRun('curve_fail');
+            return;
           }
           if (curveT >= Math.PI) {
             phase = 2;
