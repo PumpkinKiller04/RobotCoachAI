@@ -577,6 +577,12 @@
         if (!sensors.imu) {
           robot.y += Math.sin(frame * 0.12) * (sensors.lidar ? 1.2 : 0.6);
         }
+        // 仅激光雷达：上直道跑一半就超时
+        if (sensors.lidar && !sensors.imu && robot.x >= (T.leftX + T.rightX) / 2) {
+          animState = 'done';
+          endRun('timeout');
+          return;
+        }
         fpvCurve = Math.max(0, fpvCurve - 0.02);
         fpvOfftrack = 0;
         if (robot.x >= T.rightX - 5) {
