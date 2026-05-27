@@ -591,6 +591,12 @@
           robot.y = T.cy + r * Math.sin(theta) + Math.sin(frame * 0.2) * 4.0;
           fpvCurve = Math.min(1, fpvCurve + 0.02);
           fpvOfftrack = Math.min(0.4, fpvOfftrack + 0.01);
+          // 弯道跑一半触发超时
+          if (curveT >= Math.PI / 2) {
+            animState = 'done';
+            endRun('timeout');
+            return;
+          }
           if (curveT >= Math.PI) {
             phase = 2;
             robot.x = T.leftX;
