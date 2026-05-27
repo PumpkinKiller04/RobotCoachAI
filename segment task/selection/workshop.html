@@ -248,10 +248,6 @@
         // 文字标签（黑色）
         ctx.fillStyle = '#000000'; ctx.font = 'bold 16px system-ui'; ctx.textAlign = 'center';
         ctx.fillText('⚠️ 颠簸路段', T.rightX + 50, T.cy + 8);
-        // 箭头指示
-        ctx.strokeStyle = '#000000'; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.moveTo(T.rightX - T.innerR + 15, T.cy - 15); ctx.lineTo(T.rightX - T.innerR + 5, T.cy - 5); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(T.rightX - T.innerR + 15, T.cy + 15); ctx.lineTo(T.rightX - T.innerR + 5, T.cy + 5); ctx.stroke();
       }
 
       // 起/终点
