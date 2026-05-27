@@ -499,6 +499,7 @@
       if (animId) { cancelAnimationFrame(animId); animId = null; }
       animState = 'idle'; phase = 0; curveT = 0; fpvCurve = 0; fpvOfftrack = 0; fpvScroll = 0; frame = 0;
       hadCurveFail = false; hadBumpIssue = false; bumpShake = 0; bumpWarned = false;
+      window._confettiParticles = null;
       robot = { x: T.rightX - 20, y: T.outerBottom - 22 };
       running = false;
       runBtn.disabled = false;
@@ -514,6 +515,7 @@
       if (animId) { cancelAnimationFrame(animId); animId = null; }
       animState = 'straight1'; phase = 0; curveT = 0; fpvCurve = 0; fpvOfftrack = 0; fpvScroll = 0; frame = 0;
       hadCurveFail = false; hadBumpIssue = false; bumpShake = 0; bumpWarned = false;
+      window._confettiParticles = null;
       robot = { x: T.rightX - 20, y: T.outerBottom - 22 };
       running = true;
       equipOverlay.classList.add('hidden');
