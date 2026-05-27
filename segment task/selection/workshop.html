@@ -541,7 +541,7 @@
 
         // 仅摄像头：接近弯道时提前转弯冲出（与profile.html一致）
         if (!sensors.lidar && robot.x <= T.leftX + 60) {
-          robot.y -= 0.55;
+          robot.y -= 0.85;
           fpvOfftrack = Math.min(1, fpvOfftrack + 0.035);
           fpvCurve = Math.min(1, fpvCurve + 0.03);
           if (!isOnTrack(robot.x, robot.y)) {
