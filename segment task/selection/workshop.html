@@ -305,8 +305,8 @@
         ctx.fillStyle = '#00ff00';
         ctx.beginPath(); ctx.arc(rx, ry - BH - 17, 2.5, 0, Math.PI * 2); ctx.fill();
 
-        // 失败标记
-        if (animState === 'offtrack' || animState === 'done') {
+        // 失败标记（只有 off track 时才打叉叉）
+        if (animState === 'offtrack') {
           ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 3;
           ctx.beginPath();
           ctx.moveTo(rx - 8, ry - BH/2 - 8); ctx.lineTo(rx + 8, ry - BH/2 + 8);
