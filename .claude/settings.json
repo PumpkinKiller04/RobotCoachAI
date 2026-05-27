@@ -50,7 +50,8 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080)",
       "Bash(curl -sI http://localhost:8080)",
       "Bash(node -e ' *)",
-      "Bash(git checkout *)"
+      "Bash(git checkout *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" --connect-timeout 5 --max-time 10 \"https://quickform.cn/api/hn79b9cbyy/all\")"
     ]
   }
 }
