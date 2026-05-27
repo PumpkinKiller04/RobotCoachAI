@@ -767,6 +767,8 @@
       } else if (sensors.lidar && sensors.imu && sensors.force && !hadCurveFail && !hadBumpIssue) {
         statusText.textContent = '完美通过！全部传感器协同工作';
         statusText.style.color = '#22c55e';
+        // 触发彩带庆祝效果
+        generateConfetti();
         showResultOverlay('🎉', '通过选拔！',
           '四种传感器协同工作，稳定快速完成',
           '📷 视觉 + 📡 测距 + 🧭 平衡 + 🦶 触地 → 多模态感知',
