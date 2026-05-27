@@ -780,8 +780,8 @@
         statusText.style.color = '#22c55e';
         // 清除旧彩带，由 drawTPV 重新初始化
         window._confettiParticles = null;
-        drawTPV(); // 触发初始化
-        // 彩带动画循环
+        drawTPV();
+        // 彩带动画循环（持续渲染直到粒子全部落下）
         (function loopConfetti() {
           if (!window._confettiParticles) return;
           const anyVisible = window._confettiParticles.some(p => p.y < tpvCanvas.height + 50);
@@ -789,10 +789,13 @@
           drawTPV();
           requestAnimationFrame(loopConfetti);
         })();
-        showResultOverlay('🎉', '通过选拔！',
-          '四种传感器协同工作，稳定快速完成',
-          '📷 视觉 + 📡 测距 + 🧭 平衡 + 🦶 触地 → 多模态感知',
-          '#16a34a', false);
+        // 延迟弹窗，让用户先看到彩带效果
+        setTimeout(() => {
+          showResultOverlay('🎉', '通过选拔！',
+            '四种传感器协同工作，稳定快速完成',
+            '📷 视觉 + 📡 测距 + 🧭 平衡 + 🦶 触地 → 多模态感知',
+            '#16a34a', false);
+        }, 2500);
       } else {
         // 兜底：有部分问题
         statusText.textContent = '未通过 — 检查传感器配置';
