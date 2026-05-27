@@ -117,6 +117,10 @@
     let robot = { x: T.rightX - 20, y: T.outerBottom - 22 };
     let phase = 0;                // 0=下直道, 1=左弯道, 2=上直道, 3=右弯道, 4=完成
     let curveT = 0;
+    let hadCurveFail = false;
+    let hadBumpIssue = false;
+    // 彩带庆祝效果
+    let confetti = [];
     let fpvCurve = 0;
     let fpvOfftrack = 0;
     let fpvScroll = 0;
