@@ -625,7 +625,23 @@
             robot.x = T.rightX;
             robot.y = T.cy + T.curveR;
           }
+        } else if (sensors.lidar && sensors.force) {
+          // 全部传感器：平稳通过颠簸路段，不摇晃
+          const speed = straightSpeed / 90;
+          curveT += speed;
+          const theta = -Math.PI / 2 + curveT;
+          const r = T.curveR;
+          robot.x = T.rightX + r * Math.cos(theta);
+          robot.y = T.cy + r * Math.sin(theta);
+          fpvCurve = Math.max(0, fpvCurve - 0.015);
+          fpvOfftrack = 0;
+          if (curveT >= Math.PI) {
+            phase = 4;
+            robot.x = T.rightX;
+            robot.y = T.cy + r * Math.sin(Math.PI / 2);
+          }
         } else if (sensors.lidar) {
+          // 仅激光雷达或激光雷达+IMU（无力觉传感器）
           const speed = straightSpeed / 90;
           curveT += speed;
           const theta = -Math.PI / 2 + curveT;
@@ -642,7 +658,7 @@
             robot.y += Math.sin(frame * 0.12) * 1.0;
           }
           fpvCurve = Math.max(0, fpvCurve - 0.015);
-          fpvOfftrack = sensors.force ? 0 : Math.min(0.3, fpvOfftrack + 0.008);
+          fpvOfftrack = Math.min(0.3, fpvOfftrack + 0.008);
           if (curveT >= Math.PI) {
             phase = 4;
             robot.x = T.rightX;
