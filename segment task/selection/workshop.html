@@ -734,8 +734,8 @@
       if (!sensors.lidar && hadCurveFail) {
         statusText.textContent = '左弯道冲出 — 缺少激光雷达';
         statusText.style.color = '#ef4444';
-        showResultOverlay('⚠️', '弯道冲出！',
-          '摄像头无法测距，左弯道冲出跑道',
+        showResultOverlay('⚠️', '犯规出局！',
+          '初代机在<strong>直道</strong>上跑得很顺利，但快进入<strong>弯道</strong>时<strong>提前转弯</strong>，冲出了跑道。原因：只靠摄像头一种传感器，无法准确判断弯道距离和自身位置，导致转向时机错误。',
           '安装<strong>激光雷达</strong>测量弯道距离',
           '#dc2626', true);
       } else if (sensors.lidar && !sensors.imu) {
