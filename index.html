@@ -87,201 +87,208 @@
             align-items: flex-end;
         }
 
-        /* ===== 楼房样式（分布在左右两侧）===== */
-        .inverted-building {
+        /* ===== 楼房样式 ===== */
+        .bld {
             position: absolute;
             bottom: 0;
-            transform-origin: bottom center;
         }
 
-        /* 楼房地基（粘附在顶部马路） */
-        .building-base {
-            position: relative;
+        /* 1. 玻璃摩天楼 A — 蓝灰调，网格窗户 */
+        .bld-glass-a {
+            background: linear-gradient(180deg, #7bb3c9 0%, #5a9ab5 30%, #3d7d9a 60%, #2d6a85 100%);
+            border-bottom: 3px solid #1a4a60;
+            border-radius: 3px 3px 0 0;
         }
-
-        /* 现代玻璃楼 */
-        .building-modern {
-            background: linear-gradient(180deg, #4a90a4 0%, #357a8a 50%, #2d6a7a 100%);
-            border-bottom: 4px solid #1a4a5a;
-        }
-        .building-modern::after {
+        .bld-glass-a::after {
             content: '';
             position: absolute;
-            top: 8px;
-            left: 4px;
-            right: 4px;
-            bottom: 8px;
-            background: 
-                repeating-linear-gradient(
-                    0deg,
-                    transparent 0px,
-                    transparent 12px,
-                    rgba(255,255,255,0.5) 12px,
-                    rgba(255,255,255,0.5) 18px
-                ),
-                repeating-linear-gradient(
-                    90deg,
-                    transparent 0px,
-                    transparent 16px,
-                    rgba(200,230,255,0.4) 16px,
-                    rgba(200,230,255,0.4) 22px
-                );
+            inset: 5px 3px;
+            background:
+                repeating-linear-gradient(0deg, transparent 0px, transparent 10px, rgba(255,255,255,0.15) 10px, rgba(255,255,255,0.15) 12px),
+                repeating-linear-gradient(90deg, transparent 0px, transparent 14px, rgba(200,225,240,0.18) 14px, rgba(200,225,240,0.18) 16px);
         }
-
-        /* 红砖矮楼 */
-        .building-brick {
-            background: linear-gradient(180deg, #8b4513 0%, #a0522d 50%, #8b4513 100%);
-            border-bottom: 4px solid #5d3a1a;
-        }
-        .building-brick::after {
+        .bld-glass-a::before {
             content: '';
             position: absolute;
-            top: 6px;
-            left: 3px;
-            right: 3px;
-            bottom: 6px;
-            background: 
-                repeating-linear-gradient(
-                    0deg,
-                    transparent 0px,
-                    transparent 8px,
-                    rgba(255,200,150,0.3) 8px,
-                    rgba(255,200,150,0.3) 10px
-                ),
-                repeating-linear-gradient(
-                    90deg,
-                    transparent 0px,
-                    transparent 14px,
-                    rgba(100,50,20,0.3) 14px,
-                    rgba(100,50,20,0.3) 16px
-                );
+            bottom: 100%; left: 4px; right: 4px;
+            height: 7px;
+            background: #5a9ab5;
+            border-radius: 2px 2px 0 0;
         }
 
-        /* 尖顶小楼 */
-        .building-cottage {
-            background: linear-gradient(180deg, #cd853f 0%, #deb887 50%, #cd853f 100%);
-            border-bottom: 4px solid #8b6914;
+        /* 2. 玻璃摩天楼 B — 深蓝调，更窄更高，顶部尖塔 */
+        .bld-glass-b {
+            background: linear-gradient(180deg, #4a7d95 0%, #356278 35%, #1e4a5e 70%, #14384a 100%);
+            border-bottom: 3px solid #0d2a38;
+            border-radius: 2px 2px 0 0;
         }
-        .building-cottage::before {
+        .bld-glass-b::after {
             content: '';
             position: absolute;
-            bottom: 100%;
-            left: 50%;
+            inset: 4px 2px;
+            background:
+                repeating-linear-gradient(0deg, transparent 0px, transparent 8px, rgba(255,255,255,0.12) 8px, rgba(255,255,255,0.12) 10px),
+                repeating-linear-gradient(90deg, transparent 0px, transparent 10px, rgba(180,210,230,0.15) 10px, rgba(180,210,230,0.15) 12px);
+        }
+        .bld-glass-b::before {
+            content: '';
+            position: absolute;
+            bottom: 100%; left: 50%;
             transform: translateX(-50%);
-            border-left: solid transparent;
-            border-right: solid transparent;
-            border-bottom: 30px solid #b8732d;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 22px solid #356278;
         }
-        .building-cottage::after {
+
+        /* 3. 红砖公寓楼 — 暖砖色，拱形窗纹理 */
+        .bld-brick {
+            background: linear-gradient(180deg, #b5653a 0%, #9b4d2a 40%, #7d3a1e 100%);
+            border-bottom: 3px solid #4a1e10;
+            border-radius: 2px 2px 0 0;
+        }
+        .bld-brick::after {
             content: '';
             position: absolute;
-            top: 6px;
-            left: 5px;
-            right: 5px;
-            bottom: 6px;
-            background: repeating-linear-gradient(
-                90deg,
-                transparent 0px,
-                transparent 18px,
-                rgba(255,220,180,0.4) 18px,
-                rgba(255,220,180,0.4) 22px
-            );
+            inset: 5px 3px;
+            background:
+                repeating-linear-gradient(0deg, transparent 0px, transparent 7px, rgba(255,180,130,0.2) 7px, rgba(255,180,130,0.2) 9px),
+                repeating-linear-gradient(90deg, transparent 0px, transparent 12px, rgba(100,40,15,0.25) 12px, rgba(100,40,15,0.25) 14px);
         }
 
-        /* ===== 树木样式（集中在中间区域）===== */
-        .inverted-tree {
-            position: absolute;
-            bottom: 0;
-            transform-origin: bottom center;
+        /* 4. 霓虹暗楼 — 深色基底，彩色发光窗户点 */
+        .bld-neon {
+            background: linear-gradient(180deg, #3a4a58 0%, #2a3a48 40%, #1a2a38 100%);
+            border-bottom: 3px solid #0a1a28;
+            border-radius: 3px 3px 0 0;
         }
-
-        .tree-trunk {
+        .bld-neon::after {
+            content: '';
             position: absolute;
-            bottom: 0;
-            left: 50%;
+            top: 6px; left: 4px; right: 4px; bottom: 5px;
+            background:
+                radial-gradient(circle 3px, #ffcc44 40%, transparent 70%) at 6px 5px,
+                radial-gradient(circle 2px, #ffcc44 40%, transparent 70%) at 6px 16px,
+                radial-gradient(circle 3px, #ffcc44 40%, transparent 70%) at 6px 27px,
+                radial-gradient(circle 2px, #ff66aa 40%, transparent 70%) at 16px 8px,
+                radial-gradient(circle 3px, #ff66aa 40%, transparent 70%) at 16px 22px,
+                radial-gradient(circle 2px, #44ddcc 40%, transparent 70%) at 10px 18px,
+                radial-gradient(circle 3px, #44ddcc 40%, transparent 70%) at 10px 32px;
+            background-repeat: no-repeat;
+        }
+        .bld-neon::before {
+            content: '';
+            position: absolute;
+            bottom: 100%; left: 50%;
             transform: translateX(-50%);
-            background: linear-gradient(90deg, #5d4037 0%, #8b6b42 50%, #5d4037 100%);
+            width: 4px; height: 12px;
+            background: #ff4444;
+            border-radius: 2px 2px 0 0;
+            box-shadow: 0 0 8px rgba(255,68,68,0.7);
         }
 
-        .tree-top {
+        /* 5. 办公楼 — 米白色调，水平带状窗 */
+        .bld-office {
+            background: linear-gradient(180deg, #e8e0d8 0%, #d5ccc0 35%, #c4b8a8 70%, #b0a494 100%);
+            border-bottom: 3px solid #8a7a6a;
+            border-radius: 2px 2px 0 0;
+        }
+        .bld-office::after {
+            content: '';
             position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            inset: 6px 4px;
+            background: repeating-linear-gradient(0deg,
+                rgba(120,140,160,0.35) 0px, rgba(120,140,160,0.35) 6px,
+                transparent 6px, transparent 14px);
         }
 
-        /* 圆形树冠 */
-        .tree-round .tree-top {
-            width: 50px;
-            height: 50px;
+        /* 6. 钟楼 — 细高塔身，尖顶 */
+        .bld-tower {
+            background: linear-gradient(180deg, #d4b896 0%, #c4a47a 30%, #b09068 70%, #9a7a50 100%);
+            border-bottom: 3px solid #6b4a28;
+            border-radius: 2px 2px 0 0;
+        }
+        .bld-tower::before {
+            content: '';
+            position: absolute;
+            bottom: 100%; left: 50%;
+            transform: translateX(-50%);
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-bottom: 28px solid #c4a47a;
+        }
+        .bld-tower::after {
+            content: '';
+            position: absolute;
+            top: 10px; left: 50%;
+            transform: translateX(-50%);
+            width: 12px; height: 12px;
+            background: rgba(255,255,255,0.7);
             border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #90ee90, #228b22);
-            transform: translateX(-50%);
-        }
-        .tree-round .tree-top::before {
-            content: '';
-            position: absolute;
-            top: -15px;
-            left: 10px;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #98fb98, #32cd32);
+            box-shadow: 0 0 6px rgba(255,255,200,0.5);
         }
 
-        /* 锥形松树 */
-        .tree-cone .tree-top {
-            width: 0;
-            height: 0;
-            border-left: 25px solid transparent;
-            border-right: 25px solid transparent;
-            border-bottom: 60px solid #228b22;
+        /* 7. 宽体商业楼 — 矮胖，大玻璃幕墙 */
+        .bld-wide {
+            background: linear-gradient(180deg, #8ab8c8 0%, #6da0b0 40%, #4d8698 100%);
+            border-bottom: 3px solid #2a5a6a;
+            border-radius: 4px 4px 0 0;
         }
-        .tree-cone .tree-top::before {
+        .bld-wide::after {
             content: '';
             position: absolute;
-            top: 20px;
-            left: -18px;
-            width: 0;
-            height: 0;
-            border-left: 18px solid transparent;
-            border-right: 18px solid transparent;
-            border-bottom: 45px solid #2e8b2e;
+            inset: 5px 4px;
+            background:
+                repeating-linear-gradient(0deg, transparent 0px, transparent 14px, rgba(255,255,255,0.15) 14px, rgba(255,255,255,0.15) 16px),
+                repeating-linear-gradient(90deg, transparent 0px, transparent 18px, rgba(200,220,235,0.12) 18px, rgba(200,220,235,0.12) 20px);
         }
-        .tree-cone .tree-top::after {
+        .bld-wide::before {
             content: '';
             position: absolute;
-            top: 40px;
-            left: -12px;
-            width: 0;
-            height: 0;
-            border-left: 12px solid transparent;
-            border-right: 12px solid transparent;
-            border-bottom: 30px solid #1e6e1e;
+            bottom: 100%; left: 6px; right: 6px;
+            height: 5px;
+            background: #6da0b0;
+            border-radius: 2px 2px 0 0;
         }
 
-        /* 棕榈树 */
-        .tree-palm .tree-trunk {
-            width: 14px;
-            height: 55px;
-            border-radius: 3px;
+        /* 8. 工业烟囱 — 圆柱渐变 */
+        .bld-chimney {
+            background: linear-gradient(180deg, #5a5a5a 0%, #454545 25%, #505050 50%, #3a3a3a 75%, #2a2a2a 100%);
+            border-bottom: 4px solid #1a1a1a;
+            border-radius: 50% 50% 0 0 / 8px 8px 0 0;
         }
-        .tree-palm .tree-top {
-            width: 70px;
-            height: 35px;
-            background: radial-gradient(ellipse at center, #228b22 0%, transparent 70%);
-            border-radius: 50%;
-            transform: translateX(-50%);
-        }
-        .tree-palm .tree-top::before {
+        .bld-chimney::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 10px;
-            width: 50px;
-            height: 40px;
-            background: linear-gradient(135deg, transparent 45%, #228b22 45%, #228b22 55%, transparent 55%);
-            border-radius: 50%;
+            top: 12px; left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 5px;
+            background: rgba(200,50,50,0.5);
+            border-radius: 2px;
+            box-shadow: 0 0 6px rgba(255,60,60,0.3);
+        }
+        .bld-chimney::before {
+            content: '';
+            position: absolute;
+            bottom: 100%; left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            height: 6px;
+            background: #3a3a3a;
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* 天际线底部光晕 */
+        .city-glow {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 25px;
+            background: linear-gradient(180deg,
+                transparent 0%,
+                rgba(180,200,220,0.06) 40%,
+                rgba(180,200,220,0.12) 100%);
+            pointer-events: none;
+            z-index: 2;
         }
 
         /* ===== 三、跑道区域（正常方向，下半部分）===== */
