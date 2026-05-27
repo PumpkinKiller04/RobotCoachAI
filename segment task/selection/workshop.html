@@ -318,48 +318,8 @@
           ctx.stroke();
         }
       }
-      // 绘制彩带
-      drawConfetti(ctx);
       ctx.fillStyle = '#fff'; ctx.font = '10px system-ui'; ctx.textAlign = 'left';
       ctx.fillText('标准操场 · 红色橡胶跑道', 10, H - 8);
-    }
-
-    // 绘制彩带效果
-    function drawConfetti(ctx) {
-      for (let i = confetti.length - 1; i >= 0; i--) {
-        const c = confetti[i];
-        c.y += c.speed;
-        c.x += c.wind;
-        c.rotation += c.rotationSpeed;
-        
-        ctx.save();
-        ctx.translate(c.x, c.y);
-        ctx.rotate(c.rotation);
-        ctx.fillStyle = c.color;
-        ctx.fillRect(-c.size, -c.size, c.size * 2, c.size * 2);
-        ctx.restore();
-        
-        if (c.y > 400) {
-          confetti.splice(i, 1);
-        }
-      }
-    }
-
-    // 生成彩带
-    function generateConfetti() {
-      const colors = ['#ff0000', '#ff6600', '#ffcc00', '#00ff00', '#00ccff', '#0066ff', '#cc00ff'];
-      for (let i = 0; i < 20; i++) {
-        confetti.push({
-          x: Math.random() * 520,
-          y: -10,
-          size: Math.random() * 6 + 3,
-          speed: Math.random() * 3 + 2,
-          wind: (Math.random() - 0.5) * 2,
-          rotation: Math.random() * Math.PI * 2,
-          rotationSpeed: (Math.random() - 0.5) * 0.3,
-          color: colors[Math.floor(Math.random() * colors.length)]
-        });
-      }
     }
 
     // ========== 绘制第一视角 ==========
