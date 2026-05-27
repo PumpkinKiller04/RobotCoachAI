@@ -11,8 +11,13 @@
         :root {
             --book-spine: #5c3a1e;
             --book-cover: #f5e6c8;
+            --book-cover-dark: #dcc894;
             --gold: #c8a44e;
+            --gold-light: #e8d5a3;
             --text-dark: #3d2a10;
+            --text-medium: #6b4e2e;
+            --glass-bg: rgba(255, 255, 255, 0.18);
+            --glass-border: rgba(255, 255, 255, 0.4);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -30,6 +35,7 @@
             inset: 0;
             z-index: 0;
         }
+
         .bg-video {
             position: absolute;
             inset: 0;
@@ -51,6 +57,7 @@
         }
         .bg-video.loaded ~ .bg-fallback { opacity: 0; }
 
+        /* Noise texture overlay */
         .noise-overlay {
             position: absolute;
             inset: 0;
@@ -63,16 +70,18 @@
             background-size: 200px 200px;
         }
 
-        /* Frosted glass overlay — top ~35% of video blurred */
+        /* Frosted glass overlay — covers top ~35%, blurring the video beneath */
         .frosted-overlay {
             position: absolute;
-            top: 0; left: 0; right: 0;
+            top: 0;
+            left: 0;
+            right: 0;
             height: 38%;
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             background: linear-gradient(180deg,
-                rgba(255,255,255,0.12) 0%,
-                rgba(255,255,255,0.05) 50%,
+                rgba(255, 255, 255, 0.12) 0%,
+                rgba(255, 255, 255, 0.06) 50%,
                 transparent 100%);
             -webkit-mask-image: linear-gradient(180deg, black 0%, black 55%, transparent 100%);
             mask-image: linear-gradient(180deg, black 0%, black 55%, transparent 100%);
@@ -80,280 +89,58 @@
             z-index: 3;
         }
 
+        /* Warm light from top-left */
         .warm-light {
             position: absolute;
-            top: -15%; left: -8%;
-            width: 55%; height: 55%;
+            top: -15%;
+            left: -8%;
+            width: 55%;
+            height: 55%;
             background: radial-gradient(
                 ellipse at 28% 28%,
-                rgba(255,210,130,0.15) 0%,
-                rgba(255,180,80,0.06) 35%,
-                transparent 70%);
+                rgba(255, 210, 130, 0.15) 0%,
+                rgba(255, 180, 80, 0.06) 35%,
+                transparent 70%
+            );
             pointer-events: none;
             z-index: 1;
         }
 
+        /* Subtle vignette */
         .vignette {
             position: absolute;
             inset: 0;
             pointer-events: none;
             z-index: 1;
-            background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.35) 100%);
-        }
-
-        /* ===== 倒立城市层（书本背后上方）===== */
-        .inverted-city-layer {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            height: 38%;
-            z-index: 4;
-            pointer-events: none;
-            transform: scaleY(-1);
-        }
-
-        .city-skyline {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 100%;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 0;
-        }
-
-        /* 单个建筑 */
-        .city-building {
-            position: relative;
-            flex-shrink: 0;
-            transform-origin: bottom center;
-        }
-
-        /* ---- 玻璃摩天楼 A（蓝灰调）---- */
-        .b-glass-a {
-            width: 38px; height: 110px;
-            background: linear-gradient(180deg, #5a8a9f 0%, #3d6d82 50%, #2a5568 100%);
-            border-bottom: 3px solid #1a3a4a;
-            border-radius: 3px 3px 0 0;
-        }
-        .b-glass-a::after {
-            content: '';
-            position: absolute;
-            inset: 6px 4px;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent 0px, transparent 7px,
-                rgba(255,255,255,0.18) 7px, rgba(255,255,255,0.18) 9px),
-            repeating-linear-gradient(
-                90deg,
-                transparent 0px, transparent 9px,
-                rgba(200,230,255,0.15) 9px, rgba(200,230,255,0.15) 11px);
-        }
-        /* 顶部装饰 */
-        .b-glass-a::before {
-            content: '';
-            position: absolute;
-            bottom: 100%;
-            left: 2px; right: 2px;
-            height: 6px;
-            background: #4a7a8f;
-            border-radius: 2px 2px 0 0;
-        }
-
-        /* ---- 玻璃摩天楼 B（深蓝灰，更高）---- */
-        .b-glass-b {
-            width: 32px; height: 145px;
-            background: linear-gradient(180deg, #4a6d80 0%, #355a6e 50%, #1e4255 100%);
-            border-bottom: 3px solid #0f2a38;
-            border-radius: 3px 3px 0 0;
-        }
-        .b-glass-b::after {
-            content: '';
-            position: absolute;
-            inset: 5px 3px;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent 0px, transparent 6px,
-                rgba(255,255,255,0.15) 6px, rgba(255,255,255,0.15) 8px),
-            repeating-linear-gradient(
-                90deg,
-                transparent 0px, transparent 8px,
-                rgba(200,220,240,0.12) 8px, rgba(200,220,240,0.12) 10px);
-        }
-        .b-glass-b::before {
-            content: '';
-            position: absolute;
-            bottom: 100%;
-            left: 0; right: 0;
-            height: 18px;
-            background: linear-gradient(180deg, #5a8a9f, #3d6d82);
-            border-radius: 2px 2px 0 0;
-        }
-
-        /* ---- 红砖楼 ---- */
-        .b-brick {
-            width: 36px; height: 72px;
-            background: linear-gradient(180deg, #9b5a3a 0%, #7a4230 50%, #8b4a35 100%);
-            border-bottom: 3px solid #4a2018;
-            border-radius: 3px 3px 0 0;
-        }
-        .b-brick::after {
-            content: '';
-            position: absolute;
-            inset: 5px 3px;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent 0px, transparent 6px,
-                rgba(255,200,160,0.25) 6px, rgba(255,200,160,0.25) 8px),
-            repeating-linear-gradient(
-                90deg,
-                transparent 0px, transparent 10px,
-                rgba(120,60,30,0.2) 10px, rgba(120,60,30,0.2) 12px);
-        }
-
-        /* ---- 尖顶钟楼 ---- */
-        .b-tower {
-            width: 30px; height: 90px;
-            background: linear-gradient(180deg, #c8a87a 0%, #b8925a 50%, #9a7a44 100%);
-            border-bottom: 3px solid #5a3a18;
-            border-radius: 3px 3px 0 0;
-        }
-        .b-tower::before {
-            content: '';
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            border-left: 18px solid transparent;
-            border-right: 18px solid transparent;
-            border-bottom: 26px solid #b8925a;
-        }
-        .b-tower::after {
-            content: '';
-            position: absolute;
-            top: 12px; left: 6px;
-            width: 8px; height: 8px;
-            background: rgba(255,255,255,0.6);
-            border-radius: 50%;
-            box-shadow: 0 18px 0 rgba(255,255,255,0.4);
-        }
-
-        /* ---- 细高办公楼 ---- */
-        .b-slim {
-            width: 24px; height: 125px;
-            background: linear-gradient(180deg, #6b8e9e 0%, #4a7080 50%, #385a68 100%);
-            border-bottom: 3px solid #1a3a48;
-            border-radius: 2px 2px 0 0;
-        }
-        .b-slim::after {
-            content: '';
-            position: absolute;
-            inset: 4px 2px;
-            background: repeating-linear-gradient(
-                90deg,
-                transparent 0px, transparent 7px,
-                rgba(255,255,255,0.15) 7px, rgba(255,255,255,0.15) 8px);
-        }
-
-        /* ---- 矮宽商业楼 ---- */
-        .b-wide {
-            width: 50px; height: 58px;
-            background: linear-gradient(180deg, #8a7a6a 0%, #6d5e50 50%, #5a4c40 100%);
-            border-bottom: 3px solid #3a2c20;
-            border-radius: 3px 3px 0 0;
-        }
-        .b-wide::after {
-            content: '';
-            position: absolute;
-            inset: 5px 4px;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent 0px, transparent 16px,
-                rgba(255,255,255,0.1) 16px, rgba(255,255,255,0.1) 18px),
-            repeating-linear-gradient(
-                90deg,
-                transparent 0px, transparent 12px,
-                rgba(0,0,0,0.1) 12px, rgba(0,0,0,0.1) 14px);
-        }
-
-        /* ---- 霓虹小楼（像素风发光窗户）---- */
-        .b-neon {
-            width: 28px; height: 95px;
-            background: linear-gradient(180deg, #3a4a5a 0%, #2a3a4a 50%, #1a2a3a 100%);
-            border-bottom: 3px solid #0a1a2a;
-            border-radius: 3px 3px 0 0;
-        }
-        .b-neon::after {
-            content: '';
-            position: absolute;
-            top: 8px; left: 5px; right: 5px; bottom: 6px;
-            background:
-                /* 暖黄窗 */
-                radial-gradient(circle 4px, #ffcc44 30%, transparent 70%) at 8px 6px,
-                radial-gradient(circle 3px, #ffcc44 30%, transparent 70%) at 8px 20px,
-                radial-gradient(circle 4px, #ffcc44 30%, transparent 70%) at 8px 34px,
-                /* 品红窗 */
-                radial-gradient(circle 3px, #ff66aa 30%, transparent 70%) at 18px 12px,
-                radial-gradient(circle 4px, #ff66aa 30%, transparent 70%) at 18px 28px,
-                /* 青色窗 */
-                radial-gradient(circle 3px, #44ddcc 30%, transparent 70%) at 14px 44px;
-            background-repeat: no-repeat;
-        }
-
-        /* ---- 拱顶建筑 ---- */
-        .b-arch {
-            width: 34px; height: 80px;
-            background: linear-gradient(180deg, #c8966a 0%, #a87850 50%, #8a6040 100%);
-            border-bottom: 3px solid #5a3020;
-            border-radius: 10px 10px 0 0;
-        }
-        .b-arch::after {
-            content: '';
-            position: absolute;
-            bottom: 18px; left: 6px;
-            width: 10px; height: 22px;
-            background: rgba(0,0,0,0.25);
-            border-radius: 5px 5px 0 0;
-            box-shadow: 12px 0 0 rgba(0,0,0,0.25);
-        }
-
-        /* 建筑之间的间距辅助 */
-        .city-gap { width: 6px; flex-shrink: 0; }
-        .city-gap-sm { width: 3px; flex-shrink: 0; }
-        .city-gap-lg { width: 12px; flex-shrink: 0; }
-
-        /* 倒立城市的天际线光晕 */
-        .city-glow {
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 30px;
-            background: linear-gradient(180deg,
-                transparent 0%,
-                rgba(180,200,220,0.08) 50%,
-                rgba(180,200,220,0.15) 100%);
-            pointer-events: none;
+            background: radial-gradient(
+                ellipse at center,
+                transparent 55%,
+                rgba(0, 0, 0, 0.35) 100%
+            );
         }
 
         /* ===== Layer 1: Title ===== */
         .title-layer {
             position: fixed;
-            top: 6%;
+            top: 7%;
             left: 5%;
-            z-index: 15;
+            z-index: 10;
             pointer-events: none;
         }
 
         .main-title {
             font-family: 'ZCOOL KuaiLe', cursive;
-            font-size: clamp(32px, 7vw, 76px);
+            font-size: clamp(34px, 7vw, 78px);
             font-weight: 700;
-            background: linear-gradient(180deg, #ffffff 0%, #ffe8c0 35%, #f0c878 100%);
+            background: linear-gradient(180deg,
+                #ffffff 0%,
+                #ffe8c0 35%,
+                #f0c878 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            filter: drop-shadow(3px 4px 3px rgba(0,0,0,0.5))
-                    drop-shadow(0 0 35px rgba(255,200,100,0.25));
+            filter: drop-shadow(3px 4px 2px rgba(0,0,0,0.5))
+                    drop-shadow(0 0 30px rgba(255,200,100,0.25));
             letter-spacing: 0.1em;
             display: flex;
             flex-wrap: wrap;
@@ -384,10 +171,10 @@
 
         .sub-title {
             font-family: 'ZCOOL KuaiLe', cursive;
-            font-size: clamp(15px, 2.5vw, 26px);
-            color: rgba(255,255,255,0.88);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5),
-                         0 0 20px rgba(255,200,100,0.2);
+            font-size: clamp(15px, 2.5vw, 28px);
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5),
+                         0 0 20px rgba(255, 200, 100, 0.2);
             margin-top: 12px;
             opacity: 0;
             animation: fadeSlide 0.55s ease 0.9s forwards;
@@ -405,7 +192,7 @@
             top: 50%;
             right: 7%;
             transform: translateY(-50%);
-            z-index: 12;
+            z-index: 10;
             perspective: 900px;
         }
 
@@ -423,12 +210,19 @@
             52%      { transform: translateY(-11px); }
         }
 
+        /* Dynamic shadow beneath the book */
         .book-shadow {
             position: absolute;
-            bottom: -18px; left: 5%;
-            width: 90%; height: 24px;
-            background: radial-gradient(ellipse at center,
-                rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.15) 45%, transparent 70%);
+            bottom: -18px;
+            left: 5%;
+            width: 90%;
+            height: 24px;
+            background: radial-gradient(
+                ellipse at center,
+                rgba(0, 0, 0, 0.4) 0%,
+                rgba(0, 0, 0, 0.15) 45%,
+                transparent 70%
+            );
             border-radius: 50%;
             animation: shadowBreath 3.8s ease-in-out infinite;
             pointer-events: none;
@@ -438,34 +232,46 @@
             50%      { transform: scale(0.82); opacity: 0.22; }
         }
 
+        /* Book body with 3D perspective */
         .book-body {
             position: relative;
-            width: 100%; height: 100%;
+            width: 100%;
+            height: 100%;
             transform: rotateY(-6deg) rotateX(2deg);
             transform-style: preserve-3d;
             transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
         .book-wrapper:hover .book-body {
             transform: rotateY(-16deg) rotateX(2deg);
         }
 
+        /* Gold glow on hover */
         .book-glow {
             position: absolute;
-            inset: -20px;
+            inset: -15px;
             border-radius: 8px 20px 20px 8px;
             opacity: 0;
             transition: opacity 0.5s ease;
             pointer-events: none;
-            background: radial-gradient(ellipse at 30% 40%,
-                rgba(200,160,60,0.18) 0%, transparent 60%);
+            background: radial-gradient(
+                ellipse at 30% 40%,
+                rgba(200, 160, 60, 0.18) 0%,
+                transparent 60%
+            );
             z-index: -1;
         }
-        .book-wrapper:hover .book-glow { opacity: 1; }
+        .book-wrapper:hover .book-glow {
+            opacity: 1;
+        }
 
+        /* Spine */
         .book-spine {
             position: absolute;
-            left: 0; top: 0;
-            width: 38px; height: 100%;
+            left: 0;
+            top: 0;
+            width: 38px;
+            height: 100%;
             background: linear-gradient(90deg,
                 #3d1f0a 0%, #5c3012 12%, #7a4520 25%,
                 #8B5A2B 40%, #6B4226 55%,
@@ -475,43 +281,64 @@
             box-shadow: inset -4px 0 10px rgba(0,0,0,0.35);
             z-index: 3;
         }
+
+        /* Spine decorative bands */
         .book-spine::before {
             content: '';
             position: absolute;
-            left: 5px; right: 5px; top: 18%; height: 2px;
-            background: rgba(200,160,80,0.5);
+            left: 5px;
+            right: 5px;
+            top: 18%;
+            height: 2px;
+            background: rgba(200, 160, 80, 0.5);
             box-shadow: 0 6px 0 rgba(200,160,80,0.4), 0 12px 0 rgba(200,160,80,0.3);
         }
         .book-spine::after {
             content: '';
             position: absolute;
-            left: 5px; right: 5px; bottom: 18%; height: 2px;
-            background: rgba(200,160,80,0.5);
+            left: 5px;
+            right: 5px;
+            bottom: 18%;
+            height: 2px;
+            background: rgba(200, 160, 80, 0.5);
             box-shadow: 0 -6px 0 rgba(200,160,80,0.4), 0 -12px 0 rgba(200,160,80,0.3);
         }
 
+        /* Page edge (book thickness) */
         .book-pages-edge {
             position: absolute;
-            right: 0; top: 3px;
-            width: 14px; height: calc(100% - 6px);
+            right: 0;
+            top: 3px;
+            width: 14px;
+            height: calc(100% - 6px);
             background: linear-gradient(90deg,
                 #f0e4c8 0%, #e6d8b0 30%, #d8c898 60%, #e6d8b0 100%);
             border-radius: 0 4px 4px 0;
             border-left: 1px solid rgba(139,90,43,0.15);
             box-shadow: inset 2px 0 4px rgba(0,0,0,0.06);
         }
+
+        /* Page edge lines */
         .book-pages-edge::after {
             content: '';
-            position: absolute; inset: 0;
+            position: absolute;
+            inset: 0;
             background: repeating-linear-gradient(
-                0deg, transparent 0px, transparent 3px,
-                rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);
+                0deg,
+                transparent 0px,
+                transparent 3px,
+                rgba(0,0,0,0.04) 3px,
+                rgba(0,0,0,0.04) 4px
+            );
             border-radius: 0 4px 4px 0;
         }
 
+        /* Cover */
         .book-cover {
             position: absolute;
-            left: 38px; top: 0; right: 14px;
+            left: 38px;
+            top: 0;
+            right: 14px;
             height: 100%;
             background: linear-gradient(155deg,
                 #faf0dd 0%, #f2e4c4 20%, #e8d5a3 45%,
@@ -524,38 +351,48 @@
             overflow: hidden;
         }
 
+        /* Cover decorative border */
         .book-cover-border {
             position: absolute;
-            inset: 14px;
-            border: 1.5px solid rgba(180,140,70,0.3);
+            inset: 12px;
+            border: 1.5px solid rgba(180, 140, 70, 0.3);
             border-radius: 0 9px 9px 0;
             pointer-events: none;
         }
+
+        /* Corner ornaments */
         .book-cover-border::before {
             content: '◆';
             position: absolute;
-            top: -8px; left: -7px;
-            font-size: 13px; color: rgba(180,140,70,0.4);
+            top: -8px;
+            left: -7px;
+            font-size: 12px;
+            color: rgba(180, 140, 70, 0.4);
         }
         .book-cover-border::after {
             content: '◆';
             position: absolute;
-            bottom: -8px; left: -7px;
-            font-size: 13px; color: rgba(180,140,70,0.4);
+            bottom: -8px;
+            left: -7px;
+            font-size: 12px;
+            color: rgba(180, 140, 70, 0.4);
         }
 
         .cover-corner-tr, .cover-corner-br {
             position: absolute;
-            font-size: 13px;
-            color: rgba(180,140,70,0.35);
+            font-size: 12px;
+            color: rgba(180, 140, 70, 0.4);
             pointer-events: none;
         }
-        .cover-corner-tr { top: 6px; right: 10px; }
-        .cover-corner-br { bottom: 6px; right: 10px; }
+        .cover-corner-tr { top: 4px; right: 8px; }
+        .cover-corner-br { bottom: 4px; right: 8px; }
 
+        /* Cover title */
         .book-cover-title {
             position: absolute;
-            top: 24px; left: 0; right: 0;
+            top: 24px;
+            left: 0;
+            right: 0;
             text-align: center;
             font-family: 'ZCOOL KuaiLe', cursive;
             font-size: clamp(18px, 2.5vw, 26px);
@@ -569,11 +406,14 @@
         /* ===== Frosted Glass Panel ===== */
         .frosted-panel {
             position: absolute;
-            top: 72px; left: 28px; right: 28px; bottom: 32px;
-            background: rgba(255,255,255,0.18);
+            top: 72px;
+            left: 28px;
+            right: 28px;
+            bottom: 32px;
+            background: var(--glass-bg);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
-            border: 1.5px solid rgba(255,255,255,0.4);
+            border: 1.5px solid var(--glass-border);
             border-radius: 12px;
             padding: 30px 24px 24px;
             display: flex;
@@ -602,9 +442,9 @@
         .login-input {
             flex: 1;
             padding: 14px 16px;
-            border: 1.5px solid rgba(180,140,100,0.35);
+            border: 1.5px solid rgba(180, 140, 100, 0.35);
             border-radius: 8px;
-            background: rgba(255,255,255,0.6);
+            background: rgba(255, 255, 255, 0.6);
             font-size: 17px;
             font-family: 'Noto Sans SC', sans-serif;
             color: var(--text-dark);
@@ -614,7 +454,7 @@
         }
         .login-input:focus {
             border-color: #A0522D;
-            background: rgba(255,255,255,0.8);
+            background: rgba(255, 255, 255, 0.8);
             box-shadow: 0 0 0 3px rgba(160,82,45,0.12);
         }
         .login-input::placeholder {
@@ -641,6 +481,7 @@
             position: relative;
             overflow: hidden;
         }
+
         .login-btn:active { transform: scale(0.97); }
 
         .login-btn.primary {
@@ -664,53 +505,26 @@
             background: linear-gradient(135deg, #f5e8c8 0%, #e8d5a3 100%);
         }
 
-        /* ===== Particles ===== */
+        /* ===== Layer 3: Particles ===== */
         .particles-layer {
             position: fixed;
             inset: 0;
             z-index: 5;
             pointer-events: none;
         }
+
         .particle {
             position: absolute;
             border-radius: 50%;
             animation: particleRise linear infinite;
             opacity: 0;
         }
+
         @keyframes particleRise {
             0%   { opacity: 0; transform: translateY(0) translateX(0) scale(0); }
             8%   { opacity: 0.75; }
             85%  { opacity: 0.2; }
             100% { opacity: 0; transform: translateY(-140px) translateX(25px) scale(1.3); }
-        }
-
-        /* ===== Book Open Transition ===== */
-        .book-body.opening {
-            animation: bookOpen 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-        @keyframes bookOpen {
-            0%   { transform: rotateY(-6deg) rotateX(2deg) scale(1); }
-            40%  { transform: rotateY(-35deg) rotateX(5deg) scale(1.06); }
-            70%  { transform: rotateY(-60deg) rotateX(8deg) scale(1.1); opacity: 1; }
-            100% { transform: rotateY(-75deg) rotateX(10deg) scale(1.15); opacity: 0; }
-        }
-        .frosted-panel.fading {
-            transition: opacity 0.4s ease;
-            opacity: 0;
-        }
-
-        .screen-flash {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle, rgba(255,240,210,0.6) 0%, rgba(255,220,150,0.3) 50%, transparent 70%);
-            z-index: 50;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.6s ease;
-        }
-        .screen-flash.active {
-            opacity: 1;
-            transition: opacity 0.3s ease;
         }
 
         /* ===== Modal ===== */
@@ -731,7 +545,9 @@
             background: linear-gradient(155deg, #faf0dd, #f0e0b8);
             padding: 32px 40px;
             border-radius: 18px;
-            box-shadow: 0 24px 70px rgba(0,0,0,0.35), 0 0 0 1px rgba(180,140,70,0.15);
+            box-shadow:
+                0 24px 70px rgba(0,0,0,0.35),
+                0 0 0 1px rgba(180,140,70,0.15);
             text-align: center;
             max-width: 380px;
             width: 90%;
@@ -741,6 +557,7 @@
             from { transform: scale(0.88); opacity: 0; }
             to   { transform: scale(1); opacity: 1; }
         }
+
         .modal-title {
             font-family: 'ZCOOL KuaiLe', cursive;
             font-size: 24px;
@@ -770,33 +587,70 @@
             box-shadow: 0 6px 20px rgba(139,90,43,0.35);
         }
 
+        /* ===== Book Open Transition ===== */
+        .book-body.opening {
+            animation: bookOpen 1.1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes bookOpen {
+            0%   { transform: rotateY(-6deg) rotateX(2deg) scale(1); }
+            40%  { transform: rotateY(-35deg) rotateX(5deg) scale(1.06); }
+            70%  { transform: rotateY(-60deg) rotateX(8deg) scale(1.1); opacity: 1; }
+            100% { transform: rotateY(-75deg) rotateX(10deg) scale(1.15); opacity: 0; }
+        }
+
+        /* Frosted panel fade during open */
+        .frosted-panel.fading {
+            transition: opacity 0.4s ease;
+            opacity: 0;
+        }
+
+        /* Screen flash overlay */
+        .screen-flash {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, rgba(255,240,210,0.6) 0%, rgba(255,220,150,0.3) 50%, transparent 70%);
+            z-index: 50;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+        .screen-flash.active {
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
         /* ===== Responsive ===== */
         @media (max-width: 768px) {
-            .title-layer { top: 3%; left: 4%; right: 4%; text-align: center; }
+            .title-layer {
+                top: 3%;
+                left: 4%;
+                right: 4%;
+                text-align: center;
+            }
             .main-title { justify-content: center; font-size: 36px; }
 
             .book-layer {
-                right: 50%; top: auto; bottom: 5%;
+                right: 50%;
+                top: auto;
+                bottom: 5%;
                 transform: translateX(50%);
             }
-            .book-wrapper { width: 260px; height: 350px; }
+            .book-wrapper {
+                width: 260px;
+                height: 350px;
+            }
             .frosted-panel {
-                top: 54px; left: 20px; right: 20px; bottom: 24px;
-                padding: 20px 16px 16px; gap: 14px;
+                top: 54px;
+                left: 20px;
+                right: 20px;
+                bottom: 24px;
+                padding: 20px 16px 16px;
+                gap: 14px;
             }
             .login-input { padding: 10px 10px; font-size: 14px; }
             .login-btn { font-size: 16px; padding: 10px; }
             .book-cover-title { font-size: 19px; top: 18px; }
-
-            .inverted-city-layer { height: 28%; }
-            .b-glass-a { width: 26px; height: 72px; }
-            .b-glass-b { width: 22px; height: 95px; }
-            .b-brick { width: 26px; height: 50px; }
-            .b-tower { width: 22px; height: 62px; }
-            .b-slim { width: 18px; height: 80px; }
-            .b-wide { width: 36px; height: 42px; }
-            .b-neon { width: 20px; height: 60px; }
-            .b-arch { width: 24px; height: 54px; }
         }
 
         @media (max-width: 480px) {
@@ -804,28 +658,24 @@
             .main-title { font-size: 28px; letter-spacing: 0.05em; }
             .sub-title { font-size: 14px; }
 
-            .book-wrapper { width: 230px; height: 310px; }
+            .book-wrapper {
+                width: 230px;
+                height: 310px;
+            }
             .frosted-panel {
-                top: 48px; left: 16px; right: 16px; bottom: 20px;
-                padding: 16px 12px 12px; gap: 10px; border-radius: 8px;
+                top: 48px;
+                left: 16px;
+                right: 16px;
+                bottom: 20px;
+                padding: 16px 12px 12px;
+                gap: 10px;
+                border-radius: 8px;
             }
             .login-input { padding: 9px 8px; font-size: 13px; }
             .login-btn { font-size: 15px; padding: 9px; letter-spacing: 0.15em; }
             .book-cover-title { font-size: 17px; top: 14px; }
             .book-spine { width: 26px; }
             .book-cover { left: 26px; right: 12px; }
-
-            .inverted-city-layer { height: 22%; }
-            .city-gap, .city-gap-lg { width: 3px; }
-            .city-gap-sm { width: 1px; }
-            .b-glass-a { width: 20px; height: 55px; }
-            .b-glass-b { width: 16px; height: 70px; }
-            .b-brick { width: 20px; height: 38px; }
-            .b-tower { width: 16px; height: 48px; }
-            .b-slim { width: 14px; height: 60px; }
-            .b-wide { width: 28px; height: 32px; }
-            .b-neon { width: 16px; height: 48px; }
-            .b-arch { width: 18px; height: 40px; }
         }
     </style>
 </head>
@@ -840,59 +690,6 @@
         <div class="noise-overlay"></div>
         <div class="warm-light"></div>
         <div class="vignette"></div>
-    </div>
-
-    <!-- 倒立城市层（书本背后上方，scaleY(-1) 实现倒立） -->
-    <div class="inverted-city-layer">
-        <div class="city-skyline">
-            <!-- 从左到右排列建筑群 -->
-            <div class="city-building b-glass-a"></div>
-            <div class="city-gap-sm"></div>
-            <div class="city-building b-brick"></div>
-            <div class="city-gap"></div>
-            <div class="city-building b-tower"></div>
-            <div class="city-gap-sm"></div>
-            <div class="city-building b-glass-b"></div>
-            <div class="city-gap-sm"></div>
-            <div class="city-building b-slim"></div>
-            <div class="city-gap"></div>
-            <div class="city-building b-neon"></div>
-            <div class="city-gap-sm"></div>
-            <div class="city-building b-arch"></div>
-            <div class="city-gap-lg"></div>
-            <div class="city-building b-wide"></div>
-            <div class="city-gap-sm"></div>
-            <div class="city-building b-glass-a"></div>
-            <div class="city-gap"></div>
-            <div class="city-building b-glass-b"></div>
-            <div class="city-gap-sm"></div>
-            <div class="city-building b-brick"></div>
-            <div class="city-gap-sm"></div>
-            <div class="city-building b-tower"></div>
-            <div class="city-gap"></div>
-            <div class="city-building b-slim"></div>
-            <div class="city-gap-sm"></div>
-            <div class="city-building b-neon"></div>
-            <div class="city-gap"></div>
-            <div class="city-building b-arch"></div>
-            <div class="city-gap-sm"></div>
-            <div class="city-building b-glass-a"></div>
-            <div class="city-gap-lg"></div>
-            <div class="city-building b-wide"></div>
-            <div class="city-gap-sm"></div>
-            <div class="city-building b-glass-b"></div>
-            <div class="city-gap"></div>
-            <div class="city-building b-neon"></div>
-            <div class="city-gap-sm"></div>
-            <div class="city-building b-slim"></div>
-            <div class="city-gap-sm"></div>
-            <div class="city-building b-brick"></div>
-            <div class="city-gap"></div>
-            <div class="city-building b-tower"></div>
-            <div class="city-gap-sm"></div>
-            <div class="city-building b-arch"></div>
-        </div>
-        <div class="city-glow"></div>
     </div>
 
     <!-- Screen flash for transition -->
@@ -938,7 +735,7 @@
         </div>
     </div>
 
-    <!-- Particles -->
+    <!-- Layer 3: Particles -->
     <div class="particles-layer" id="particlesLayer"></div>
 
     <!-- Modal -->
@@ -959,6 +756,7 @@
                 'rgba(255,225,130,0.4)', 'rgba(200,160,60,0.5)',
                 'rgba(240,200,80,0.4)'
             ];
+
             for (var i = 0; i < 22; i++) {
                 var p = document.createElement('div');
                 p.classList.add('particle');
@@ -984,6 +782,7 @@
                     video.classList.add('loaded');
                 });
             }
+            // Fallback: if video doesn't load in 5s, keep showing fallback
             setTimeout(function() {
                 if (!video.classList.contains('loaded')) {
                     video.style.display = 'none';
@@ -999,6 +798,7 @@
             document.getElementById('modal').classList.add('show');
             modalOnClose = onClose || null;
         }
+
         document.getElementById('modalClose').addEventListener('click', function() {
             document.getElementById('modal').classList.remove('show');
             if (modalOnClose) { modalOnClose(); modalOnClose = null; }
@@ -1035,7 +835,9 @@
             var loggedIn = localStorage.getItem('loggedIn');
             if (loggedIn === 'true') {
                 var savedUser = localStorage.getItem('username');
-                if (savedUser) { window.location.href = 'home.html'; }
+                if (savedUser) {
+                    window.location.href = 'home.html';
+                }
             }
         });
 
@@ -1053,10 +855,20 @@
             var bookBody = document.getElementById('bookBody');
             var frostedPanel = document.getElementById('frostedPanel');
             var flash = document.getElementById('screenFlash');
+
+            // Stop float
             bookWrapper.style.animationPlayState = 'paused';
+
+            // Fade frosted panel
             frostedPanel.classList.add('fading');
+
+            // Flash
             flash.classList.add('active');
+
+            // Book open
             bookBody.classList.add('opening');
+
+            // After animation, redirect
             setTimeout(function() {
                 if (onComplete) onComplete();
             }, 1100);
@@ -1066,7 +878,9 @@
         document.getElementById('btnLogin').addEventListener('click', async function() {
             var values = getInputValues();
             var loginBtn = document.getElementById('btnLogin');
+
             if (!validateInput(values.username, values.password)) return;
+
             var originalText = loginBtn.textContent;
             loginBtn.textContent = '请稍候...';
             loginBtn.style.pointerEvents = 'none';
@@ -1076,17 +890,23 @@
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
                 });
+
                 if (usersResponse.ok) {
                     var data = await usersResponse.json();
                     var users = [];
-                    if (data && Array.isArray(data)) { users = data; }
-                    else if (data && Array.isArray(data.submissions)) { users = data.submissions; }
-                    else if (data && data.submissions) { users = Array.isArray(data.submissions) ? data.submissions : [data.submissions]; }
+                    if (data && Array.isArray(data)) {
+                        users = data;
+                    } else if (data && Array.isArray(data.submissions)) {
+                        users = data.submissions;
+                    } else if (data && data.submissions) {
+                        users = Array.isArray(data.submissions) ? data.submissions : [data.submissions];
+                    }
 
                     if (users.length > 0) {
                         var existingUser = users.find(function(u) {
                             return u['姓名'] === values.username || u['name'] === values.username;
                         });
+
                         if (existingUser) {
                             var storedPassword = existingUser['密码'] || existingUser['password'];
                             if (storedPassword === values.password) {
@@ -1118,7 +938,9 @@
         document.getElementById('btnRegister').addEventListener('click', async function() {
             var values = getInputValues();
             var registerBtn = document.getElementById('btnRegister');
+
             if (!validateInput(values.username, values.password)) return;
+
             var originalText = registerBtn.textContent;
             registerBtn.textContent = '请稍候...';
             registerBtn.style.pointerEvents = 'none';
@@ -1128,15 +950,20 @@
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' }
                 });
+
                 if (checkResponse.ok) {
                     var data = await checkResponse.json();
                     var users = [];
-                    if (data && Array.isArray(data)) { users = data; }
-                    else if (data && Array.isArray(data.submissions)) { users = data.submissions; }
+                    if (data && Array.isArray(data)) {
+                        users = data;
+                    } else if (data && Array.isArray(data.submissions)) {
+                        users = data.submissions;
+                    }
 
                     var existingUser = users.find(function(u) {
                         return u['姓名'] === values.username || u['name'] === values.username;
                     });
+
                     if (existingUser) {
                         showModal('注册失败', '该姓名已注册，请使用该账号登录或更改姓名重新注册');
                         registerBtn.textContent = originalText;
