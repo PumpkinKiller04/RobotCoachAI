@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>机器人总教练请就位</title>
+    <link rel="preconnect" href="https://fonts.googleapis.cn">
+    <link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin>
+    <link href="https://fonts.googleapis.cn/css2?family=Noto+Sans+SC:wght@400;500;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(180deg, 
+                #87ceeb 0%, 
+                #add8e6 30%,
+                #b0e0e6 50%,
+                #98d8c8 65%,
+                #7cb342 85%,
+                #558b2f 100%);
+            font-family: 'Noto Sans SC', sans-serif;
+            position: relative;
+        }
+
+        /* ===== 一、顶部柏油马路（倒立城市站立的地方）===== */
+        .top-road {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 55px;
+            background: linear-gradient(180deg, #2c2c2c 0%, #3d3d3d 30%, #2c2c2c 100%);
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        /* 马路分道线 */
+        .road-lines {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .road-line-segment {
+            width: 60px;
+            height: 6px;
+            background: #fff;
+            border-radius: 3px;
+        }
+
+        /* ===== 二、倒立城市区域（上半部分）===== */
+        .inverted-world {
+            position: absolute;
+            top: 55px;
+            left: 0;
+            width: 100%;
+            height: calc(50% - 55px);
+            transform: scaleY(-1);
+            z-index: 50;
+            overflow: hidden;
+        }
+
+        /* 倒立城市容器 */
+        .inverted-city-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        /* ===== 楼房样式（分布在左右两侧）===== */
+        .inverted-building {
+            position: absolute;
+            bottom: 0;
+            transform-origin: bottom center;
+        }
+
+        /* 楼房地基（粘附在顶部马路） */
+        .building-base {
+            position: relative;
+        }
+
+        /* 现代玻璃楼 */
+        .building-modern {
+            background: linear-gradient(180deg, #4a90a4 0%, #357a8a 50%, #2d6a7a 100%);
+            border-bottom: 4px solid #1a4a5a;
+        }
+        .building-modern::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 4px;
+            right: 4px;
+            bottom: 8px;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent 0px,
+                    transparent 12px,
+                    rgba(255,255,255,0.5) 12px,
+                    rgba(255,255,255,0.5) 18px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent 0px,
+                    transparent 16px,
+                    rgba(200,230,255,0.4) 16px,
+                    rgba(200,230,255,0.4) 22px
+                );
+        }
+
+        /* 红砖矮楼 */
+        .building-brick {
+            background: linear-gradient(180deg, #8b4513 0%, #a0522d 50%, #8b4513 100%);
+            border-bottom: 4px solid #5d3a1a;
+        }
+        .building-brick::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 3px;
+            right: 3px;
+            bottom: 6px;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent 0px,
+                    transparent 8px,
+                    rgba(255,200,150,0.3) 8px,
+                    rgba(255,200,150,0.3) 10px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent 0px,
+                    transparent 14px,
+                    rgba(100,50,20,0.3) 14px,
+                    rgba(100,50,20,0.3) 16px
+                );
+        }
+
+        /* 尖顶小楼 */
+        .building-cottage {
+            background: linear-gradient(180deg, #cd853f 0%, #deb887 50%, #cd853f 100%);
+            border-bottom: 4px solid #8b6914;
+        }
+        .building-cottage::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: solid transparent;
+            border-right: solid transparent;
+            border-bottom: 30px solid #b8732d;
+        }
+        .building-cottage::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 5px;
+            right: 5px;
+            bottom: 6px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent 0px,
+                transparent 18px,
+                rgba(255,220,180,0.4) 18px,
+                rgba(255,220,180,0.4) 22px
+            );
+        }
+
+        /* ===== 树木样式（集中在中间区域）===== */
+        .inverted-tree {
+            position: absolute;
+            bottom: 0;
+            transform-origin: bottom center;
+        }
+
+        .tree-trunk {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(90deg, #5d4037 0%, #8b6b42 50%, #5d4037 100%);
+        }
+
+        .tree-top {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* 圆形树冠 */
+        .tree-round .tree-top {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, #90ee90, #228b22);
+            transform: translateX(-50%);
+        }
+        .tree-round .tree-top::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #98fb98, #32cd32);
+        }
+
+        /* 锥形松树 */
+        .tree-cone .tree-top {
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 60px solid #228b22;
+        }
+        .tree-cone .tree-top::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: -18px;
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-bottom: 45px solid #2e8b2e;
+        }
+        .tree-cone .tree-top::after {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: -12px;
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 30px solid #1e6e1e;
+        }
+
+        /* 棕榈树 */
+        .tree-palm .tree-trunk {
+            width: 14px;
+            height: 55px;
+            border-radius: 3px;
+        }
+        .tree-palm .tree-top {
+            width: 70px;
+            height: 35px;
+            background: radial-gradient(ellipse at center, #228b22 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translateX(-50%);
+        }
+        .tree-palm .tree-top::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 10px;
+            width: 50px;
+            height: 40px;
+            background: linear-gradient(135deg, transparent 45%, #228b22 45%, #228b22 55%, transparent 55%);
+            border-radius: 50%;
+        }
+
+        /* ===== 三、跑道区域（正常方向，下半部分）===== */
+        .track-world {
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            width: 100%;
+            height: calc(50% + 80px);
+            z-index: 60;
+        }
+
+        /* 草地背景 - 只在右侧，颜色淡一些 */
+        .running-track-bg {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 15%;
+            height: 80%;
+            background: linear-gradient(180deg, #a8d5a2 0%, #90c695 50%, #7cb883 100%);
+            border-radius: 10px 0 0 0;
+        }
+
+        /* 跑道区域 - 往下移动 */
+        .running-track {
+            position: absolute;
+            top: 25%;
+            left: 0;
+            width: 100%;
+            height: 65%;
+            background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%);
+            border-radius: 0;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        /* 跑道分隔线 - 三条 */
+        .track-divider {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.6);
+        }
+        .track-divider:nth-child(1) { top: 33%; }
+        .track-divider:nth-child(2) { top: 66%; }
+
+        /* 跑道数字 */
+        .track-number {
+            position: absolute;
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 28px;
+            font-weight: bold;
+            color: rgba(255,255,255,0.9);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            z-index: 5;
+        }
+        .track-number.track-1 { top: 8%; left: 15px; }
+        .track-number.track-2 { top: 42%; left: 15px; }
+        .track-number.track-3 { top: 76%; left: 15px; }
+
+        /* ===== 真实田径跨栏 - 放大1.5倍 ===== */
+        .hurdle {
+            position: absolute;
+            z-index: 10;
+            transform: scale(1.35);
+        }
+
+        .hurdle-frame {
+            position: relative;
+            width: 50px;
+            height: 55px;
+        }
+
+        /* 跨栏底座 */
+        .hurdle-foot {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 42px;
+            height: 6px;
+            background: linear-gradient(180deg, #555 0%, #333 100%);
+            border-radius: 2px;
+            box-shadow: 2px 3px 4px rgba(0,0,0,0.5);
+        }
+        .hurdle-foot::before,
+        .hurdle-foot::after {
+            content: '';
+            position: absolute;
+            bottom: 6px;
+            width: 5px;
+            height: 10px;
+            background: linear-gradient(90deg, #666 0%, #444 100%);
+            border-radius: 0 0 3px 3px;
+        }
+        .hurdle-foot::before { left: 3px; }
+        .hurdle-foot::after { right: 3px; }
+
+        /* 跨栏立柱 */
+        .hurdle-post {
+            position: absolute;
+            bottom: 16px;
+            width: 5px;
+            height: 30px;
+            background: linear-gradient(90deg, #888 0%, #ccc 50%, #888 100%);
+            border-radius: 1px;
+        }
+        .hurdle-post.left { left: 8px; }
+        .hurdle-post.right { right: 8px; }
+
+        /* 跨栏横杆 */
+        .hurdle-bar {
+            position: absolute;
+            bottom: 42px;
+            left: 0;
+            width: 50px;
+            height: 10px;
+            background: repeating-linear-gradient(
+                90deg,
+                #e74c3c 0px,
+                #e74c3c 10px,
+                #fff 10px,
+                #fff 20px
+            );
+            border-radius: 2px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+        }
+        .hurdle-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 2px 2px 0 0;
+        }
+
+        /* ===== 四、书本封面 + 登录框 ===== */
+        .book-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 200;
+        }
+
+        .book-wrapper {
+            position: relative;
+            width: 760px;
+            height: calc(100vh - 110px);
+            perspective: 1200px;
+        }
+
+        /* 书本主体 */
+        .book {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                #fff8e7 0%, 
+                #ffefd5 25%,
+                #ffe4c4 50%,
+                #fff8e7 75%,
+                #ffefd5 100%
+            );
+            border-radius: 8px 25px 25px 8px;
+            box-shadow: 
+                -12px 0 35px rgba(139, 90, 43, 0.3),
+                0 15px 50px rgba(0, 0, 0, 0.25),
+                inset 6px 0 18px rgba(139, 90, 43, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: visible;
+        }
+
+        /* 书脊 */
+        .book-spine {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 65px;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                #8b5a2b 0%, 
+                #a0522d 20%, 
+                #8b5a2b 35%, 
+                #6b4423 50%, 
+                #8b5a2b 65%, 
+                #a0522d 80%, 
+                #8b5a2b 100%
+            );
+            border-radius: 8px 0 0 8px;
+            z-index: 5;
+        }
+
+        /* 游戏画布 - 在书本顶端 */
+        .game-canvas-container {
+            margin: 30px 30px 15px 75px;
+            padding: 15px;
+            background: rgba(26, 26, 46, 0.95);
+            border-radius: 12px;
+            box-shadow: 
+                inset 3px 3px 12px rgba(0,0,0,0.3),
+                0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        #gameCanvas {
+            display: block;
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 8px;
+        }
+
+        /* 标题区域 - 在动画下方 */
+        .title-section {
+            margin: 10px 30px 15px 75px;
+            padding: 0 10px;
+            text-align: center;
+        }
+
+        .title-line1 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 52px;
+            font-weight: 700;
+            color: #8b5a2b;
+            text-shadow: 3px 3px 0 #fff;
+            letter-spacing: 5px;
+            line-height: 1.3;
+        }
+
+        .title-line2 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 36px;
+            font-weight: 500;
+            color: #6b8e23;
+            text-shadow: 2px 2px 0 #fff;
+            margin-top: 15px;
+        }
+
+        /* ===== 登录区域 - 便签风格 ===== */
+        .login-area {
+            position: absolute;
+            right: 30px;
+            bottom: 30px;
+            width: 280px;
+            padding: 22px 18px 18px;
+            background: linear-gradient(135deg, #fff9c4 0%, #fff59d 50%, #ffeb3b 100%);
+            border-radius: 5px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.18);
+        }
+
+        .login-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .login-row:last-child {
+            margin-bottom: 12px;
+        }
+
+        .login-label {
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #8b6914;
+            width: 55px;
+            flex-shrink: 0;
+        }
+
+        .login-input {
+            flex: 1;
+            padding: 14px 12px;
+            border: 2px solid #d4a574;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.9);
+            font-size: 17px;
+            font-family: 'Noto Sans SC', sans-serif;
+            color: #5d4e37;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            width: 180px;
+            box-sizing: border-box;
+        }
+
+        /* ===== 书签按钮（从书本夹层穿出，右侧露出）===== */
+        .bookmark-buttons {
+            position: absolute;
+            right: -110px;
+            bottom: 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            z-index: 1;
+        }
+
+        .bookmark-btn {
+            position: relative;
+            width: 140px;
+            height: 58px;
+            background: linear-gradient(145deg, #fff9c4 0%, #fff176 100%);
+            border: 2px solid #e6d084;
+            border-left: none;
+            border-radius: 0 6px 6px 0;
+            box-shadow: 3px 4px 12px rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            transform: rotate(2deg);
+        }
+
+        .bookmark-btn:hover {
+            transform: rotate(0deg) translateY(-4px);
+            box-shadow: 4px 6px 16px rgba(0,0,0,0.35);
+        }
+
+        .bookmark-btn-register {
+            transform: rotate(-1.5deg);
+        }
+
+        .bookmark-btn-register:hover {
+            transform: rotate(0deg) translateY(-4px);
+        }
+
+        /* 书签折角 */
+        .bookmark-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 15px;
+            height: 15px;
+            background: linear-gradient(135deg, transparent 50%, #f5e6a3 50%);
+        }
+
+        /* 书签左侧阴影（被夹在书页间的效果） */
+        .bookmark-btn::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            bottom: 2px;
+            width: 10px;
+            background: linear-gradient(90deg, rgba(139,90,43,0.18), transparent);
+            border-radius: 0;
+        }
+
+        .bookmark-btn span {
+            color: #6d4c00;
+            font-family: 'Noto Sans SC', sans-serif;
+            font-size: 22px;
+            font-weight: bold;
+            text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.1);
+            letter-spacing: 4px;
+            margin-left: 4px;
+        }
+
+        .bookmark-btn-register span {
+            color: #1565c0;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #d2691e;
+            box-shadow: 0 0 10px rgba(210, 105, 30, 0.3);
+        }
+
+        .login-input::placeholder {
+            color: #c4a882;
+        }
+
+        /* ===== 五、弹窗提示 ===== */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #fff8e7, #ffefd5);
+            padding: 30px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .modal-title {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 24px;
+            color: #8b5a2b;
+            margin-bottom: 15px;
+        }
+
+        .modal-message {
+            font-size: 16px;
+            color: #5d4e37;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #dc143c, #b22222);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220,20,60,0.4);
+        }
+
+        /* ===== 书本展开页面 ===== */
+        .book-open-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* 透明背景，可以看到下面的城市、蓝天、跑道 */
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 300;
+            pointer-events: none;
+        }
+
+        .book-open-page * {
+            pointer-events: auto;
+        }
+
+        /* 翻开的两本书 - 在原位置放大展开 */
+        .book-open-container {
+            display: flex;
+            gap: 0;
+            width: 92vw;
+            max-width: 1600px;
+            height: 88vh;
+            max-height: 840px;
+            box-shadow: 0 30px 100px rgba(0,0,0,0.6);
+            border-radius: 8px;
+            overflow: hidden;
+            transform: scale(0.5);
+            transform-origin: center center;
+            opacity: 0;
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s ease;
+        }
+
+        .book-open-container.show {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .book-open-left, .book-open-right {
+            flex: 1;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .book-open-left {
+            /* 左页：书本封面样式，有书脊效果 */
+            background: linear-gradient(135deg, #fff8e7 0%, #ffefd5 50%, #ffe4c4 100%);
+            border-right: 10px solid #5a3d1a;
+            box-shadow: inset -15px 0 40px rgba(139, 90, 43, 0.25);
+        }
+
+        .book-open-right {
+            /* 右页：稍微不同的色调 */
+            background: linear-gradient(225deg, #fff8e7 0%, #ffefd5 50%, #ffe4c4 100%);
+            border-left: 4px solid #d4a574;
+            box-shadow: inset 15px 0 40px rgba(139, 90, 43, 0.15);
+        }
+
+        /* 书脊装饰 */
+        .book-open-left::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 60px;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                #8b5a2b 0%, 
+                #a0522d 25%, 
+                #8b5a2b 40%, 
+                #6b4423 55%, 
+                #8b5a2b 70%, 
+                #a0522d 85%, 
+                #8b5a2b 100%);
+            z-index: 1;
+        }
+
+        .page-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-content h2 {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 40px;
+            color: #8b5a2b;
+            margin-bottom: 35px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+        }
+
+        .page-content p {
+            font-size: 22px;
+            color: #5d4e37;
+            line-height: 2.4;
+            text-align: left;
+            margin-bottom: 18px;
+        }
+
+        .page-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .page-content ul li {
+            font-size: 22px;
+            color: #5d4e37;
+            padding: 20px 0;
+            border-bottom: 1px dashed #d4a574;
+            line-height: 1.8;
+        }
+
+        .user-welcome {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.95);
+            padding: 18px 30px;
+            border-radius: 30px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            z-index: 400;
+        }
+
+        .user-welcome span {
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 24px;
+            color: #8b5a2b;
+        }
+
+        /* 退出按钮 */
+        .logout-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #dc143c, #b22222);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-family: 'ZCOOL KuaiLe', cursive;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 400;
+            box-shadow: 0 4px 15px rgba(220,20,60,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220,20,60,0.4);
+        }
+
+        /* 导学单样式 */
+        .worksheet {
+            background: rgba(255, 255, 240, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+
+        .worksheet h3 {
+            color: #8b5a2b;
+            margin-bottom: 15px;
+            font-family: 'ZCOOL KuaiLe', cursive;
+        }
+
+        .multiple-choice {
+            margin: 15px 0;
+        }
+
+        .multiple-choice label {
+            display: block;
+            margin: 8px 0;
+            color: #5d4e37;
+            cursor: pointer;
+        }
+
+        .worksheet-input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 10px;
+            border: 1px solid #d4a574;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .worksheet-textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #d4a574;
+            border-radius: 4px;
+            font-size: 16px;
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* 课程选择器样式 */
+        .course-selector button {
+            padding: 8px 16px;
+            margin: 0 5px;
+            border: 1px solid #d4a574;
+            border-radius: 20px;
+            background: #fff8e7;
+            color: #8b5a2b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .course-selector button:hover {
+            background: #8b5a2b;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== 一、顶部柏油马路 ===== -->
+    <div class="top-road">
+        <div class="road-lines">
+            <div class="road-line-segment"></div>
+            <div class="road-line-segment"></div>
+            <div class="road-line-segment"></div>
+            <div class="road-line-segment"></div>
+            <div class="road-line-segment"></div>
+            <div class="road-line-segment"></div>
+            <div class="road-line-segment"></div>
+            <div class="road-line-segment"></div>
+            <div class="road-line-segment"></div>
+            <div class="road-line-segment"></div>
+            <div class="road-line-segment"></div>
+            <div class="road-line-segment"></div>
+        </div>
+    </div>
+
+    <!-- ===== 二、倒立城市（上半部分）===== -->
+    <!-- 注意：整个区域通过 transform: scaleY(-1) 实现倒立 -->
+    <div class="inverted-world">
+        <div class="inverted-city-content">
+            <!-- 左侧楼房 + 树木 -->
+            <div class="inverted-building" style="left: 0.5%;">
+                <div class="building-base building-modern" style="width: 45px; height: 85px;"></div>
+            </div>
+            <div class="inverted-tree" style="left: 3%;">
+                <div class="tree-trunk" style="width: 10px; height: 25px;"></div>
+                <div class="tree-top tree-round"></div>
+            </div>
+            <div class="inverted-building" style="left: 5%;">
+                <div class="building-base building-brick" style="width: 40px; height: 60px;"></div>
+            </div>
+            <div class="inverted-tree" style="left: 8%;">
+                <div class="tree-trunk" style="width: 12px; height: 32px;"></div>
+                <div class="tree-top tree-cone"></div>
+            </div>
+            <div class="inverted-building" style="left: 10%;">
+                <div class="building-base building-cottage" style="width: 50px; height: 70px;"></div>
+            </div>
+            <div class="inverted-tree" style="left: 14%;">
+                <div class="tree-trunk" style="width: 14px; height: 38px;"></div>
+                <div class="tree-top tree-palm"></div>
+            </div>
+            <div class="inverted-building" style="left: 17%;">
+                <div class="building-base building-modern" style="width: 55px; height: 110px;"></div>
+            </div>
+            <div class="inverted-tree" style="left: 21%;">
+                <div class="tree-trunk" style="width: 10px; height: 28px;"></div>
+                <div class="tree-top tree-round"></div>
+            </div>
+            <div class="inverted-building" style="left: 23%;">
+                <div class="building-base building-brick" style="width: 48px; height: 75px;"></div>
+            </div>
+            <div class="inverted-tree" style="left: 27%;">
+                <div class="tree-trunk" style="width: 12px; height: 35px;"></div>
+                <div class="tree-top tree-cone"></div>
+            </div>
+
+            <!-- 中间树木区域 -->
+            <div class="inverted-tree" style="left: 31%;">
+                <div class="tree-trunk" style="width: 12px; height: 36px;"></div>
+                <div class="tree-top tree-cone"></div>
+            </div>
+            <div class="inverted-tree" style="left: 35%;">
+                <div class="tree-trunk" style="width: 14px; height: 45px;"></div>
+                <div class="tree-top tree-palm"></div>
+            </div>
+            <div class="inverted-tree" style="left: 39%;">
+                <div class="tree-trunk" style="width: 10px; height: 30px;"></div>
+                <div class="tree-top tree-round"></div>
+            </div>
+            <div class="inverted-tree" style="left: 43%;">
+                <div class="tree-trunk" style="width: 12px; height: 38px;"></div>
+                <div class="tree-top tree-cone"></div>
+            </div>
+            <div class="inverted-tree" style="left: 47%;">
+                <div class="tree-trunk" style="width: 14px; height: 48px;"></div>
+                <div class="tree-top tree-palm"></div>
+            </div>
+            <div class="inverted-tree" style="left: 51%;">
+                <div class="tree-trunk" style="width: 10px; height: 32px;"></div>
+                <div class="tree-top tree-round"></div>
+            </div>
+            <div class="inverted-tree" style="left: 55%;">
+                <div class="tree-trunk" style="width: 12px; height: 40px;"></div>
+                <div class="tree-top tree-cone"></div>
+            </div>
+
+            <!-- 右侧树木 + 楼房 -->
+            <div class="inverted-tree" style="right: 52%;">
+                <div class="tree-trunk" style="width: 12px; height: 34px;"></div>
+                <div class="tree-top tree-palm"></div>
+            </div>
+            <div class="inverted-building" style="right: 50%;">
+                <div class="building-base building-modern" style="width: 52px; height: 95px;"></div>
+            </div>
+            <div class="inverted-tree" style="right: 46%;">
+                <div class="tree-trunk" style="width: 10px; height: 28px;"></div>
+                <div class="tree-top tree-round"></div>
+            </div>
+            <div class="inverted-building" style="right: 43%;">
+                <div class="building-base building-cottage" style="width: 48px; height: 68px;"></div>
+            </div>
+            <div class="inverted-tree" style="right: 38%;">
+                <div class="tree-trunk" style="width: 14px; height: 40px;"></div>
+                <div class="tree-top tree-cone"></div>
+            </div>
+            <div class="inverted-building" style="right: 35%;">
+                <div class="building-base building-brick" style="width: 55px; height: 80px;"></div>
+            </div>
+            <div class="inverted-tree" style="right: 30%;">
+                <div class="tree-trunk" style="width: 10px; height: 30px;"></div>
+                <div class="tree-top tree-palm"></div>
+            </div>
+            <div class="inverted-building" style="right: 27%;">
+                <div class="building-base building-modern" style="width: 50px; height: 105px;"></div>
+            </div>
+            <div class="inverted-tree" style="right: 23%;">
+                <div class="tree-trunk" style="width: 12px; height: 36px;"></div>
+                <div class="tree-top tree-round"></div>
+            </div>
+            <div class="inverted-building" style="right: 20%;">
+                <div class="building-base building-cottage" style="width: 52px; height: 72px;"></div>
+            </div>
+            <div class="inverted-tree" style="right: 15%;">
+                <div class="tree-trunk" style="width: 14px; height: 42px;"></div>
+                <div class="tree-top tree-cone"></div>
+            </div>
+            <div class="inverted-building" style="right: 12%;">
+                <div class="building-base building-brick" style="width: 58px; height: 88px;"></div>
+            </div>
+            <div class="inverted-tree" style="right: 8%;">
+                <div class="tree-trunk" style="width: 10px; height: 26px;"></div>
+                <div class="tree-top tree-palm"></div>
+            </div>
+            <div class="inverted-building" style="right: 5%;">
+                <div class="building-base building-modern" style="width: 60px; height: 125px;"></div>
+            </div>
+            <div class="inverted-tree" style="right: 2%;">
+                <div class="tree-trunk" style="width: 12px; height: 30px;"></div>
+                <div class="tree-top tree-round"></div>
+            </div>
+            <div class="inverted-building" style="right: 0.5%;">
+                <div class="building-base building-cottage" style="width: 42px; height: 65px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 三、跑道区域（下半部分，正常方向）===== -->
+    <div class="track-world">
+        <div class="running-track-bg"></div>
+        <div class="running-track">
+            <div class="track-divider"></div>
+            <div class="track-divider"></div>
+            <div class="track-divider"></div>
+            
+            <span class="track-number track-1">1</span>
+            <span class="track-number track-2">2</span>
+            <span class="track-number track-3">3</span>
+
+            <!-- 跨栏 - 三条跑道各2个 -->
+            <div class="hurdle" style="left: 20%; top: 5%;">
+                <div class="hurdle-frame">
+                    <div class="hurdle-bar"></div>
+                    <div class="hurdle-post left"></div>
+                    <div class="hurdle-post right"></div>
+                    <div class="hurdle-foot"></div>
+                </div>
+            </div>
+            <div class="hurdle" style="left: 55%; top: 5%;">
+                <div class="hurdle-frame">
+                    <div class="hurdle-bar"></div>
+                    <div class="hurdle-post left"></div>
+                    <div class="hurdle-post right"></div>
+                    <div class="hurdle-foot"></div>
+                </div>
+            </div>
+            <div class="hurdle" style="left: 35%; top: 38%;">
+                <div class="hurdle-frame">
+                    <div class="hurdle-bar"></div>
+                    <div class="hurdle-post left"></div>
+                    <div class="hurdle-post right"></div>
+                    <div class="hurdle-foot"></div>
+                </div>
+            </div>
+            <div class="hurdle" style="left: 70%; top: 38%;">
+                <div class="hurdle-frame">
+                    <div class="hurdle-bar"></div>
+                    <div class="hurdle-post left"></div>
+                    <div class="hurdle-post right"></div>
+                    <div class="hurdle-foot"></div>
+                </div>
+            </div>
+            <div class="hurdle" style="left: 25%; top: 72%;">
+                <div class="hurdle-frame">
+                    <div class="hurdle-bar"></div>
+                    <div class="hurdle-post left"></div>
+                    <div class="hurdle-post right"></div>
+                    <div class="hurdle-foot"></div>
+                </div>
+            </div>
+            <div class="hurdle" style="left: 60%; top: 72%;">
+                <div class="hurdle-frame">
+                    <div class="hurdle-bar"></div>
+                    <div class="hurdle-post left"></div>
+                    <div class="hurdle-post right"></div>
+                    <div class="hurdle-foot"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 四、书本封面 ===== -->
+    <div class="book-container">
+        <div class="book-wrapper">
+            <div class="book">
+                <div class="book-spine"></div>
+                
+                <!-- 游戏画布 - 在书本顶端 -->
+                <div class="game-canvas-container">
+                    <canvas id="gameCanvas"></canvas>
+                </div>
+
+                <!-- 标题区域 - 在动画下方 -->
+                <div class="title-section">
+                    <h1 class="title-line1">机器人总教练请就位</h1>
+                    <p class="title-line2">从"醉汉走路"到跑赢人类</p>
+                </div>
+
+                <!-- 登录区域 -->
+                <div class="login-area">
+                    <div class="login-row">
+                        <label class="login-label">姓名</label>
+                        <input type="text" class="login-input" id="username" placeholder="请输入你的姓名">
+                    </div>
+                    <div class="login-row">
+                        <label class="login-label">密码</label>
+                        <input type="password" class="login-input" id="password" placeholder="请输入密码">
+                    </div>
+                </div>
+
+                <!-- 书签按钮 -->
+                <div class="bookmark-buttons">
+                    <div class="bookmark-btn" id="btnLogin">
+                        <span>登录</span>
+                    </div>
+                    <div class="bookmark-btn bookmark-btn-register" id="btnRegister">
+                        <span>注册</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 五、弹窗提示 ===== -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <h2 class="modal-title" id="modalTitle">提示</h2>
+            <p class="modal-message" id="modalMessage"></p>
+            <button class="modal-btn" id="modalClose">确定</button>
+        </div>
+    </div>
+
+	    <script>
+        // ===== 登录功能配置 =====
+        const LOGIN_API_URL = "https://quickform.cn/api/xx6gg2k4hf";   // 发送注册数据
+        const USER_DATA_URL = "https://quickform.cn/api/xx6gg2k4hf/all";   // 查询所有用户
+
+        // 弹窗功能
+        function showModal(title, message, onClose) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('modal').classList.add('show');
+            if (onClose) {
+                document.getElementById('modal').onCloseCallback = onClose;
+            }
+        }
+
+        document.getElementById('modalClose').addEventListener('click', function() {
+            const modal = document.getElementById('modal');
+            if (modal.onCloseCallback) {
+                modal.onCloseCallback();
+            }
+            modal.classList.remove('show');
+            modal.onCloseCallback = null;
+        });
+
+        // 获取输入值
+        function getInputValues() {
+            return {
+                username: document.getElementById('username').value.trim(),
+                password: document.getElementById('password').value.trim()
+            };
+        }
+
+        // 输入校验
+        function validateInput(username, password) {
+            if (!username) {
+                showModal('提示', '请输入姓名');
+                return false;
+            }
+            if (!password) {
+                showModal('提示', '请输入密码');
+                return false;
+            }
+            return true;
+        }
+
+        // 登录成功后跳转到首页
+        function showBookOpenPage(username) {
+            // 存储登录状态到localStorage
+            localStorage.setItem('loggedIn', 'true');
+            localStorage.setItem('username', username);
+            localStorage.setItem('currentCourse', '0');
+            localStorage.setItem('currentPage', '0');
+            
+            // 清除多模态新闻缓存，确保登录时获取新内容
+            localStorage.removeItem('multimodalNews');
+            localStorage.removeItem('multimodalNewsTime');
+            
+            // 跳转到首页
+            window.location.href = 'home.html';
+        }
+
+        // 页面加载时检查登录状态，如果已登录则直接跳转到首页
+        window.addEventListener('DOMContentLoaded', function() {
+            const loggedIn = localStorage.getItem('loggedIn');
+            if (loggedIn === 'true') {
+                const username = localStorage.getItem('username');
+                if (username) {
+                    // 已登录，直接跳转到首页
+                    window.location.href = 'home.html';
+                }
+            }
+        });
+
+        // 更新书本页面内容（此功能已移至course.html）
+
+        // 退出登录
+        function logout() {
+            // 清除localStorage中的登录状态
+            localStorage.removeItem('loggedIn');
+            localStorage.removeItem('username');
+            localStorage.removeItem('currentCourse');
+            localStorage.removeItem('currentPage');
+            
+            // 返回登录页面
+            window.location.href = 'index.html';
+        }
+
+        // ===== 登录按钮点击事件 =====
+        document.getElementById('btnLogin').addEventListener('click', async function() {
+            const { username, password } = getInputValues();
+            const loginBtn = document.getElementById('btnLogin');
+            const loginSpan = loginBtn.querySelector('span');
+
+            if (!validateInput(username, password)) return;
+
+            const originalText = loginSpan.textContent;
+            loginSpan.textContent = '请稍候...';
+            loginBtn.style.pointerEvents = 'none';
+
+            try {
+                const usersResponse = await fetch(USER_DATA_URL, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (usersResponse.ok) {
+                    const data = await usersResponse.json();
+                    
+                    // API返回格式是 {submissions: [...]} 或直接的数组
+                    let users = [];
+                    if (data && Array.isArray(data)) {
+                        users = data;
+                    } else if (data && Array.isArray(data.submissions)) {
+                        users = data.submissions;
+                    } else if (data && data.submissions) {
+                        // 可能的格式转换
+                        users = Array.isArray(data.submissions) ? data.submissions : [data.submissions];
+                    }
+
+                    if (users.length > 0) {
+                        // 查找用户 - 支持中文或英文字段名
+                        const existingUser = users.find(u => 
+                            u['姓名'] === username || u['name'] === username
+                        );
+
+                        if (existingUser) {
+                            // 用户存在，比对密码
+                            const storedPassword = existingUser['密码'] || existingUser['password'];
+                            if (storedPassword === password) {
+                                // 登录成功
+                                showModal('登录成功', '欢迎回来，' + username + '！', function() {
+                                    showBookOpenPage(username);
+                                });
+                            } else {
+                                // 密码错误
+                                showModal('登录失败', '密码错误，请重新输入');
+                            }
+                        } else {
+                            // 用户不存在，提示先注册
+                            showModal('登录失败', '该用户未注册，请先注册');
+                        }
+                    } else {
+                        showModal('登录失败', '暂无注册用户，请先注册');
+                    }
+                } else {
+                    showModal('登录失败', '无法连接服务器，请稍后重试');
+                }
+            } catch (error) {
+                console.error('登录错误:', error);
+                showModal('网络错误', '连接服务器失败，请检查网络后重试');
+            } finally {
+                loginSpan.textContent = originalText;
+                loginBtn.style.pointerEvents = 'auto';
+            }
+        });
+
+        // ===== 注册按钮点击事件 =====
+        document.getElementById('btnRegister').addEventListener('click', async function() {
+            const { username, password } = getInputValues();
+            const registerBtn = document.getElementById('btnRegister');
+            const registerSpan = registerBtn.querySelector('span');
+
+            if (!validateInput(username, password)) return;
+
+            const originalText = registerSpan.textContent;
+            registerSpan.textContent = '请稍候...';
+            registerBtn.style.pointerEvents = 'none';
+
+            try {
+                // 先检查是否已有相同姓名
+                const checkResponse = await fetch(USER_DATA_URL, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (checkResponse.ok) {
+                    const data = await checkResponse.json();
+                    
+                    // 解析API返回的数据格式
+                    let users = [];
+                    if (data && Array.isArray(data)) {
+                        users = data;
+                    } else if (data && Array.isArray(data.submissions)) {
+                        users = data.submissions;
+                    }
+
+                    // 检查是否有相同姓名
+                    const existingUser = users.find(u => 
+                        u['姓名'] === username || u['name'] === username
+                    );
+
+                    if (existingUser) {
+                        // 找到相同姓名，提示已注册
+                        showModal('注册失败', '该姓名已注册，请使用该账号登录或更改姓名重新注册');
+                        registerSpan.textContent = originalText;
+                        registerBtn.style.pointerEvents = 'auto';
+                        return;
+                    }
+                }
+
+                // 没有重复，继续注册
+                const submitResponse = await fetch(LOGIN_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        姓名: username,
+                        密码: password,
+                        注册时间: new Date().toLocaleString('zh-CN')
+                    })
+                });
+
+                if (submitResponse.ok || submitResponse.status === 200 || submitResponse.status === 201) {
+                    // 注册成功：清空输入框，提示注册成功
+                    document.getElementById('username').value = '';
+                    document.getElementById('password').value = '';
+                    showModal('注册成功', username + '，欢迎加入！请使用注册的账号登录。');
+                } else {
+                    // 注册成功：清空输入框，提示注册成功
+                    document.getElementById('username').value = '';
+                    document.getElementById('password').value = '';
+                    showModal('注册成功', username + '，欢迎加入！请使用注册的账号登录。');
+                }
+            } catch (error) {
+                console.error('注册错误:', error);
+                showModal('网络错误', '连接服务器失败，请检查网络后重试');
+            } finally {
+                registerSpan.textContent = originalText;
+                registerBtn.style.pointerEvents = 'auto';
+            }
+        });
+        // ===== 机器人跑酷游戏 - 马里奥风格无限马拉松 =====
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // 设置画布尺寸
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth * 2;
+            canvas.height = canvas.offsetHeight * 2;
+            ctx.scale(2, 2);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // 游戏配置
+        const gameConfig = {
+            speed: 5,
+            groundY: 165,
+            gravity: 0.7,
+            jumpForce: -14
+        };
+
+        // 机器人状态
+        const robot = {
+            x: 80,
+            y: gameConfig.groundY,
+            baseHeight: 55,
+            currentHeight: 55,
+            velocityY: 0,
+            isJumping: false,
+            isDucking: false,
+            legPhase: 0,
+            armPhase: 0,
+            stumbleTimer: 0
+        };
+
+        // 障碍物和飞鸟分开管理
+        let obstacles = [];      // 地面跨栏
+        let birds = [];          // 空中飞鸟
+        let obstacleTimer = 0;
+        let birdTimer = 0;
+        let isBirdMode = false;  // 当前是否为飞鸟模式
+        let modeSwitchTimer = 0; // 模式切换计时器
+
+        // 绘制马里奥风格机器人
+        function drawMarioRobot() {
+            ctx.save();
+            ctx.translate(robot.x, robot.y);
+
+            const h = robot.currentHeight;
+            const stumbleOffset = robot.stumbleTimer > 0 ? Math.sin(robot.stumbleTimer * 0.5) * 3 : 0;
+            
+            // 跳跃姿态
+            const isJumpPose = robot.isJumping && robot.velocityY < 0;
+            const isFallPose = robot.isJumping && robot.velocityY > 0;
+            
+            // 脚/鞋
+            ctx.fillStyle = '#8B4513';
+            if (robot.isDucking) {
+                ctx.fillRect(-8 + stumbleOffset, -6, 18, 8);
+                ctx.fillRect(10 + stumbleOffset, -6, 18, 8);
+            } else if (robot.isJumping) {
+                // 跳跃时双腿弯曲
+                if (isJumpPose) {
+                    ctx.fillRect(-15 + stumbleOffset, -8, 16, 8);
+                    ctx.fillRect(15 + stumbleOffset, -8, 16, 8);
+                } else {
+                    ctx.fillRect(-12 + stumbleOffset, -4, 14, 6);
+                    ctx.fillRect(14 + stumbleOffset, -4, 14, 6);
+                }
+            } else {
+                const legSwing = Math.sin(robot.legPhase) * 6;
+                ctx.fillRect(-10 + legSwing + stumbleOffset, -8, 18, 10);
+                ctx.fillRect(12 - legSwing + stumbleOffset, -8, 18, 10);
+            }
+
+            // 身体
+            const bodyTop = robot.isDucking ? -h + 20 : -h + 5;
+            const bodyH = robot.isDucking ? h - 25 : h - 15;
+            
+            // 红色上衣
+            ctx.fillStyle = '#DC143C';
+            ctx.fillRect(-12 + stumbleOffset, bodyTop, 44, bodyH);
+            
+            // 蓝色背带
+            ctx.fillStyle = '#3498DB';
+            ctx.fillRect(-6 + stumbleOffset, bodyTop, 8, bodyH);
+            ctx.fillRect(18 + stumbleOffset, bodyTop, 8, bodyH);
+            
+            // 金色纽扣
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            ctx.arc(0 + stumbleOffset, bodyTop + bodyH * 0.4, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(24 + stumbleOffset, bodyTop + bodyH * 0.4, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 头部
+            const headTop = robot.isDucking ? -18 : -h - 10;
+            ctx.fillStyle = '#FDBF6F';
+            ctx.fillRect(-8 + stumbleOffset, headTop, 36, 22);
+
+            // 帽子
+            ctx.fillStyle = '#DC143C';
+            ctx.fillRect(-12 + stumbleOffset, headTop - 8, 44, 12);
+            ctx.fillRect(-14 + stumbleOffset, headTop - 4, 48, 6);
+            
+            // 帽子M标志
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 10px Arial';
+            ctx.fillText('M', 8 + stumbleOffset, headTop + 1);
+
+            // 眼睛
+            const eyeY = headTop + 8;
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(-2 + stumbleOffset, eyeY, 10, 8);
+            ctx.fillRect(14 + stumbleOffset, eyeY, 10, 8);
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(2 + stumbleOffset, eyeY + 2, 5, 5);
+            ctx.fillRect(18 + stumbleOffset, eyeY + 2, 5, 5);
+
+            // 鼻子
+            ctx.fillStyle = '#FDBF6F';
+            ctx.fillRect(24 + stumbleOffset, headTop + 8, 8, 8);
+
+            // 胡须
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(24 + stumbleOffset, headTop + 4, 10, 3);
+            ctx.fillRect(26 + stumbleOffset, headTop + 8, 8, 2);
+            ctx.fillRect(28 + stumbleOffset, headTop + 12, 6, 2);
+
+            // 手臂
+            ctx.strokeStyle = '#FDBF6F';
+            ctx.lineWidth = 7;
+            ctx.lineCap = 'round';
+            
+            if (robot.isDucking) {
+                ctx.beginPath();
+                ctx.moveTo(-12 + stumbleOffset, bodyTop + 5);
+                ctx.lineTo(-20 + stumbleOffset, bodyTop + 15);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(32 + stumbleOffset, bodyTop + 5);
+                ctx.lineTo(40 + stumbleOffset, bodyTop + 15);
+                ctx.stroke();
+            } else {
+                const armSwing = Math.sin(robot.armPhase) * 10;
+                ctx.beginPath();
+                ctx.moveTo(-12 + stumbleOffset, bodyTop + 8);
+                ctx.lineTo(-22 + stumbleOffset, bodyTop + 20 + armSwing);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(32 + stumbleOffset, bodyTop + 8);
+                ctx.lineTo(42 + stumbleOffset, bodyTop + 20 - armSwing);
+                ctx.stroke();
+            }
+
+            // 白手套
+            ctx.fillStyle = '#FFFFFF';
+            if (robot.isDucking) {
+                ctx.beginPath();
+                ctx.arc(-20 + stumbleOffset, bodyTop + 15, 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(40 + stumbleOffset, bodyTop + 15, 6, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                const armSwing = Math.sin(robot.armPhase) * 10;
+                ctx.beginPath();
+                ctx.arc(-22 + stumbleOffset, bodyTop + 20 + armSwing, 7, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(42 + stumbleOffset, bodyTop + 20 - armSwing, 7, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.restore();
+        }
+
+        // 绘制小跨栏障碍物
+        function drawObstacles() {
+            obstacles.forEach(obs => {
+                const baseY = gameConfig.groundY;
+                
+                // 底座
+                ctx.fillStyle = '#555555';
+                ctx.fillRect(obs.x + 5, baseY - 4, obs.width - 10, 6);
+                
+                // 支柱
+                ctx.fillStyle = '#888888';
+                ctx.fillRect(obs.x + 8, baseY - obs.height, 5, obs.height - 2);
+                ctx.fillRect(obs.x + obs.width - 13, baseY - obs.height, 5, obs.height - 2);
+                
+                // 横杆 - 红白条纹
+                ctx.fillStyle = '#DC143C';
+                ctx.fillRect(obs.x, baseY - obs.height, obs.width, 10);
+                ctx.fillStyle = '#FFFFFF';
+                for (let i = 0; i < obs.width; i += 12) {
+                    ctx.fillRect(obs.x + i, baseY - obs.height, 6, 10);
+                }
+                // 横杆高光
+                ctx.fillStyle = 'rgba(255,255,255,0.4)';
+                ctx.fillRect(obs.x, baseY - obs.height, obs.width, 3);
+            });
+        }
+
+        // 绘制飞鸟
+        function drawBirds() {
+            birds.forEach(bird => {
+                ctx.save();
+                ctx.translate(bird.x + 18, bird.y);
+                
+                const wingY = Math.sin(bird.wingAngle) * 10;
+                
+                // 身体
+                ctx.fillStyle = '#DAA520';
+                ctx.beginPath();
+                ctx.ellipse(0, 0, 22, 12, 0, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 翅膀
+                ctx.fillStyle = '#CD853F';
+                ctx.beginPath();
+                ctx.ellipse(-5, wingY, 15, 8, -0.4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 头
+                ctx.fillStyle = '#DAA520';
+                ctx.beginPath();
+                ctx.arc(18, 0, 10, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 眼睛
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath();
+                ctx.arc(21, -3, 5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(22, -3, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 嘴
+                ctx.fillStyle = '#FF6347';
+                ctx.beginPath();
+                ctx.moveTo(28, 0);
+                ctx.lineTo(38, 4);
+                ctx.lineTo(28, 8);
+                ctx.closePath();
+                ctx.fill();
+                
+                ctx.restore();
+            });
+        }
+
+        // 绘制跑道背景
+        function drawBackground() {
+            // 深色跑道背景
+            ctx.fillStyle = '#1a1a2e';
+            ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+            
+            // 跑道纹理线
+            ctx.strokeStyle = '#2a2a4e';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < canvas.offsetWidth; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvas.offsetHeight);
+                ctx.stroke();
+            }
+            
+            // 地面
+            ctx.fillStyle = '#3d3d5c';
+            ctx.fillRect(0, gameConfig.groundY, canvas.offsetWidth, 10);
+        }
+
+        // 检测并处理障碍物跳跃和飞鸟下蹲
+        function checkObstacles() {
+            const robotRight = robot.x + 35;
+            const robotLeft = robot.x - 10;
+            const robotTop = robot.y - robot.currentHeight;
+            
+            // 检测地面障碍物 - 需要跳跃
+            for (let obs of obstacles) {
+                const obsRight = obs.x + obs.width;
+                const obsLeft = obs.x;
+                
+                // 如果障碍物接近机器人，触发跳跃
+                if (obsRight > robotLeft && obsLeft < robotRight + 30) {
+                    if (!robot.isJumping && !robot.isDucking && robot.y >= gameConfig.groundY) {
+                        robot.isJumping = true;
+                        robot.velocityY = gameConfig.jumpForce;
+                    }
+                }
+                
+                // 检测跳跃是否成功越过障碍物
+                if (robot.isJumping && obsLeft < robot.x - 30) {
+                    // 已经成功跳过
+                }
+                
+                // 检测碰撞（跳跃失败）
+                if (!robot.isJumping && obsRight > robotLeft && obsLeft < robotRight) {
+                    if (robot.y - robot.currentHeight < gameConfig.groundY - obs.height + 15) {
+                        robot.stumbleTimer = 25;
+                    }
+                }
+            }
+            
+            // 检测飞鸟 - 需要下蹲（在跳跃时不检测飞鸟）
+            if (!robot.isJumping) {
+                for (let bird of birds) {
+                    const birdX = bird.x + 18;
+                    const dist = Math.abs(birdX - robot.x);
+                    
+                    if (dist < 55) {
+                        robot.isDucking = true;
+                    }
+                }
+            }
+            
+            // 恢复站立（飞鸟已过）
+            let shouldStand = true;
+            for (let bird of birds) {
+                if (bird.x > robot.x - 40 && bird.x < robot.x + 100) {
+                    shouldStand = false;
+                    break;
+                }
+            }
+            if (shouldStand) {
+                robot.isDucking = false;
+            }
+        }
+
+        // 游戏主循环
+        function gameLoop() {
+            ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+            
+            drawBackground();
+
+            // 模式切换逻辑 - 障碍物和飞鸟分开出现
+            modeSwitchTimer++;
+            
+            // 模式切换：每隔180帧（约3秒）切换一次模式
+            if (modeSwitchTimer > 180) {
+                isBirdMode = !isBirdMode;
+                modeSwitchTimer = 0;
+                obstacleTimer = 0;
+                birdTimer = 0;
+            }
+
+            // 只在障碍物模式生成跨栏
+            if (!isBirdMode) {
+                obstacleTimer++;
+                if (obstacleTimer > 80) {
+                    obstacles.push({
+                        x: canvas.offsetWidth + 50,
+                        width: 40 + Math.random() * 15,
+                        height: 18 + Math.random() * 10
+                    });
+                    obstacleTimer = 0;
+                }
+            }
+
+            // 只在飞鸟模式生成鸟
+            if (isBirdMode) {
+                birdTimer++;
+                if (birdTimer > 70) {
+                    birds.push({
+                        x: canvas.offsetWidth + 50,
+                        y: gameConfig.groundY - 50 - Math.random() * 35,
+                        wingAngle: 0
+                    });
+                    birdTimer = 0;
+                }
+            }
+
+            // 移动障碍物
+            obstacles.forEach(obs => {
+                obs.x -= gameConfig.speed;
+            });
+            obstacles = obstacles.filter(obs => obs.x > -60);
+
+            // 移动飞鸟
+            birds.forEach(bird => {
+                bird.x -= gameConfig.speed * 1.15;
+                bird.wingAngle += 0.2;
+            });
+            birds = birds.filter(bird => bird.x > -60);
+
+            // 跳跃物理
+            if (robot.isJumping) {
+                robot.velocityY += gameConfig.gravity;
+                robot.y += robot.velocityY;
+
+                if (robot.y >= gameConfig.groundY) {
+                    robot.y = gameConfig.groundY;
+                    robot.velocityY = 0;
+                    robot.isJumping = false;
+                }
+            }
+            
+            if (robot.stumbleTimer > 0) {
+                robot.stumbleTimer--;
+            }
+
+            if (robot.isDucking) {
+                robot.currentHeight = 30;
+            } else {
+                robot.currentHeight = robot.baseHeight;
+            }
+
+            if (!robot.isJumping) {
+                robot.legPhase += 0.35;
+                robot.armPhase += 0.3;
+            }
+
+            // 检测障碍物和飞鸟
+            checkObstacles();
+
+            // 绘制所有元素
+            drawObstacles();
+            drawBirds();
+            drawMarioRobot();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // 启动游戏
+        gameLoop();
+    </script>
+</body>
+</html>
