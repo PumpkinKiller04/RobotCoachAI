@@ -2021,13 +2021,13 @@ ${(() => {
                 return;
             }
             
-            loadSavedAnswers().then(() => {
-                document.getElementById('loadingOverlay').style.display = 'none';
-                updateModuleInfo();
-                updateBookTitle();
-                showCourse();
-                updatePage();
-            });
+            // 立即显示页面，数据在后台加载
+            document.getElementById('loadingOverlay').style.display = 'none';
+            updateModuleInfo();
+            updateBookTitle();
+            showCourse();
+            updatePage();
+            loadSavedAnswers();
         });
 
         // 机器人跳跃游戏代码
