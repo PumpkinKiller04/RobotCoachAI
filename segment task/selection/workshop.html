@@ -539,8 +539,31 @@
           robot.y += Math.sin(frame * 0.12) * (sensors.lidar ? 1.0 : 0.6);
         }
 
+        // 仅摄像头：接近弯道时提前转弯冲出（与profile.html一致）
+        if (!sensors.lidar && robot.x <= T.leftX + 60) {
+          robot.y -= 0.55;
+          fpvOfftrack = Math.min(1, fpvOfftrack + 0.035);
+          fpvCurve = Math.min(1, fpvCurve + 0.03);
+          if (!isOnTrack(robot.x, robot.y)) {
+            hadCurveFail = true;
+            animState = 'offtrack';
+            running = false;
+            if (animId) { cancelAnimationFrame(animId); animId = null; }
+            drawTPV();
+            endRun('curve_fail');
+            return;
+          }
+        }
+
+        // 仅激光雷达：跑完2/3直道后超时
+        if (sensors.lidar && !sensors.imu && robot.x <= T.leftX + 50) {
+          animState = 'done';
+          endRun('timeout');
+          return;
+        }
+
         fpvCurve = 0; fpvOfftrack = 0;
-        if (robot.x <= (sensors.lidar ? T.leftX + 5 : T.leftX + 45)) {
+        if (sensors.lidar && robot.x <= T.leftX + 5) {
           phase = 1;
           curveT = 0;
           robot.x = T.leftX;
