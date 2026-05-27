@@ -101,7 +101,7 @@
             <p class="text-sm text-muted" id="responsePlaceholder">AI的回答将显示在这里...</p>
           </div>
           <div id="loadingArea" class="hidden loading-area">
-            <p class="text-sm">AI加速思考中，马上好~<span class="typing-cursor">...</span></p>
+            <p class="text-sm">AI正在思考中<span class="typing-cursor">...</span></p>
           </div>
         </div>
       </div>
@@ -276,6 +276,8 @@
         var textEl = document.getElementById('responseText');
         var fullText = '';
 
+        loadingArea.classList.add('hidden');
+
         while (true) {
           var result = await reader.read();
           if (result.done) break;
@@ -295,7 +297,6 @@
                 if (delta) {
                   fullText += delta;
                   textEl.innerHTML = renderMarkdown(fullText);
-                  loadingArea.classList.add('hidden');
                 }
               } catch (e) {
                 console.warn('解析响应失败:', e);

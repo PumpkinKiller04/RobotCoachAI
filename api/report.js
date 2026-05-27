@@ -29,9 +29,7 @@ export default async function handler(req, res) {
         model: model || 'deepseek-ai/DeepSeek-V4-Flash',
         messages,
         stream: false,
-        max_tokens: max_tokens || 300,
-        temperature: 0.1,
-        top_p: 0.7,
+        max_tokens: max_tokens || 500,
       }),
     });
 

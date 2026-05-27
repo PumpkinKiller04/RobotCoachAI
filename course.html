@@ -681,7 +681,7 @@
                         title: '环节四：智能小结 & 本课总结',
                         pages: [
                             {
-                                left: { type: 'summary', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节四：智能小结 & 本课总结</h3><h4>1. 智能小结（AI生成）</h4><button class="submit-btn" id="generateBtn" onclick="generateReport()">[点击查看专属学习报告和勋章进度]</button><div id="reportContainer" style="display:none; margin-top: 20px;"><div class="markdown" id="reportContent"></div></div><div id="loadingIndicator" style="display:none; margin-top: 15px; padding: 15px; background: #fff8e7; border-radius: 8px;"><p style="color: #8b5a2b;">AI加速思考中，马上好~</p></div>' },
+                                left: { type: 'summary', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节四：智能小结 & 本课总结</h3><h4>1. 智能小结（AI生成）</h4><button class="submit-btn" id="generateBtn" onclick="generateReport()">[点击查看专属学习报告和勋章进度]</button><div id="reportContainer" style="display:none; margin-top: 20px;"><div class="markdown" id="reportContent"></div></div><div id="loadingIndicator" style="display:none; margin-top: 15px; padding: 15px; background: #fff8e7; border-radius: 8px;"><p style="color: #8b5a2b;">AI正在分析你的学习数据，请稍候...</p></div>' },
                                 right: { type: 'conclusion', content: '<h4>2. 本课总结</h4><ul><li><strong>单模态：</strong>信息类型单一，就像只用一种感官，判断容易出错。</li><li><strong>多模态感知：</strong>整合多种感官信息（视觉、距离、姿态、触觉等），让AI对世界的理解更完整、判断更可靠。</li><li><strong>多模态应用：</strong>AI不仅能综合理解图文信息（问答），还能进行跨模态创作（文生图、图生文），极大拓展了AI的用途。</li></ul>' }
                             }
                         ]
@@ -739,7 +739,7 @@
                         title: '环节四：智能小结 & 本课总结',
                         pages: [
                             {
-                                left: { type: 'summary', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节四：智能小结 & 本课总结</h3><h4>1. 智能小结（AI生成）</h4><button class="submit-btn" id="generateBtn" onclick="generateReport()">[点击查看专属学习报告和勋章进度]</button><div id="reportContainer" style="display:none; margin-top: 20px;"><div class="markdown" id="reportContent"></div></div><div id="loadingIndicator" style="display:none; margin-top: 15px; padding: 15px; background: #fff8e7; border-radius: 8px;"><p style="color: #8b5a2b;">AI加速思考中，马上好~</p></div>' },
+                                left: { type: 'summary', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节四：智能小结 & 本课总结</h3><h4>1. 智能小结（AI生成）</h4><button class="submit-btn" id="generateBtn" onclick="generateReport()">[点击查看专属学习报告和勋章进度]</button><div id="reportContainer" style="display:none; margin-top: 20px;"><div class="markdown" id="reportContent"></div></div><div id="loadingIndicator" style="display:none; margin-top: 15px; padding: 15px; background: #fff8e7; border-radius: 8px;"><p style="color: #8b5a2b;">AI正在分析你的学习数据，请稍候...</p></div>' },
                                 right: { type: 'conclusion', content: '<h4>2. 本课核心</h4><ul><li><strong>行为克隆：</strong>照抄示范，不会应变。</li><li><strong>强化学习：</strong>通过试错，自己学会最优策略。</li></ul>' }
                             }
                         ]
@@ -811,7 +811,7 @@
                         title: '环节五：智能小结 & 本课总结',
                         pages: [
                             {
-                                left: { type: 'summary', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节五：智能小结 & 本课总结</h3><h4>1. 智能小结（AI生成）</h4><button class="submit-btn" id="generateBtn" onclick="generateReport()">[点击查看专属学习报告和勋章进度]</button><div id="reportContainer" style="display:none; margin-top: 20px;"><div class="markdown" id="reportContent"></div></div><div id="loadingIndicator" style="display:none; margin-top: 15px; padding: 15px; background: #fff8e7; border-radius: 8px;"><p style="color: #8b5a2b;">AI加速思考中，马上好~</p></div>' },
+                                left: { type: 'summary', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节五：智能小结 & 本课总结</h3><h4>1. 智能小结（AI生成）</h4><button class="submit-btn" id="generateBtn" onclick="generateReport()">[点击查看专属学习报告和勋章进度]</button><div id="reportContainer" style="display:none; margin-top: 20px;"><div class="markdown" id="reportContent"></div></div><div id="loadingIndicator" style="display:none; margin-top: 15px; padding: 15px; background: #fff8e7; border-radius: 8px;"><p style="color: #8b5a2b;">AI正在分析你的学习数据，请稍候...</p></div>' },
                                 right: { type: 'conclusion', content: '<h4>2. 本课核心</h4><ul><li><strong>闭环四环节：</strong>感知 → 决策 → 行动 → 再感知，环环相扣。</li><li><strong>再感知关键：</strong>执行后必须检查，否则前期积累失效。</li><li><strong>迁移应用：</strong>同一套闭环逻辑可迁移到不同场景。</li></ul>' }
                             }
                         ]
@@ -1567,20 +1567,18 @@ ${(() => {
                     
                     document.getElementById('reportContent').innerHTML = convertMarkdownToHtml(reportText);
                     document.getElementById('reportContainer').style.display = 'block';
-                    document.getElementById('loadingIndicator').style.display = 'none';
                 } else {
                     const errorText = await response.text();
                     console.log('API错误响应:', errorText);
                     document.getElementById('reportContent').innerHTML = `<p style="color: #dc143c;">报告生成失败 (${response.status})。请检查AI配置是否正确。</p><p style="font-size: 12px; color: #666;">错误信息: ${errorText}</p>`;
                     document.getElementById('reportContainer').style.display = 'block';
-                    document.getElementById('loadingIndicator').style.display = 'none';
                 }
             } catch (error) {
                 console.error('生成报告错误:', error);
                 document.getElementById('reportContent').innerHTML = '<p style="color: #dc143c;">网络错误，请检查网络连接后重试。</p><p style="font-size: 12px; color: #666;">错误: ' + error.message + '</p>';
                 document.getElementById('reportContainer').style.display = 'block';
-                document.getElementById('loadingIndicator').style.display = 'none';
             } finally {
+                document.getElementById('loadingIndicator').style.display = 'none';
                 document.getElementById('generateBtn').disabled = false;
             }
         }
