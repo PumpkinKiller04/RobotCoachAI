@@ -1,0 +1,333 @@
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f0f1a; color: #e0e0e0; padding: 30px; }
+  h2 { font-size: 24px; margin-bottom: 4px; color: #fff; }
+  .subtitle { color: #888; margin-bottom: 28px; font-size: 14px; }
+
+  .scene-wrap {
+    background: #161625;
+    border-radius: 16px;
+    padding: 28px 24px;
+    margin-bottom: 24px;
+    border: 1px solid #2a2a3a;
+  }
+  .scene-wrap h3 { font-size: 18px; color: #FFD700; margin-bottom: 5px; }
+  .scene-wrap .note { color: #777; font-size: 12px; margin-bottom: 16px; }
+
+  .scene {
+    width: 100%;
+    height: 380px;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ===== SCENE 1: User's Idea ===== */
+  .s1-bg {
+    width: 100%; height: 100%;
+    background: linear-gradient(180deg,
+      #87CEEB 0%, #B0E0E6 15%, #A8D5A2 30%,
+      #7CB342 40%, #558B2F 50%,
+      /* transition zone */
+      #9E9E9E 55%, #BDBDBD 60%,
+      #78909C 65%, #607D8B 70%,
+      #455A64 80%, #263238 100%
+    );
+    position: relative;
+  }
+  /* School elements */
+  .school-building {
+    position: absolute; bottom: 48%; left: 10%;
+    width: 60px; height: 45px;
+    background: #E8D5B7; border-radius: 3px;
+    box-shadow: 0 0 0 3px #D4A574;
+  }
+  .school-building::before {
+    content: '🏫'; position: absolute;
+    top: -22px; left: 14px; font-size: 18px;
+  }
+  .school-tree {
+    position: absolute; bottom: 48%; left: 25%;
+    width: 8px; height: 25px; background: #8B6914; border-radius: 2px;
+  }
+  .school-tree::after {
+    content: ''; position: absolute; top: -18px; left: -10px;
+    width: 28px; height: 28px; background: #4CAF50; border-radius: 50%;
+  }
+  .school-flag {
+    position: absolute; bottom: 55%; left: 45%;
+    width: 4px; height: 40px; background: #ccc;
+  }
+  .school-flag::after {
+    content: ''; position: absolute; top: 0; right: -12px;
+    width: 16px; height: 10px; background: #E53935;
+  }
+  /* City elements */
+  .city-b1 {
+    position: absolute; bottom: 5%; right: 8%;
+    width: 35px; height: 80px;
+    background: linear-gradient(180deg, #607D8B, #455A64);
+    border-radius: 3px 3px 0 0;
+  }
+  .city-b1::after {
+    content: '';
+    position: absolute; top: 6px; left: 4px; right: 4px; bottom: 6px;
+    background: repeating-linear-gradient(
+      0deg, transparent 0px, transparent 8px,
+      rgba(255,255,255,0.15) 8px, rgba(255,255,255,0.15) 10px
+    );
+  }
+  .city-b2 {
+    position: absolute; bottom: 5%; right: 18%;
+    width: 30px; height: 60px;
+    background: linear-gradient(180deg, #78909C, #546E7A);
+    border-radius: 3px 3px 0 0;
+  }
+  .city-b2::after {
+    content: '';
+    position: absolute; top: 5px; left: 3px; right: 3px; bottom: 5px;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 6px,
+      rgba(255,255,255,0.12) 6px, rgba(255,255,255,0.12) 8px
+    );
+  }
+  .city-b3 {
+    position: absolute; bottom: 5%; right: 28%;
+    width: 40px; height: 105px;
+    background: linear-gradient(180deg, #546E7A, #37474F);
+    border-radius: 4px 4px 0 0;
+  }
+  .city-b3::after {
+    content: '';
+    position: absolute; top: 8px; left: 5px; right: 5px; bottom: 8px;
+    background: repeating-linear-gradient(
+      0deg, transparent 0px, transparent 10px,
+      rgba(255,255,255,0.18) 10px, rgba(255,255,255,0.18) 12px
+    );
+  }
+
+  /* Road */
+  .s1-road {
+    position: absolute; bottom: 30%; left: 0; right: 0;
+    height: 6px; background: #555;
+  }
+  .s1-road::after {
+    content: ''; position: absolute; top: 50%; left: 5%;
+    width: 90%; height: 2px;
+    background: repeating-linear-gradient(
+      90deg, #fff 0px, #fff 20px, transparent 20px, transparent 40px
+    );
+  }
+
+  /* Running robot area */
+  .robot-area {
+    position: absolute; bottom: 6%; left: 6%;
+    width: 130px; height: 90px;
+    border: 2px dashed rgba(255,255,255,0.2);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+  }
+  .robot-label {
+    position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+    font-size: 10px; color: rgba(255,255,255,0.5);
+    white-space: nowrap;
+  }
+
+  /* Title area */
+  .title-area {
+    position: absolute; top: 18%; left: 8%;
+    font-size: 22px; color: #fff;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+    font-weight: bold;
+    line-height: 1.4;
+  }
+  .title-area .sub {
+    font-size: 13px; color: rgba(255,255,255,0.8);
+    font-weight: normal;
+  }
+
+  /* Floating book */
+  .float-book {
+    position: absolute; top: 20%; right: 8%;
+    width: 240px; height: 280px;
+    background: linear-gradient(145deg, #f5e6c8 0%, #e8d5a3 40%, #dcc894 100%);
+    border-radius: 6px 18px 18px 6px;
+    box-shadow:
+      0 20px 50px rgba(0,0,0,0.5),
+      0 0 30px rgba(255,220,150,0.15);
+    animation: float 3s ease-in-out infinite;
+    display: flex; flex-direction: column;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .float-book .spine {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 22px;
+    background: linear-gradient(90deg, #5c3a1e, #8B5A2B, #A0522D, #8B5A2B, #5c3a1e);
+    border-radius: 6px 0 0 6px;
+  }
+  .float-book .cover-detail {
+    position: absolute; left: 28px; top: 12px; right: 12px; bottom: 12px;
+    border: 2px solid rgba(139,90,43,0.25);
+    border-radius: 4px 12px 12px 4px;
+  }
+  .float-book .glass-panel {
+    position: absolute; left: 40px; top: 35px; right: 25px; bottom: 40px;
+    background: rgba(255,255,255,0.3);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 10px;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 14px;
+    padding: 20px;
+  }
+  .glass-input {
+    width: 100%; height: 16px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 6px;
+  }
+  .glass-btn {
+    width: 65%; height: 15px;
+    background: #8B5A2B;
+    border-radius: 6px;
+    margin-top: 6px;
+  }
+  .glass-btn.second {
+    background: #6B4226;
+    width: 50%;
+    height: 13px;
+  }
+  .book-cover-title {
+    position: absolute; top: 8px; left: 35px;
+    font-size: 9px; color: #8B5A2B;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+
+  /* Decorative elements */
+  .pixel-cloud {
+    position: absolute; top: 8%; right: 35%;
+    font-size: 16px; opacity: 0.6;
+  }
+  .pixel-star {
+    position: absolute; top: 5%; left: 50%;
+    font-size: 12px; opacity: 0.4;
+  }
+
+  .commentary {
+    margin-top: 14px;
+    background: #1e1e30;
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.7;
+  }
+  .commentary strong { color: #FFD700; }
+</style>
+
+<h2>你的方案：左下机器人 + 右侧漂浮立体书 + 背景流动</h2>
+<p class="subtitle">构图可视化（背景从学校操场→城市高楼循环流动，绿色渐变带 = 过渡区域）</p>
+
+<!-- SCENE 1: User's core idea -->
+<div class="scene-wrap">
+  <h3>V1 — 你的核心构图</h3>
+  <p class="note">左下角机器人跑步 · 左上标题 · 右侧漂浮立体书（未打开）· 磨砂玻璃登录面板</p>
+  <div class="scene">
+    <div class="s1-bg">
+      <div class="school-building"></div>
+      <div class="school-tree"></div>
+      <div class="school-flag"></div>
+      <div class="s1-road"></div>
+      <div class="city-b1"></div>
+      <div class="city-b2"></div>
+      <div class="city-b3"></div>
+      <div class="pixel-cloud" style="top:5%;left:55%;">☁️ ☁️</div>
+      <div class="pixel-cloud" style="top:10%;left:75%;font-size:12px;">☁️</div>
+
+      <div class="title-area">
+        机器人总教练请就位
+        <div class="sub">从「醉汉走路」到跑赢人类</div>
+      </div>
+
+      <div class="robot-area">
+        <span class="robot-label">← 机器人跑步区域</span>
+        🤖
+      </div>
+
+      <div class="float-book">
+        <div class="spine"></div>
+        <div class="book-cover-title">✦ 登录 ✦</div>
+        <div class="cover-detail"></div>
+        <div class="glass-panel">
+          <div class="glass-input"></div>
+          <div class="glass-input"></div>
+          <div class="glass-btn"></div>
+          <div class="glass-btn second"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="commentary">
+    <strong>优点：</strong>构图清晰、对角平衡。机器人→标题→书本形成自然的视觉动线（从左下到右上）。<br>
+    <strong>可改进：</strong>① 书本"漂浮"感可以更强（光影、阴影动态变化）；② 书本是完全闭合的，封面利用率高但少了"书"的仪式感；③ 视频背景循环的过渡需要设计好，不然会显得生硬。
+  </div>
+</div>
+
+<!-- Enhancement ideas -->
+<div class="scene-wrap">
+  <h3>三个增强方向（在你这版基础上）</h3>
+  <p class="note">不是替代方案，而是叠加在现有构图上的"加分项"</p>
+
+  <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;">
+    <!-- Enhancement 1 -->
+    <div style="flex:1;min-width:200px;background:#1a1a2e;border-radius:10px;padding:16px;">
+      <div style="font-size:28px;margin-bottom:10px;">📖✨</div>
+      <div style="font-weight:bold;color:#FFD700;margin-bottom:6px;">A. 书的"呼吸感"</div>
+      <div style="font-size:12px;color:#aaa;line-height:1.6;">
+        立体书不是死板漂浮，而是：<br>
+        • 轻微上下浮动 + 缓慢自转（3D perspective）<br>
+        • 书脊和封面有微弱的金色光晕<br>
+        • 鼠标 hover 时书微微"打开一条缝"<br>
+        • 封面有细微的纹理/烫金文字反光<br>
+        • 登录成功后书完全打开 → 过渡到课程页
+      </div>
+    </div>
+    <!-- Enhancement 2 -->
+    <div style="flex:1;min-width:200px;background:#1a1a2e;border-radius:10px;padding:16px;">
+      <div style="font-size:28px;margin-bottom:10px;">🎮🏃</div>
+      <div style="font-weight:bold;color:#FFD700;margin-bottom:6px;">B. 机器人的"舞台感"</div>
+      <div style="font-size:12px;color:#aaa;line-height:1.6;">
+        机器人不只是跑步，而是：<br>
+        • 左下角有一个像素风的"地面条带"跟随它<br>
+        • 偶尔跳过障碍时，地面上有像素碎块飞溅<br>
+        • 机器人跑到不同背景时，地面纹理跟着变<br>
+        • （操场=草地/跑道，城市=柏油路/斑马线）<br>
+        • 偶尔抬头看一眼漂浮的书本
+      </div>
+    </div>
+    <!-- Enhancement 3 -->
+    <div style="flex:1;min-width:200px;background:#1a1a2e;border-radius:10px;padding:16px;">
+      <div style="font-size:28px;margin-bottom:10px;">🎨🔮</div>
+      <div style="font-weight:bold;color:#FFD700;margin-bottom:6px;">C. 画面层级与氛围</div>
+      <div style="font-size:12px;color:#aaa;line-height:1.6;">
+        增加纵深感：<br>
+        • 前景：机器人 + 地面（最清晰）<br>
+        • 中景：漂浮的书本 + 标题<br>
+        • 远景：流动的背景视频<br>
+        • 整体覆盖一层极淡的颗粒/胶片质感<br>
+        • 书本周围有细微的粒子漂浮（像魔法尘埃）<br>
+        • 光线从左上角照下来（模拟窗户光）
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:20px;padding:18px 24px;background:#1a1a2e;border-radius:10px;border:1px solid #FFD700;text-align:center;">
+  <p style="color:#FFD700;font-weight:bold;">你觉得这三个增强方向哪些对胃口？还是说你对自己的构图已经满意，想直接进入细节设计？</p>
+</div>
