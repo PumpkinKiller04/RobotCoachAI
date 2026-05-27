@@ -1507,32 +1507,31 @@ ${(() => {
         }
     }
     
-    let coursePoints = '';
-    if (currentModule === 0) {
-        coursePoints = '单模态易出错，多模态更可靠；激光雷达测距，IMU感知姿态。';
-    } else if (currentModule === 1) {
-        coursePoints = '行为克隆照抄示范不会应变，强化学习通过试错自己学会最优策略。';
-    } else {
-        coursePoints = '闭环四环节：感知→决策→行动→再感知，再感知是关键。';
-    }
-    
-    return `【总体评价】\n- 正确率：${correctRate}%（${totalCorrect}/${totalQuestionsAll}题）\n- 评定：${overallLevel}\n- 勋章：${medal}
+    return `【总体评价】\n- 正确率：${correctRate}%（${totalCorrect}/${totalQuestionsAll}题）\n- 评定：${overallLevel}\n- 勋章：${medal}`;
+})()}
 
 【课程要点】
-${coursePoints}
+${(() => {
+    if (currentModule === 0) {
+        return '单模态易出错，多模态更可靠；激光雷达测距，IMU感知姿态。';
+    } else if (currentModule === 1) {
+        return '行为克隆照抄示范不会应变，强化学习通过试错自己学会最优策略。';
+    } else {
+        return '闭环四环节：感知→决策→行动→再感知，再感知是关键。';
+    }
+})()}
 
 请按照以下格式生成学习报告（用中文，语气亲切鼓励，控制在150字以内）：
 
 ---
 
-**核心总结**：恭喜完成所有部分，获得${medal}！[1-2句总结表现，包含正确率和评定等级]
+**核心总结**：恭喜完成所有部分，获得白银勋章！[1-2句总结表现，包含正确率和评定等级]
 
 **建议**：[1条最关键的改进建议]
 
 ---
 
 注意：报告要精简，根据学生的实际正确率数据来写，语气要鼓励性。`;
-})()}
             
             try {
                 const model = localStorage.getItem('ai_model') || 'deepseek-ai/DeepSeek-V4-Flash';
