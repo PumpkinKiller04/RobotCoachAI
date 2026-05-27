@@ -53,7 +53,8 @@
       "Bash(git checkout *)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" --connect-timeout 5 --max-time 10 \"https://quickform.cn/api/hn79b9cbyy/all\")",
       "Bash(sed -i '1527s/}\\)\\(\\)}/}\\)\\(\\)}\\\\n`/' course.html)",
-      "Bash(npx vercel *)"
+      "Bash(npx vercel *)",
+      "Bash(gh auth *)"
     ],
     "additionalDirectories": [
       "C:\\Users\\13241\\Desktop\\导学单网站"
