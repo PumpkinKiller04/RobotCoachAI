@@ -94,85 +94,76 @@
 
 ## 三、视频生成提示词
 
-### 推荐工具
+### 使用工具：豆包 Seedance 2.0 Fast
 
-按效果排序：**Runway Gen-4** > **Kling 2.0** > **Luma Dream Machine** > **Pika 2.0**
-
-Runway 和 Kling 在对镜头控制、循环衔接和风格一致性上表现最好。
+一次性生成 12 秒，首尾帧循环衔接。
 
 ---
 
-### 提示词 A（用于 Runway Gen-4 / Kling 2.0 — 完整视频）
+### 主提示词（直接复制到 Seedance）
 
 ```
-[Shot type: side-scrolling 2D pixel art animation, continuous smooth horizontal pan, seamless looping]
+横版卷轴像素动画，画面持续向右平滑滚动，首尾无缝循环。
 
-A blue-and-white LEGO-style pixel art robot with a blue helmet, white body, blue limbs, and simple pixel-art face is running from left to right across the screen. The robot stays positioned in the lower-left quarter of the frame. The robot's legs and arms swing in a running cycle, body slightly leaning forward with a bouncy gait.
+画面左下角有一个蓝白配色的乐高积木风格机器人，蓝色头盔，白色身体，蓝色四肢，简约像素风五官，面朝右方匀速奔跑。机器人双腿交替摆动、双臂前后摆臂，身体微微前倾，跑步姿态有弹性。机器人始终保持在画面左侧下方四分之一区域内，不移动到中间。
 
-The background is a continuous horizontal scrolling scene that seamlessly loops:
+背景是连续的横向滚动场景，从学校操场自然过渡到城市再回到操场：
 
-[SCENE 1 - SCHOOL PLAYGROUND]
-Red running track under the robot's feet, green grass field, white school buildings with red brick accents in the distance, a flagpole with a small flag, basketball courts, green trees. Sky is light blue with pixel-art clouds. Bright daytime lighting.
+【操场阶段 — 前4秒】
+机器人脚下是红色塑胶跑道。背景元素：绿色草坪、米白色红砖教学楼、旗杆上飘扬小旗、篮球架、绿色树木。天空是浅蓝色，有像素风白云。整体明亮日间光线。
 
-[TRANSITION ZONE]
-The track gradually fades into gray pavement, trees shift to street trees, low buildings appear and grow taller, street lamps emerge.
+【过渡阶段 — 第4-5秒】
+跑道逐渐变成灰色柏油马路。树木从校园绿树过渡为城市行道树。远处建筑从低矮楼房逐渐变高。路灯出现。色彩从暖绿调过渡到冷灰蓝调。
 
-[SCENE 2 - CITY SKYSCRAPERS]
-Tall glass skyscrapers in blue-gray tones, pixel-art neon signs glowing in warm yellow and magenta, overhead pedestrian bridge, street lamps, road with white dashed lane lines under the robot. Sky shifts to deeper blue. Buildings have lit windows (small yellow pixel blocks).
+【城市阶段 — 第5-9秒】
+机器人脚下是灰色柏油路，路面上有白色虚线车道线。背景是高楼林立的城市天际线：蓝色灰色调的玻璃幕墙摩天大楼，像素风霓虹招牌（暖黄色、品红色发光小色块），人行天桥，路灯，远处更多高楼剪影。天空变为深蓝色。建筑物窗格有暖黄色小像素块亮着。
 
-[TRANSITION BACK]
-Buildings shrink back down, greenery returns, gray pavement transitions back to red running track, school buildings reappear.
+【过渡回操场 — 第9-10秒】
+高楼逐渐变矮消失，绿色植被重新出现。灰色柏油路渐变回红色跑道。城市天际线退去，教学楼和绿树重新浮现。
 
-The robot occasionally jumps over small obstacles (hurdles, small rocks, traffic cones) with a smooth arc jump. When landing, tiny pixel particles burst from the ground.
+【回到操场 — 第10-12秒】
+画面回到操场阶段，与视频开头完全一致，实现首尾无缝衔接循环。
 
-Style: 16-bit pixel art aesthetics, LEGO blocky character design, vibrant but slightly muted color palette, subtle film grain texture. Clean pixel edges. Japanese RPG overworld animation style.
+机器人偶尔跳过地面上的小障碍物（跨栏、小石块、路障锥），跳跃弧线流畅。落地时地面溅起微小像素碎块。
 
-Technical: 1920x1080, 16:9 aspect ratio, smooth 30fps scrolling, first frame exactly matches last frame for perfect infinite loop.
-```
+整体风格：16-bit像素艺术美学，GBA游戏横版过关画面质感，乐高积木块状角色设计，色彩鲜艳但不刺眼，画面带有极轻微的胶片颗粒纹理，像素边缘清晰锐利。日式RPG大地图动画风格。
 
----
-
-### 提示词 B（简化版，用于 Pika / Luma — 如果 A 太复杂就拆成这个）
-
-```
-Side-scrolling pixel art animation, seamless loop. A cute blue-and-white LEGO robot with a blue helmet runs from left to right in the bottom-left of the frame. The background scrolls horizontally: starting with a school playground (red track, green field, school buildings, blue sky), transitioning smoothly into a city with tall glass skyscrapers and pixel neon signs, then looping back to the playground. The robot occasionally jumps over small hurdles. 16-bit game aesthetic, vibrant colors, clean pixel edges, 1920x1080, 16:9.
+分辨率1920x1080，16:9横屏，平滑滚动，首帧和尾帧画面完全一致以实现无限循环播放。
 ```
 
 ---
 
-### 提示词 C（分段生成 + 后期拼接 — 最终兜底方案）
+### 简化版提示词（如果上面的太长，用这个）
 
-如果单段生成效果不好，分成 4 段分别生成再剪辑拼接：
+```
+横版卷轴像素动画，首尾无缝循环，12秒。
 
-**C1 — 操场段（5-6 秒）**
-```
-Pixel art side-scrolling animation. A blue-and-white LEGO robot runs on a red running track. Background: school playground with green grass, white school buildings, flagpole, basketball court, trees. Blue sky with pixel clouds. The robot stays in the lower-left. 16-bit game style, vibrant. 1920x1080.
-```
+左下角有一个蓝白乐高机器人（蓝色头盔+白色身体+蓝色四肢）面朝右方匀速奔跑，双腿交替摆臂。
 
-**C2 — 过渡段（2-3 秒）**
-```
-Pixel art transition sequence. The background scrolls from a school playground into a city. Red track fades to gray road. Green trees become street trees. Buildings grow from low to tall. The blue-and-white robot continues running in the lower-left. Smooth morphing transition. 16-bit style. 1920x1080.
-```
+背景持续向左滚动，场景从学校操场（红色跑道、绿色草坪、白色教学楼、蓝天）平滑过渡到现代城市（灰色柏油路、玻璃幕墙高楼、像素霓虹招牌、深蓝天空），再过渡回操场，首尾衔接。
 
-**C3 — 城市段（5-6 秒）**
-```
-Pixel art side-scrolling animation. A blue-and-white LEGO robot runs on a gray asphalt road with white lane dashes. Background: city skyline with tall glass skyscrapers, pixel neon signs (yellow, magenta), street lamps, overpass. Deeper blue sky. The robot stays in the lower-left. 16-bit game style. 1920x1080.
-```
+机器人偶尔跳跃越过小障碍物，落地有像素碎块飞溅。
 
-**C4 — 过渡回操场（2-3 秒）**
-```
-Pixel art transition sequence. The background scrolls from a city back into a school playground. Skyscrapers shrink. Gray road becomes red track. Cityscape fades to school buildings and green trees. The blue-and-white robot continues running. Smooth morphing. 16-bit style. 1920x1080.
+16-bit像素艺术风格，GBA游戏画面质感，乐高积木角色。色彩鲜艳，像素边缘清晰。1920x1080，16:9。
 ```
 
 ---
 
-### 视频生成注意事项
+### 生成参数建议
 
-1. **分辨率一致性**：所有片段必须使用相同的分辨率和帧率生成
-2. **色彩一致性**：确保机器人的蓝白配色在所有片段中保持一致——这在 AI 视频生成中是个难点，可能需要多轮调整
-3. **循环衔接**：如果用分段方案，C4 的最后一帧必须和 C1 的第一帧视觉上匹配。建议在剪辑软件中做交叉淡化（crossfade）来掩盖衔接
-4. **机器人位置稳定性**：多次强调「机器人在左下角」，因为 AI 倾向于把主体放中间
-5. **风格锚定**：在提示词中重复「16-bit pixel art」「LEGO blocky character」等关键词来保持风格一致
+| 参数 | 建议值 |
+|------|--------|
+| 时长 | 12s |
+| 分辨率 | 1920×1080 (16:9) |
+| 帧率 | 24fps |
+| 运镜 | 固定镜头 / 无运镜 |
+
+### 注意事项
+
+1. **循环衔接**：Seedance 如果支持「首尾帧循环」或「loop」参数一定要开启。如果不支持，生成后需要在剪辑软件中做首尾交叉淡化
+2. **机器人位置**：提示词反复强调「左下角」「不移动到中间」，这是关键——AI 视频模型默认倾向把主体居中
+3. **如果 12 秒太赶**：12 秒跑完操场→城市→操场很紧，如果效果不好，可以改为只做操场→城市（6秒）或城市→操场（6秒），然后镜像拼接成循环
+4. **多试几次**：AI 视频生成有随机性，同样的提示词跑 3-5 次，挑效果最好的
 
 ## 四、前景 UI 层
 
