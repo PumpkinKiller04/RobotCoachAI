@@ -276,8 +276,6 @@
         var textEl = document.getElementById('responseText');
         var fullText = '';
 
-        loadingArea.classList.add('hidden');
-
         while (true) {
           var result = await reader.read();
           if (result.done) break;
@@ -297,6 +295,7 @@
                 if (delta) {
                   fullText += delta;
                   textEl.innerHTML = renderMarkdown(fullText);
+                  loadingArea.classList.add('hidden');
                 }
               } catch (e) {
                 console.warn('解析响应失败:', e);
