@@ -620,6 +620,12 @@
           const r = T.curveR;
           robot.x = T.rightX + r * Math.cos(theta);
           robot.y = T.cy + r * Math.sin(theta);
+          // 仅激光雷达：跑到第二个弯道超时结束
+          if (sensors.lidar && !sensors.imu && curveT >= 1.0) {
+            animState = 'done';
+            endRun('timeout');
+            return;
+          }
           if (!sensors.imu) {
             robot.y += Math.sin(frame * 0.12) * 1.0;
           }
