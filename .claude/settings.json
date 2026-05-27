@@ -43,7 +43,8 @@
       "Bash(bash \"C:/Users/13241/.claude/plugins/cache/claude-plugins-official/superpowers/5.1.0/skills/brainstorming/scripts/start-server.sh\" --project-dir \"c:/Users/13241/Desktop/导学单网站\")",
       "Bash(claude plugins *)",
       "Bash(claude install *)",
-      "Bash(claude plugin *)"
+      "Bash(claude plugin *)",
+      "Bash(python -m http.server 8080)"
     ]
   }
 }
