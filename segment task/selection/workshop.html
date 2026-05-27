@@ -778,6 +778,17 @@
       } else if (sensors.lidar && sensors.imu && sensors.force && !hadCurveFail && !hadBumpIssue) {
         statusText.textContent = '完美通过！全部传感器协同工作';
         statusText.style.color = '#22c55e';
+        // 启动彩带动画循环
+        window._confettiParticles = null;
+        function confettiLoop() {
+          if (!window._confettiParticles) return;
+          const anyVisible = window._confettiParticles.some(p => p.y < tpvCanvas.height + 50);
+          if (!anyVisible) { window._confettiParticles = null; drawTPV(); return; }
+          drawTPV();
+          requestAnimationFrame(confettiLoop);
+        }
+        drawTPV();
+        setTimeout(() => confettiLoop(), 50);
         showResultOverlay('🎉', '通过选拔！',
           '四种传感器协同工作，稳定快速完成',
           '📷 视觉 + 📡 测距 + 🧭 平衡 + 🦶 触地 → 多模态感知',
