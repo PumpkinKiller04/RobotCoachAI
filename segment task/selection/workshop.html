@@ -496,8 +496,8 @@
       frame++;
       
       const hasAllSensors = sensors.lidar && sensors.imu && sensors.force;
-      const straightSpeed = hasAllSensors ? 0.75 : (sensors.lidar && !sensors.imu ? 0.38 : 0.55);
-      fpvScroll += hasAllSensors ? 3.2 : (sensors.lidar && !sensors.imu ? 1.6 : 2.5);
+      const straightSpeed = hasAllSensors ? 0.85 : (sensors.lidar && !sensors.imu ? 0.45 : 0.65);
+      fpvScroll += hasAllSensors ? 4.0 : (sensors.lidar && !sensors.imu ? 2.0 : 3.0);
 
       if (phase === 0) {
         // 下直道：从右往左
