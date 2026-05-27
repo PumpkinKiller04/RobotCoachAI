@@ -1567,18 +1567,20 @@ ${(() => {
                     
                     document.getElementById('reportContent').innerHTML = convertMarkdownToHtml(reportText);
                     document.getElementById('reportContainer').style.display = 'block';
+                    document.getElementById('loadingIndicator').style.display = 'none';
                 } else {
                     const errorText = await response.text();
                     console.log('API错误响应:', errorText);
                     document.getElementById('reportContent').innerHTML = `<p style="color: #dc143c;">报告生成失败 (${response.status})。请检查AI配置是否正确。</p><p style="font-size: 12px; color: #666;">错误信息: ${errorText}</p>`;
                     document.getElementById('reportContainer').style.display = 'block';
+                    document.getElementById('loadingIndicator').style.display = 'none';
                 }
             } catch (error) {
                 console.error('生成报告错误:', error);
                 document.getElementById('reportContent').innerHTML = '<p style="color: #dc143c;">网络错误，请检查网络连接后重试。</p><p style="font-size: 12px; color: #666;">错误: ' + error.message + '</p>';
                 document.getElementById('reportContainer').style.display = 'block';
-            } finally {
                 document.getElementById('loadingIndicator').style.display = 'none';
+            } finally {
                 document.getElementById('generateBtn').disabled = false;
             }
         }
