@@ -555,13 +555,6 @@
           }
         }
 
-        // 仅激光雷达：跑完2/3直道后超时
-        if (sensors.lidar && !sensors.imu && robot.x <= T.leftX + 50) {
-          animState = 'done';
-          endRun('timeout');
-          return;
-        }
-
         fpvCurve = 0; fpvOfftrack = 0;
         if (sensors.lidar && robot.x <= T.leftX + 5) {
           phase = 1;
