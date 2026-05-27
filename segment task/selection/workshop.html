@@ -549,24 +549,19 @@
       } else if (phase === 1) {
         // 左弯道：绕左侧圆心逆时针走半圆
         if (!sensors.lidar) {
-          // 无LiDAR：沿弯道但严重偏离跑道
-          const speed = 0.025;
-          curveT += speed;
-          const theta = Math.PI / 2 + curveT;
-          const r = T.curveR;
-          robot.x = T.leftX + r * Math.cos(theta) + Math.sin(frame * 0.15) * 10;
-          robot.y = T.cy + r * Math.sin(theta) + Math.cos(frame * 0.12) * 8;
+          // 无LiDAR：直走错过弯道，提前转弯冲出（与profile.html一致）
+          robot.x -= 0.50;
+          robot.y -= 0.30;
           fpvCurve = Math.min(1, fpvCurve + 0.022);
           fpvOfftrack = Math.min(1, fpvOfftrack + 0.015);
-          if (!isOnTrack(robot.x, robot.y) && !hadCurveFail) {
+          if (!isOnTrack(robot.x, robot.y)) {
             hadCurveFail = true;
-          }
-          if (curveT >= Math.PI) {
-            phase = 2;
-            robot.x = T.leftX;
-            robot.y = T.cy - T.curveR;
-            statusText.textContent = '上直道行驶中...';
-            statusText.style.color = '#3b82f6';
+            animState = 'offtrack';
+            running = false;
+            if (animId) { cancelAnimationFrame(animId); animId = null; }
+            drawTPV();
+            endRun('curve_fail');
+            return;
           }
         } else if (sensors.lidar && !sensors.imu) {
           // 仅激光雷达：慢速跑，弯道摇晃剧烈
