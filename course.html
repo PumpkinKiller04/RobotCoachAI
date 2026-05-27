@@ -1532,6 +1532,8 @@ ${(() => {
 ---
 
 注意：报告要精简，根据学生的实际正确率数据来写，语气要鼓励性。`;
+
+const medalText = currentModule === 0 ? '白银勋章' : (currentModule === 1 ? '黄金勋章' : '星耀徽章+AI总教练称号');
             
             try {
                 const model = localStorage.getItem('ai_model') || 'deepseek-ai/DeepSeek-V4-Flash';
