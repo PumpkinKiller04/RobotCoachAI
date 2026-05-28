@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>补全闭环图 - 感知→决策→行动→再感知</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .title {
+            color: white;
+            font-size: 24px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .mode-indicator {
+            color: white;
+            font-size: 14px;
+            padding: 5px 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+        }
+
+        .submit-btn {
+            padding: 10px 30px;
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 222, 128, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 222, 128, 0.5);
+        }
+
+        .submit-btn:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px;
+            gap: 30px;
+        }
+
+        .drop-zone {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .circle-container {
+            width: 700px;
+            height: 400px;
+            position: relative;
+        }
+
+        .circle-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px dashed rgba(255,255,255,0.3);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .circle-bg.active {
+            opacity: 1;
+        }
+
+        .line-bg {
+            display: none;
+        }
+
+
+
+        .arrow-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .arrow-line {
+            stroke: rgba(255,255,255,0.6);
+            stroke-width: 3;
+            stroke-dasharray: 6,3;
+            transition: stroke 0.3s ease, opacity 0.5s ease;
+        }
+
+        .arrow-line.hidden {
+            opacity: 0;
+        }
+
+        .arrow-line.active {
+            stroke: #4ade80;
+            stroke-width: 5;
+        }
+
+        .arrow-head {
+            transition: fill 0.3s ease;
+        }
+
+        .drop-target {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 5;
+        }
+
+        .drop-target.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .drop-target:hover,
+        .drop-target.drag-over {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+
+        .drop-target.filled {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .drop-target.order {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.9);
+            color: #667eea;
+            font-size: 12px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: -11px;
+            right: -11px;
+        }
+
+        .drop-target.sense {
+            top: 50%;
+            left: 50px;
+            transform: translateY(-50%);
+        }
+
+        .drop-target.decision {
+            top: 50%;
+            left: 350px;
+            transform: translate(-50%, -50%);
+        }
+
+        .drop-target.action {
+            top: 50%;
+            right: 50px;
+            transform: translateY(-50%);
+        }
+
+        .drop-target.re-sense {
+            bottom: 30px;
+            left: 350px;
+            transform: translateX(-50%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .drop-target.re-sense.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .module.hidden {
+            display: none;
+        }
+
+        .modules-panel {
+            width: 320px;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .modules-title {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .modules-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .module {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: grab;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            user-select: none;
+        }
+
+        .module:hover:not(.used) {
+            transform: translateX(5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .module.dragging {
+            opacity: 0.5;
+            transform: scale(1.02);
+            cursor: grabbing;
+        }
+
+        .module.used {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .module-icon {
+            font-size: 28px;
+        }
+
+        .module-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .module-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .module-desc {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .module-sense {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .module-decision {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+
+        .module-action {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+        }
+
+        .module-re-sense {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+        }
+
+        .success-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(74, 222, 128, 0.95);
+            color: white;
+            padding: 25px 50px;
+            border-radius: 15px;
+            font-size: 20px;
+            font-weight: 600;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            animation: fadeIn 0.5s ease;
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .success-message .emoji {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .error-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(239, 68, 68, 0.95);
+            color: white;
+            padding: 25px 50px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            animation: shake 0.5s ease;
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .error-message .emoji {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translate(-50%, -50%); }
+            25% { transform: translate(calc(-50% - 10px), -50%); }
+            75% { transform: translate(calc(-50% + 10px), -50%); }
+        }
+
+        .placed-node {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+            z-index: 20;
+            animation: popIn 0.3s ease;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .placed-node:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+        }
+
+
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .placed-node-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
+        }
+
+        .placed-node-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+        }
+
+        .robot-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .robot {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: run 0.5s steps(2) infinite;
+        }
+
+        .robot-head {
+            width: 40px;
+            height: 30px;
+            background: #00ff00;
+            border: 3px solid #00cc00;
+            position: relative;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        .robot-eye {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #000;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 2px;
+        }
+
+        .robot-body {
+            width: 60px;
+            height: 40px;
+            background: #00ff00;
+            border: 3px solid #00cc00;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .robot-arm {
+            position: absolute;
+            width: 15px;
+            height: 30px;
+            background: #00ff00;
+            border: 2px solid #00cc00;
+            border-radius: 3px;
+            top: 5px;
+        }
+
+        .robot-arm.left {
+            left: -18px;
+            animation: armLeft 0.25s ease-in-out infinite alternate;
+        }
+
+        .robot-arm.right {
+            right: -18px;
+            animation: armRight 0.25s ease-in-out infinite alternate;
+        }
+
+        .robot-leg {
+            width: 15px;
+            height: 20px;
+            background: #00ff00;
+            border: 2px solid #00cc00;
+            border-radius: 3px;
+        }
+
+        .robot-legs {
+            display: flex;
+            gap: 10px;
+            margin-top: 2px;
+        }
+
+        .robot-leg.left {
+            animation: legLeft 0.25s ease-in-out infinite alternate;
+        }
+
+        .robot-leg.right {
+            animation: legRight 0.25s ease-in-out infinite alternate;
+        }
+
+        @keyframes run {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes armLeft {
+            0% { transform: rotate(-30deg); }
+            100% { transform: rotate(30deg); }
+        }
+
+        @keyframes armRight {
+            0% { transform: rotate(30deg); }
+            100% { transform: rotate(-30deg); }
+        }
+
+        @keyframes legLeft {
+            0% { transform: rotate(-20deg); }
+            100% { transform: rotate(20deg); }
+        }
+
+        @keyframes legRight {
+            0% { transform: rotate(20deg); }
+            100% { transform: rotate(-20deg); }
+        }
+
+        .robot-shadow {
+            width: 50px;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            margin-top: 5px;
+            animation: shadow 0.25s ease-in-out infinite alternate;
+        }
+
+        @keyframes shadow {
+            0% { transform: scaleX(1); opacity: 0.5; }
+            100% { transform: scaleX(0.8); opacity: 0.3; }
+        }
+
+        .robot-track {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(90deg, 
+                #333 0%, #444 50%, #333 100%);
+            background-size: 50px 30px;
+            animation: trackMove 0.5s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .robot-track.active {
+            opacity: 0.8;
+        }
+
+        @keyframes trackMove {
+            from { background-position: 0 0; }
+            to { background-position: 50px 0; }
+        }
+
+        .warning-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .warning-modal {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 3px solid #f59e0b;
+            animation: popIn 0.3s ease;
+        }
+
+        .warning-icon {
+            width: 80px;
+            height: 80px;
+            background: #fef3c7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+        }
+
+        .warning-title {
+            color: #dc2626;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .warning-text {
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 10px;
+        }
+
+        .warning-reason {
+            color: #6b7280;
+            font-size: 13px;
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .warning-btn {
+            padding: 12px 40px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .warning-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">补全闭环图</h1>
+            <button class="submit-btn" id="submitBtn" disabled>测试</button>
+        </div>
+        
+        <div class="main-content">
+            <div class="drop-zone">
+                <div class="circle-container">
+                    <div class="line-bg" id="lineBg"></div>
+
+                    
+                    <div class="arrow-container">
+                        <svg width="700" height="400" viewBox="0 0 700 400">
+                            <!-- 线性箭头：感知 → 决策 → 行动 -->
+                            <line class="arrow-line line-arrow-1" x1="140" y1="200" x2="305" y2="200" />
+                            <polygon class="arrow-head" points="305,200 290,193 290,207" fill="#4ade80" />
+                            
+                            <line class="arrow-line line-arrow-2" x1="395" y1="200" x2="560" y2="200" />
+                            <polygon class="arrow-head" points="560,200 545,193 545,207" fill="#4ade80" />
+                            
+                            <!-- 三角形闭环箭头：感知 → 决策 → 行动 → 感知 -->
+                            <line class="arrow-line triangle-arrow-1 hidden" x1="380" y1="110" x2="580" y2="300" />
+                            <polygon class="arrow-head hidden" points="580,300 565,290 565,305" fill="#4ade80" />
+                            
+                            <line class="arrow-line triangle-arrow-2 hidden" x1="540" y1="325" x2="130" y2="325" />
+                            <polygon class="arrow-head hidden" points="130,325 150,318 150,332" fill="#4ade80" />
+                            
+                            <line class="arrow-line triangle-arrow-3 hidden" x1="130" y1="290" x2="320" y2="110" />
+                            <polygon class="arrow-head hidden" points="320,110 305,120 305,105" fill="#4ade80" />
+                        </svg>
+                    </div>
+
+                    <div class="drop-target sense" data-target="sense"></div>
+
+                    <div class="drop-target decision" data-target="decision"></div>
+
+                    <div class="drop-target action" data-target="action"></div>
+                </div>
+            </div>
+
+            <div class="modules-panel">
+                <div class="modules-title">可用模块</div>
+                <div class="modules-list">
+                    <div class="module module-sense" draggable="true" data-module="sense">
+                        <div class="module-icon">👁️</div>
+                        <div class="module-info">
+                            <div class="module-label">感知</div>
+                            <div class="module-desc">收集信息，识别环境</div>
+                        </div>
+                    </div>
+
+                    <div class="module module-decision" draggable="true" data-module="decision">
+                        <div class="module-icon">🧠</div>
+                        <div class="module-info">
+                            <div class="module-label">决策</div>
+                            <div class="module-desc">分析判断，制定策略</div>
+                        </div>
+                    </div>
+
+                    <div class="module module-action" draggable="true" data-module="action">
+                        <div class="module-icon">⚡</div>
+                        <div class="module-info">
+                            <div class="module-label">行动</div>
+                            <div class="module-desc">执行计划，产生影响</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modules = document.querySelectorAll('.module');
+        const dropTargets = document.querySelectorAll('.drop-target');
+        const circleContainer = document.querySelector('.circle-container');
+        const submitBtn = document.getElementById('submitBtn');
+        const lineBg = document.getElementById('lineBg');
+
+        
+        let draggedModule = null;
+        let placedNodes = {};
+
+
+        modules.forEach(module => {
+            module.addEventListener('dragstart', dragStart);
+            module.addEventListener('dragend', dragEnd);
+        });
+
+        dropTargets.forEach(target => {
+            target.addEventListener('dragover', dragOver);
+            target.addEventListener('dragleave', dragLeave);
+            target.addEventListener('drop', drop);
+        });
+
+        submitBtn.addEventListener('click', handleSubmit);
+
+        function clearAllPlacedNodes() {
+            document.querySelectorAll('.placed-node').forEach(node => node.remove());
+            placedNodes = {};
+            
+            dropTargets.forEach(target => target.classList.remove('filled'));
+            modules.forEach(module => {
+                module.classList.remove('used');
+                module.draggable = true;
+            });
+            
+            updateSubmitButton();
+        }
+
+        function dragStart(e) {
+            if (e.target.classList.contains('used')) {
+                e.preventDefault();
+                return;
+            }
+            draggedModule = e.target;
+            draggedModule.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function dragEnd() {
+            if (draggedModule) {
+                draggedModule.classList.remove('dragging');
+                draggedModule = null;
+            }
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            e.target.classList.add('drag-over');
+        }
+
+        function dragLeave(e) {
+            e.target.classList.remove('drag-over');
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            e.target.classList.remove('drag-over');
+
+            const target = e.target.closest('.drop-target');
+            if (!target || !draggedModule) return;
+
+            const moduleType = draggedModule.dataset.module;
+            const targetType = target.dataset.target;
+
+            if (!placedNodes[targetType]) {
+                const placedNode = createPlacedNode(moduleType);
+                const targetRect = target.getBoundingClientRect();
+                const containerRect = circleContainer.getBoundingClientRect();
+                
+                placedNode.style.left = `${targetRect.left - containerRect.left}px`;
+                placedNode.style.top = `${targetRect.top - containerRect.top}px`;
+                
+                circleContainer.appendChild(placedNode);
+                placedNodes[targetType] = { node: placedNode, type: moduleType };
+                
+                target.classList.add('filled');
+                draggedModule.classList.add('used');
+                draggedModule.draggable = false;
+
+                updateSubmitButton();
+            }
+        }
+
+        function createPlacedNode(type) {
+            const node = document.createElement('div');
+            node.className = `placed-node module-${type}`;
+            node.dataset.type = type;
+            
+            const icons = {
+                'sense': '👁️',
+                'decision': '🧠',
+                'action': '⚡',
+                're-sense': '🔄'
+            };
+            
+            const labels = {
+                'sense': '感知',
+                'decision': '决策',
+                'action': '行动',
+                're-sense': '再感知'
+            };
+            
+            node.innerHTML = `
+                <div class="placed-node-icon">${icons[type]}</div>
+                <div class="placed-node-label">${labels[type]}</div>
+            `;
+            
+            node.addEventListener('click', removePlacedNode);
+            
+            return node;
+        }
+
+        function removePlacedNode(e) {
+            const node = e.target.closest('.placed-node');
+            if (!node) return;
+
+            const type = node.dataset.type;
+            
+            node.remove();
+            
+            for (const [targetType, data] of Object.entries(placedNodes)) {
+                if (data.type === type) {
+                    delete placedNodes[targetType];
+                    const target = document.querySelector(`.drop-target[data-target="${targetType}"]`);
+                    if (target) {
+                        target.classList.remove('filled');
+                    }
+                    break;
+                }
+            }
+            
+            const module = document.querySelector(`.module[data-module="${type}"]`);
+            if (module) {
+                module.classList.remove('used');
+                module.draggable = true;
+            }
+
+            updateSubmitButton();
+        }
+
+        function updateSubmitButton() {
+            submitBtn.disabled = Object.keys(placedNodes).length < 3;
+        }
+
+        function handleSubmit() {
+            if (currentMode === 'linear') {
+                handleLinearSubmit();
+            } else {
+                handleTriangleSubmit();
+            }
+        }
+
+        function handleTriangleSubmit() {
+            if (Object.keys(placedNodes).length < 3) return;
+
+            const placedTypes = [];
+            const order = ['sense', 'decision', 'action'];
+            
+            order.forEach(key => {
+                if (placedNodes[key]) {
+                    placedTypes.push(placedNodes[key].type);
+                }
+            });
+
+            const isCorrect = placedTypes.join(',') === 'sense,decision,action';
+
+            if (!isCorrect) {
+                showError('顺序错误！请按正确顺序放置：1.感知 → 2.决策 → 3.行动');
+                return;
+            }
+
+            showSuccess('测试完成！三角形闭环正确！');
+        }
+
+        function handleLinearSubmit() {
+            if (Object.keys(placedNodes).length < 3) return;
+
+            const placedTypes = [];
+            const order = ['sense', 'decision', 'action'];
+            
+            order.forEach(key => {
+                if (placedNodes[key]) {
+                    placedTypes.push(placedNodes[key].type);
+                }
+            });
+
+            const isCorrect = placedTypes.join(',') === 'sense,decision,action';
+
+            if (!isCorrect) {
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'error-message';
+                errorMsg.innerHTML = `
+                    <div class="emoji">❌</div>
+                    顺序错误！<br>
+                    请按正确顺序放置：<br>
+                    1. 感知 → 2. 决策 → 3. 行动
+                `;
+                document.body.appendChild(errorMsg);
+                
+                setTimeout(() => {
+                    errorMsg.remove();
+                }, 3000);
+                return;
+            }
+
+            showWarningModal();
+        }
+
+        function showWarningModal() {
+            const overlay = document.createElement('div');
+            overlay.className = 'warning-overlay';
+            overlay.innerHTML = `
+                <div class="warning-modal">
+                    <div class="warning-icon">⚠️</div>
+                    <div class="warning-title">犯规出局！</div>
+                    <div class="warning-text">
+                        突发情况，失控机器人撞过来
+                    </div>
+                    <div class="warning-text">
+                        穿过空隙后，没检查被撞倒了
+                    </div>
+                    <button class="warning-btn" id="continueBtn">再试一次</button>
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+            
+            document.getElementById('continueBtn').addEventListener('click', () => {
+                overlay.remove();
+                clearAllPlacedNodes();
+                switchToTriangleMode();
+            });
+        }
+
+        let currentMode = 'linear';
+
+        function switchToTriangleMode() {
+            currentMode = 'triangle';
+            
+            // 隐藏线性箭头，显示三角形箭头
+            document.querySelectorAll('.line-arrow-1, .line-arrow-2').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.triangle-arrow-1, .triangle-arrow-2, .triangle-arrow-3').forEach(el => el.classList.remove('hidden'));
+            
+            // 更新drop-target位置为正三角形布局
+            const senseTarget = document.querySelector('.drop-target.sense');
+            const decisionTarget = document.querySelector('.drop-target.decision');
+            const actionTarget = document.querySelector('.drop-target.action');
+            
+            // 正三角形布局 - 圆形框放在三角形顶角处
+            senseTarget.style.left = '305px';
+            senseTarget.style.top = '25px';
+            
+            decisionTarget.style.left = '570px';
+            decisionTarget.style.top = '280px';
+            
+            actionTarget.style.left = '40px';
+            actionTarget.style.top = '280px';
+        }
+
+        function validateTriangleLoop() {
+            const placedSense = placedNodes['sense'];
+            const placedDecision = placedNodes['decision'];
+            const placedAction = placedNodes['action'];
+            
+            if (!placedSense || !placedDecision || !placedAction) {
+                return false;
+            }
+            
+            return placedSense.dataset.module === 'sense' && 
+                   placedDecision.dataset.module === 'decision' && 
+                   placedAction.dataset.module === 'action';
+        }
+    </script>
+</body>
+</html>
