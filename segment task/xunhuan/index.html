@@ -9,10 +9,10 @@
 
 body{
     font-family:'Microsoft YaHei','PingFang SC',sans-serif;
-    font-size:12px;
+    font-size:13px;
     background:#0f172a;
-    width:400px;
-    height:255px;
+    width:440px;
+    height:285px;
     overflow:hidden;
 }
 body::before{
@@ -23,29 +23,29 @@ body::before{
     pointer-events:none;z-index:0;
 }
 
-.container{position:relative;z-index:1;width:400px;height:255px;display:flex;flex-direction:column;}
+.container{position:relative;z-index:1;width:440px;height:285px;display:flex;flex-direction:column;}
 
 /* ---- main ---- */
 .main{
     flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:3px 10px;gap:3px;
+    padding:5px 12px;gap:4px;
 }
 
-/* ---- panel (above canvas) ---- */
+/* ---- panel ---- */
 .panel{
     width:100%;
     background:rgba(255,255,255,0.02);
     border-radius:5px;
-    padding:3px 8px 4px;
-    display:flex;flex-direction:column;gap:2px;
+    padding:4px 10px 5px;
+    display:flex;flex-direction:column;gap:3px;
     border:1px solid rgba(255,255,255,0.06);
     flex-shrink:0;
 }
-.panel-title{color:#94a3b8;font-size:9px;font-weight:600;text-align:center;}
-.panel-list{display:flex;flex-direction:row;gap:5px;justify-content:center;}
+.panel-title{color:#94a3b8;font-size:10px;font-weight:600;text-align:center;}
+.panel-list{display:flex;flex-direction:row;gap:6px;justify-content:center;}
 .mod{
-    flex:1;max-width:110px;padding:4px 6px;border-radius:5px;
-    display:flex;align-items:center;gap:5px;
+    flex:1;max-width:125px;padding:5px 8px;border-radius:5px;
+    display:flex;align-items:center;gap:6px;
     cursor:grab;transition:all .3s;
     box-shadow:0 1px 3px rgba(0,0,0,.3);
     user-select:none;
@@ -53,9 +53,9 @@ body::before{
 .mod:hover:not(.used){transform:translateY(-1px);box-shadow:0 2px 5px rgba(0,0,0,.4);}
 .mod.dragging{opacity:.5;}
 .mod.used{opacity:.2;cursor:not-allowed;}
-.mod .mi{font-size:16px;flex-shrink:0;}
-.mod .ml{font-size:11px;font-weight:600;color:#fff;}
-.mod .md{font-size:9px;color:rgba(255,255,255,.5);margin-top:0;}
+.mod .mi{font-size:18px;flex-shrink:0;}
+.mod .ml{font-size:12px;font-weight:600;color:#fff;}
+.mod .md{font-size:10px;color:rgba(255,255,255,.5);margin-top:0;}
 .mod.sb{background:linear-gradient(135deg,#ef4444,#dc2626);}
 .mod.db{background:linear-gradient(135deg,#06b6d4,#0891b2);}
 .mod.ab{background:linear-gradient(135deg,#f59e0b,#d97706);}
@@ -63,13 +63,13 @@ body::before{
 .prog-bar{height:2px;background:rgba(255,255,255,0.08);border-radius:1px;overflow:hidden;}
 .prog-fill{height:100%;background:#4ade80;border-radius:1px;transition:width .3s;}
 
-/* ---- main row: canvas + side buttons ---- */
-.main-row{display:flex;align-items:center;gap:8px;}
+/* ---- main row ---- */
+.main-row{display:flex;align-items:center;gap:10px;}
 
 /* ---- canvas ---- */
 .canvas-wrap{
     position:relative;
-    width:300px;height:190px;flex-shrink:0;
+    width:340px;height:210px;flex-shrink:0;
     background:rgba(255,255,255,0.012);
     border-radius:8px;
     border:1px solid rgba(255,255,255,0.05);
@@ -80,25 +80,25 @@ body::before{
 }
 .canvas-svg line{
     stroke:rgba(255,255,255,0.16);
-    stroke-width:1.6;
+    stroke-width:1.8;
     transition:stroke .4s,opacity .4s;
 }
-.canvas-svg line.on{stroke:#4ade80;stroke-width:2;}
+.canvas-svg line.on{stroke:#4ade80;stroke-width:2.2;}
 .canvas-svg line.off{opacity:0;}
 .canvas-svg line.wait{
-    stroke:#fbbf24;stroke-width:2;
-    stroke-dasharray:4 3;
+    stroke:#fbbf24;stroke-width:2.2;
+    stroke-dasharray:5 4;
     animation:dashPulse .8s ease-in-out infinite;
 }
 @keyframes dashPulse{
     0%,100%{stroke-dashoffset:0;opacity:.6;}
-    50%{stroke-dashoffset:-8;opacity:1;}
+    50%{stroke-dashoffset:-10;opacity:1;}
 }
 
 /* ---- drop target ---- */
 .dt{
     position:absolute;
-    width:54px;height:54px;
+    width:58px;height:58px;
     border-radius:50%;
     border:2px dashed rgba(255,255,255,0.14);
     z-index:5;
@@ -106,52 +106,52 @@ body::before{
 }
 .dt.filled{border-color:transparent;}
 .dt.hover{border-color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.05);transform:scale(1.04);}
-.dt.p1{left:34px;top:68px;}
-.dt.p2{left:123px;top:68px;}
-.dt.p3{left:212px;top:68px;}
-.dt.t1{left:123px;top:12px;}
-.dt.t2{left:224px;top:124px;}
-.dt.t3{left:22px;top:124px;}
+.dt.p1{left:41px;top:76px;}
+.dt.p2{left:141px;top:76px;}
+.dt.p3{left:241px;top:76px;}
+.dt.t1{left:141px;top:14px;}
+.dt.t2{left:250px;top:138px;}
+.dt.t3{left:32px;top:138px;}
 
 /* ---- placed node ---- */
 .node{
     position:absolute;
-    width:54px;height:54px;
+    width:58px;height:58px;
     border-radius:50%;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
-    box-shadow:0 3px 12px rgba(0,0,0,.5);
+    box-shadow:0 4px 14px rgba(0,0,0,.5);
     z-index:20;
     cursor:pointer;
     transition:box-shadow .3s,transform .2s;
     user-select:none;
 }
 .node:hover{transform:scale(1.06);}
-.node .ni{font-size:18px;}
-.node .nl{font-size:10px;font-weight:700;color:#fff;margin-top:0;letter-spacing:0.5px;}
+.node .ni{font-size:20px;}
+.node .nl{font-size:11px;font-weight:700;color:#fff;margin-top:0;letter-spacing:0.5px;}
 .node.sense{background:linear-gradient(135deg,#ef4444,#dc2626);}
 .node.decision{background:linear-gradient(135deg,#06b6d4,#0891b2);}
 .node.action{background:linear-gradient(135deg,#f59e0b,#d97706);}
 .node.glow{animation:glowPulse 1s ease-in-out infinite;}
-.node.pick{box-shadow:0 0 0 3px #4ade80,0 0 12px rgba(74,222,128,.5);animation:none;}
+.node.pick{box-shadow:0 0 0 4px #4ade80,0 0 14px rgba(74,222,128,.5);animation:none;}
 @keyframes glowPulse{
-    0%,100%{box-shadow:0 3px 10px rgba(0,0,0,.5),0 0 3px rgba(251,191,36,.25);}
-    50%{box-shadow:0 3px 10px rgba(0,0,0,.5),0 0 10px rgba(251,191,36,.45);}
+    0%,100%{box-shadow:0 4px 12px rgba(0,0,0,.5),0 0 4px rgba(251,191,36,.25);}
+    50%{box-shadow:0 4px 12px rgba(0,0,0,.5),0 0 12px rgba(251,191,36,.45);}
 }
 
 /* ---- side buttons ---- */
 .side-actions{
-    display:flex;flex-direction:column;align-items:center;gap:8px;
+    display:flex;flex-direction:column;align-items:center;gap:10px;
     flex-shrink:0;
 }
 .mode-tag{
-    color:#64748b;font-size:9px;
-    padding:3px 8px;border-radius:5px;
+    color:#64748b;font-size:10px;
+    padding:3px 9px;border-radius:6px;
     border:1px solid rgba(255,255,255,0.08);
     white-space:nowrap;
 }
 .btn{
-    padding:4px 10px;border:none;border-radius:8px;
-    font-size:10px;font-weight:600;
+    padding:5px 12px;border:none;border-radius:8px;
+    font-size:11px;font-weight:600;
     cursor:pointer;transition:all .25s;
 }
 .btn-go{background:#22c55e;color:#fff;box-shadow:0 1px 4px rgba(34,197,94,.25);}
@@ -166,49 +166,49 @@ body::before{
 }
 .rb{display:flex;flex-direction:column;align-items:center;}
 .rb-head{
-    width:16px;height:13px;
+    width:18px;height:15px;
     background:#22c55e;border:1.5px solid #16a34a;
     position:relative;margin-bottom:1px;border-radius:2px;
-    box-shadow:0 0 4px rgba(34,197,94,.4);
+    box-shadow:0 0 5px rgba(34,197,94,.4);
 }
 .rb-eye{
-    position:absolute;width:8px;height:3px;
-    background:#064e3b;top:4px;left:50%;transform:translateX(-50%);border-radius:1px;
+    position:absolute;width:9px;height:3px;
+    background:#064e3b;top:5px;left:50%;transform:translateX(-50%);border-radius:1px;
 }
 .rb-body{
-    width:24px;height:18px;
+    width:26px;height:20px;
     background:#22c55e;border:1.5px solid #16a34a;
     border-radius:2px;position:relative;
-    box-shadow:0 0 4px rgba(34,197,94,.4);
+    box-shadow:0 0 5px rgba(34,197,94,.4);
 }
 .rb-body-inner{
-    position:absolute;top:3px;left:5px;width:14px;height:5px;
+    position:absolute;top:4px;left:5px;width:15px;height:6px;
     background:#16a34a;border-radius:1px;
 }
 .rb-arm{
-    position:absolute;width:6px;height:13px;
+    position:absolute;width:6px;height:14px;
     background:#22c55e;border:1.5px solid #16a34a;
-    border-radius:2px;top:2px;
+    border-radius:2px;top:3px;
 }
 .rb-arm.l{left:-7px;transform-origin:top center;animation:armL .26s ease-in-out infinite alternate;}
 .rb-arm.r{right:-7px;transform-origin:top center;animation:armR .26s ease-in-out infinite alternate;}
 .rb-legs{display:flex;gap:5px;margin-top:1px;}
 .rb-leg{
-    width:7px;height:10px;
+    width:8px;height:11px;
     background:#22c55e;border:1.5px solid #16a34a;
     border-radius:2px;
 }
 .rb-leg.l{transform-origin:top center;animation:legL .26s ease-in-out infinite alternate;}
 .rb-leg.r{transform-origin:top center;animation:legR .26s ease-in-out infinite alternate;}
 .rb-shadow{
-    width:20px;height:4px;background:rgba(0,0,0,.35);
+    width:22px;height:4px;background:rgba(0,0,0,.35);
     border-radius:50%;
     animation:shad .26s ease-in-out infinite alternate;
 }
-@keyframes armL{0%{transform:rotate(-24deg)}100%{transform:rotate(24deg)}}
-@keyframes armR{0%{transform:rotate(24deg)}100%{transform:rotate(-24deg)}}
-@keyframes legL{0%{transform:rotate(-12deg)}100%{transform:rotate(12deg)}}
-@keyframes legR{0%{transform:rotate(12deg)}100%{transform:rotate(-12deg)}}
+@keyframes armL{0%{transform:rotate(-20deg)}100%{transform:rotate(20deg)}}
+@keyframes armR{0%{transform:rotate(20deg)}100%{transform:rotate(-20deg)}}
+@keyframes legL{0%{transform:rotate(-10deg)}100%{transform:rotate(10deg)}}
+@keyframes legR{0%{transform:rotate(10deg)}100%{transform:rotate(-10deg)}}
 @keyframes shad{0%{transform:scaleX(1);opacity:.35}100%{transform:scaleX(.7);opacity:.15}}
 
 .rb-ct.step .rb{animation:bob .26s ease-in-out infinite alternate;}
@@ -225,28 +225,28 @@ body::before{
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .md{
     background:#1e293b;border-radius:10px;
-    padding:14px 12px;max-width:250px;width:92%;
+    padding:16px 14px;max-width:260px;width:92%;
     text-align:center;
-    box-shadow:0 8px 24px rgba(0,0,0,.5);
+    box-shadow:0 10px 28px rgba(0,0,0,.5);
     color:#e2e8f0;
 }
 .md.warn{border:2px solid rgba(245,158,11,.5);}
 .md.ok{border:2px solid rgba(34,197,94,.5);}
-.md-icon{font-size:22px;margin-bottom:3px;}
-.md-title{font-size:13px;font-weight:700;margin-bottom:4px;}
+.md-icon{font-size:24px;margin-bottom:3px;}
+.md-title{font-size:14px;font-weight:700;margin-bottom:5px;}
 .md-title.warn{color:#fbbf24;}
 .md-title.ok{color:#4ade80;}
-.md-text{font-size:10px;line-height:1.4;color:#94a3b8;margin-bottom:3px;}
+.md-text{font-size:11px;line-height:1.5;color:#94a3b8;margin-bottom:3px;}
 .md-highlight{
-    background:rgba(255,255,255,0.04);padding:6px 8px;
-    border-radius:4px;margin-bottom:7px;
-    font-size:10px;line-height:1.4;color:#cbd5e1;
+    background:rgba(255,255,255,0.04);padding:7px 9px;
+    border-radius:5px;margin-bottom:8px;
+    font-size:10px;line-height:1.5;color:#cbd5e1;
     text-align:left;border:1px solid rgba(255,255,255,0.06);
 }
 .md-highlight em{color:#fbbf24;font-style:normal;font-weight:600;}
 .md-btn{
-    padding:6px 18px;border:none;border-radius:4px;
-    font-size:10px;font-weight:600;cursor:pointer;
+    padding:7px 20px;border:none;border-radius:5px;
+    font-size:11px;font-weight:600;cursor:pointer;
     transition:all .3s;
 }
 .md-btn.warn{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;}
@@ -255,10 +255,10 @@ body::before{
 
 /* ---- bottom hint ---- */
 .btm-hint{
-    position:fixed;bottom:6px;left:50%;transform:translateX(-50%);
+    position:fixed;bottom:8px;left:50%;transform:translateX(-50%);
     background:rgba(0,0,0,.82);
-    color:#fbbf24;padding:3px 10px;border-radius:8px;
-    font-size:9px;font-weight:600;z-index:400;
+    color:#fbbf24;padding:4px 12px;border-radius:10px;
+    font-size:10px;font-weight:600;z-index:400;
     border:1px solid rgba(251,191,36,.2);
     transition:color .3s,border-color .3s;
 }
@@ -266,9 +266,9 @@ body::before{
 
 /* ---- lap badge ---- */
 .lap-badge{
-    position:fixed;top:6px;right:8px;
+    position:fixed;top:8px;right:10px;
     background:rgba(0,0,0,.75);
-    color:#4ade80;padding:2px 7px;border-radius:7px;
+    color:#4ade80;padding:3px 8px;border-radius:8px;
     font-size:9px;font-weight:600;z-index:400;
     border:1px solid rgba(74,222,128,.2);
 }
@@ -277,7 +277,7 @@ body::before{
 .ok-toast{
     position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
     background:rgba(22,163,74,.92);
-    color:#fff;padding:7px 14px;border-radius:5px;
+    color:#fff;padding:8px 16px;border-radius:5px;
     font-size:11px;font-weight:600;z-index:800;
     box-shadow:0 4px 14px rgba(0,0,0,.4);
     animation:fadeIn .4s;
@@ -285,7 +285,7 @@ body::before{
 .err-toast{
     position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
     background:rgba(239,68,68,.9);
-    color:#fff;padding:7px 12px;border-radius:5px;
+    color:#fff;padding:8px 14px;border-radius:5px;
     font-size:11px;font-weight:600;z-index:1500;
     box-shadow:0 4px 14px rgba(0,0,0,.4);
     animation:shake .5s;
@@ -321,7 +321,7 @@ body::before{
 
         <div class="main-row">
             <div class="canvas-wrap" id="canvas">
-                <svg class="canvas-svg" viewBox="0 0 300 190">
+                <svg class="canvas-svg" viewBox="0 0 340 210">
                     <defs>
                         <marker id="ah" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
                             <polygon points="0 0, 6 2.5, 0 5" fill="#4ade80"/>
@@ -330,11 +330,11 @@ body::before{
                             <polygon points="0 0, 6 2.5, 0 5" fill="#fbbf24"/>
                         </marker>
                     </defs>
-                    <line id="la1" class="on"  x1="94" y1="95" x2="117" y2="95" marker-end="url(#ah)"/>
-                    <line id="la2" class="on"  x1="183" y1="95" x2="206" y2="95" marker-end="url(#ah)"/>
-                    <line id="ta1" class="off" x1="166" y1="62" x2="236" y2="134" marker-end="url(#ah)"/>
-                    <line id="ta2" class="off" x1="224" y1="151" x2="76" y2="151" marker-end="url(#ah)"/>
-                    <line id="ta3" class="off" x1="70" y1="136" x2="140" y2="62" marker-end="url(#ahy)"/>
+                    <line id="la1" class="on"  x1="105" y1="105" x2="134" y2="105" marker-end="url(#ah)"/>
+                    <line id="la2" class="on"  x1="205" y1="105" x2="234" y2="105" marker-end="url(#ah)"/>
+                    <line id="ta1" class="off" x1="186" y1="70" x2="264" y2="148" marker-end="url(#ah)"/>
+                    <line id="ta2" class="off" x1="248" y1="167" x2="92" y2="167" marker-end="url(#ah)"/>
+                    <line id="ta3" class="off" x1="84" y1="150" x2="158" y2="70" marker-end="url(#ahy)"/>
                 </svg>
                 <div class="dt p1" id="dt1" data-target="sense"></div>
                 <div class="dt p2" id="dt2" data-target="decision"></div>
