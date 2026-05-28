@@ -294,7 +294,7 @@
         
         function processData(data) {
             let submissions = [];
-            
+
             if (Array.isArray(data)) {
                 submissions = data;
             } else if (data && data.submissions && Array.isArray(data.submissions)) {
@@ -302,25 +302,38 @@
             } else if (data && data.data && Array.isArray(data.data)) {
                 submissions = data.data;
             }
-            
+
             submissions.sort((a, b) => {
                 const timeA = a.submitted_at || a.created_at || '';
                 const timeB = b.submitted_at || b.created_at || '';
                 return timeB.localeCompare(timeA);
             });
-            
+
             allProjects = submissions.map(item => {
-                return {
-                    author: item['姓名'] || item['\u59d3\u540d'] || '匿名创作者',
-                    scene: item['题目1'] || item['\u9898\u76ee1'] || '',
-                    task: item['题目2'] || item['\u9898\u76ee2'] || '',
-                    sensors: item['题目3'] || item['\u9898\u76ee3'] || '',
-                    training: item['题目4'] || item['\u9898\u76ee4'] || '',
-                    feedback: item['题目5'] || item['\u9898\u76ee5'] || '',
-                    time: item.submitted_at || item.created_at || new Date().toISOString()
-                };
-            }).filter(p => p.scene || p.task || p.sensors || p.training || p.feedback);
-            
+                const typeField = item['题目6'] || item['\u9898\u76ee6'] || '';
+                const isDesign = typeField === '设计方案';
+
+                if (isDesign) {
+                    return {
+                        author: item['姓名'] || item['\u59d3\u540d'] || '匿名创作者',
+                        scene: item['题目1'] || item['\u9898\u76ee1'] || '',
+                        task: item['题目2'] || item['\u9898\u76ee2'] || '',
+                        sensors: item['题目3'] || item['\u9898\u76ee3'] || '',
+                        training: item['题目4'] || item['\u9898\u76ee4'] || '',
+                        feedback: item['题目5'] || item['\u9898\u76ee5'] || '',
+                        time: item.submitted_at || item.created_at || new Date().toISOString(),
+                        type: 'design'
+                    };
+                } else {
+                    return {
+                        author: item['姓名'] || item['\u59d3\u540d'] || '匿名创作者',
+                        answer: item['题目1'] || item['\u9898\u76ee1'] || '',
+                        time: item.submitted_at || item.created_at || new Date().toISOString(),
+                        type: 'analysis'
+                    };
+                }
+            });
+
             updateStats();
             renderCards(allProjects);
         }
