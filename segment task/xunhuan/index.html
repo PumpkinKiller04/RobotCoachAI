@@ -1144,25 +1144,40 @@
         function switchToTriangleMode() {
             currentMode = 'triangle';
             modeIndicator.textContent = '闭环模式：感知→决策→行动→再感知';
-            
+
             document.querySelectorAll('.line-arrow-1, .line-arrow-2').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.triangle-arrow-1, .triangle-arrow-2, .triangle-arrow-3').forEach(el => el.classList.remove('hidden'));
-            
+
             const senseTarget = document.querySelector('.drop-target.sense');
             const decisionTarget = document.querySelector('.drop-target.decision');
             const actionTarget = document.querySelector('.drop-target.action');
-            
-            senseTarget.style.left = '245px';
+
+            senseTarget.style.left = '275px';
             senseTarget.style.top = '15px';
-            senseTarget.style.transform = 'none';
-            
+            senseTarget.style.transform = 'translate(-50%, -50%)';
+
             decisionTarget.style.left = '450px';
-            decisionTarget.style.top = '240px';
-            decisionTarget.style.transform = 'none';
-            
-            actionTarget.style.left = '40px';
-            actionTarget.style.top = '240px';
-            actionTarget.style.transform = 'none';
+            decisionTarget.style.top = '250px';
+            decisionTarget.style.transform = 'translate(-50%, -50%)';
+
+            actionTarget.style.left = '100px';
+            actionTarget.style.top = '250px';
+            actionTarget.style.transform = 'translate(-50%, -50%)';
+
+            document.querySelectorAll('.placed-node').forEach(node => {
+                const type = node.dataset.type;
+                let target;
+                if (type === 'sense') target = senseTarget;
+                else if (type === 'decision') target = decisionTarget;
+                else if (type === 'action') target = actionTarget;
+
+                if (target) {
+                    const targetRect = target.getBoundingClientRect();
+                    const containerRect = circleContainer.getBoundingClientRect();
+                    node.style.left = `${targetRect.left - containerRect.left}px`;
+                    node.style.top = `${targetRect.top - containerRect.top}px`;
+                }
+            });
         }
 
         function resetToLinearMode() {
