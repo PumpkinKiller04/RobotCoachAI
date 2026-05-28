@@ -492,8 +492,8 @@ function runLoop(){
     const ptsAll = getLoopPoints();
     if(!ptsAll) return;
 
-    // start from action, then sense, then decision
-    const pts = [ptsAll[2], ptsAll[0], ptsAll[1]]; // action, sense, decision
+    // sense → decision → action → sense ...
+    const pts = [ptsAll[0], ptsAll[1], ptsAll[2]];
 
     const ct=mkRbt();
     canvas.appendChild(ct);
