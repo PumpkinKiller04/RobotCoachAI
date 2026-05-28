@@ -462,17 +462,14 @@ function doLinear(){
 }
 function runLinear(){
     S.running=true;btn.disabled=true;killRbt();
-    const sn=S.placed['sense']?.node;
-    const dn=S.placed['decision']?.node;
-    const an=S.placed['action']?.node;
-    if(!sn||!dn||!an)return;
 
-    const sc=nodeVP(sn),dc=nodeVP(dn),ac=nodeVP(an);
-    const pts=[sc,dc,ac];
+    // get canvas-relative points from placed nodes
+    const pts = getLoopPoints();
+    if(!pts) return;
 
     const ct=mkRbt();
-    document.body.appendChild(ct);
-    posRbt(ct,pts[0]);
+    canvas.appendChild(ct);
+    posRbt(ct,pts[0]); // start at sense
     S.rbt=ct;
 
     const segs=[{a:pts[0],b:pts[1],ms:1100},{a:pts[1],b:pts[2],ms:1100}];
@@ -490,18 +487,17 @@ function runLinear(){
 function doLoop(){if(!S.linked)return;runLoop();}
 function runLoop(){
     S.running=true;btn.disabled=true;killRbt();
-    const sn=S.placed['sense']?.node;
-    const dn=S.placed['decision']?.node;
-    const an=S.placed['action']?.node;
-    if(!sn||!dn||!an)return;
 
-    const sc=nodeVP(sn),dc=nodeVP(dn),ac=nodeVP(an);
-    // start from action (where robot ended), then sense, then decision
-    const pts=[ac,sc,dc];
+    // get canvas-relative points
+    const ptsAll = getLoopPoints();
+    if(!ptsAll) return;
+
+    // start from action, then sense, then decision
+    const pts = [ptsAll[2], ptsAll[0], ptsAll[1]]; // action, sense, decision
 
     const ct=mkRbt();
-    document.body.appendChild(ct);
-    posRbt(ct,pts[0]);
+    canvas.appendChild(ct);
+    posRbt(ct,pts[0]); // start at action
     S.rbt=ct;
 
     const badge=document.createElement('div');
@@ -520,16 +516,29 @@ function runLoop(){
     })();
 }
 
-// ========== ROBOT ==========
-function nodeVP(n){
-    // return viewport center of node
-    const r=n.getBoundingClientRect();
-    return {x:r.left+r.width/2,y:r.top+r.height/2};
+// ========== ROBOT HELPERS ==========
+function getLoopPoints(){
+    // return canvas-relative centers of sense, decision, action nodes
+    const sn=S.placed['sense']?.node;
+    const dn=S.placed['decision']?.node;
+    const an=S.placed['action']?.node;
+    if(!sn||!dn||!an)return null;
+    const cr=canvas.getBoundingClientRect();
+    return [
+        nodeCR(sn, cr),
+        nodeCR(dn, cr),
+        nodeCR(an, cr),
+    ];
 }
-function posRbt(ct,vp){
-    // position robot container so robot sits centered on viewport point vp
-    ct.style.left=vp.x+'px';
-    ct.style.top=vp.y+'px';
+function nodeCR(n, cr){
+    // canvas-relative center of node
+    const nr=n.getBoundingClientRect();
+    return {x:nr.left+nr.width/2-cr.left, y:nr.top+nr.height/2-cr.top};
+}
+function posRbt(ct,cp){
+    // position robot container at canvas-relative point cp
+    ct.style.left=cp.x+'px';
+    ct.style.top=cp.y+'px';
 }
 function mkRbt(){
     const c=document.createElement('div');c.className='rb-ct';
