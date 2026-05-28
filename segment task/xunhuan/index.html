@@ -562,6 +562,7 @@ function killRbt(){
     if(S.rbt){S.rbt.remove();S.rbt=null;}
     if(S.rid){cancelAnimationFrame(S.rid);S.rid=null;}
     const b=document.getElementById('lapBadge');if(b)b.remove();
+    S.running=false;
 }
 
 // ========== WARNING MODAL ==========
