@@ -961,7 +961,17 @@
         function runRobotOnce() {
             isRunning = true;
             submitBtn.disabled = true;
-            
+
+            const containerRect = circleContainer.getBoundingClientRect();
+            const senseTarget = document.querySelector('.drop-target.sense');
+            const actionTarget = document.querySelector('.drop-target.action');
+            const senseRect = senseTarget.getBoundingClientRect();
+            const actionRect = actionTarget.getBoundingClientRect();
+
+            const startX = senseRect.left + senseRect.width / 2 - containerRect.left - 60;
+            const endX = actionRect.left + actionRect.width / 2 - containerRect.left - 60;
+            const trackY = senseRect.top + senseRect.height / 2 - containerRect.top;
+
             const track = document.createElement('div');
             track.className = 'robot-track active';
             document.body.appendChild(track);
@@ -983,17 +993,18 @@
                 <div class="robot-shadow"></div>
             `;
             document.body.appendChild(robotContainer);
+            robotContainer.style.top = `${trackY - 35}px`;
+            robotContainer.style.left = `${startX}px`;
 
-            let pos = -60;
-            const duration = 3000;
+            const duration = 2500;
             const startTime = Date.now();
 
             function animate() {
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(elapsed / duration, 1);
-                
-                pos = -60 + progress * (window.innerWidth + 120);
-                robotContainer.style.left = `${pos}px`;
+
+                const currentX = startX + (endX - startX) * progress;
+                robotContainer.style.left = `${currentX}px`;
 
                 if (progress < 1) {
                     requestAnimationFrame(animate);
@@ -1003,6 +1014,7 @@
                         robotContainer.remove();
                         showWarningModal();
                         isRunning = false;
+                        submitBtn.disabled = false;
                     }, 300);
                 }
             }
