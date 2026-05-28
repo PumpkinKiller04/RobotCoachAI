@@ -82,82 +82,198 @@
             left: 0;
             width: 100%;
             height: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
         }
 
-        /* ===== 楼房样式（分布在左右两侧）===== */
+        /* 天空光晕 */
+        .inverted-city-content::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(0deg,
+                rgba(135,206,235,0.12) 0%,
+                rgba(135,206,235,0.04) 40%,
+                transparent 100%);
+            pointer-events: none;
+        }
+
+        /* ===== 楼房通用 ===== */
         .inverted-building {
             position: absolute;
             bottom: 0;
-            transform-origin: bottom center;
         }
 
-        /* 楼房地基（粘附在顶部马路） */
         .building-base {
             position: relative;
         }
 
-        /* 现代玻璃楼 */
-        .building-modern {
-            background: linear-gradient(180deg, #4a90a4 0%, #357a8a 50%, #2d6a7a 100%);
-            border-bottom: 4px solid #1a4a5a;
+        /* ===== 1. 超高层玻璃幕墙摩天楼 ===== */
+        .building-skyscraper {
+            background: linear-gradient(180deg, #5b9ecf 0%, #3d7ea6 30%, #2c6a94 60%, #1e5a82 100%);
+            box-shadow: 0 0 20px rgba(100,180,220,0.25);
         }
-        .building-modern::after {
+        .building-skyscraper::before {
             content: '';
             position: absolute;
-            top: 8px;
-            left: 4px;
-            right: 4px;
-            bottom: 8px;
-            background: 
-                repeating-linear-gradient(
-                    0deg,
-                    transparent 0px,
-                    transparent 12px,
-                    rgba(255,255,255,0.5) 12px,
-                    rgba(255,255,255,0.5) 18px
-                ),
-                repeating-linear-gradient(
-                    90deg,
-                    transparent 0px,
-                    transparent 16px,
-                    rgba(200,230,255,0.4) 16px,
-                    rgba(200,230,255,0.4) 22px
-                );
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                repeating-linear-gradient(0deg, transparent 0px, transparent 16px, rgba(255,255,255,0.18) 16px, rgba(255,255,255,0.18) 18px),
+                repeating-linear-gradient(90deg, transparent 0px, transparent 10px, rgba(200,225,255,0.12) 10px, rgba(200,225,255,0.12) 11px);
+            pointer-events: none;
         }
-
-        /* 红砖矮楼 */
-        .building-brick {
-            background: linear-gradient(180deg, #8b4513 0%, #a0522d 50%, #8b4513 100%);
-            border-bottom: 4px solid #5d3a1a;
-        }
-        .building-brick::after {
+        .building-skyscraper::after {
             content: '';
             position: absolute;
-            top: 6px;
-            left: 3px;
-            right: 3px;
-            bottom: 6px;
-            background: 
-                repeating-linear-gradient(
-                    0deg,
-                    transparent 0px,
-                    transparent 8px,
-                    rgba(255,200,150,0.3) 8px,
-                    rgba(255,200,150,0.3) 10px
-                ),
-                repeating-linear-gradient(
-                    90deg,
-                    transparent 0px,
-                    transparent 14px,
-                    rgba(100,50,20,0.3) 14px,
-                    rgba(100,50,20,0.3) 16px
-                );
+            bottom: 100%; left: 0;
+            width: 100%; height: 5px;
+            background: linear-gradient(90deg, #8cc4f0, #d4e8ff, #8cc4f0);
         }
 
-        /* 尖顶小楼 */
+        /* ===== 2. 深蓝玻璃写字楼（带天线） ===== */
+        .building-office {
+            background: linear-gradient(180deg, #3a5f8a 0%, #2c4f78 40%, #1e3f68 100%);
+            box-shadow: 0 0 12px rgba(60,100,160,0.2);
+        }
+        .building-office::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                repeating-linear-gradient(0deg, transparent 0px, transparent 20px, rgba(255,255,255,0.2) 20px, rgba(255,255,255,0.2) 22px),
+                repeating-linear-gradient(90deg, transparent 0px, transparent 14px, rgba(180,210,240,0.1) 14px, rgba(180,210,240,0.1) 15px);
+            pointer-events: none;
+        }
+        .building-office::after {
+            content: '';
+            position: absolute;
+            bottom: 100%; left: 50%;
+            transform: translateX(-50%);
+            width: 6px; height: 22px;
+            background: linear-gradient(180deg, #888, #ccc, #888);
+            border-radius: 2px 2px 0 0;
+        }
+
+        /* ===== 3. 暖色石材高层公寓 ===== */
+        .building-apartment {
+            background: linear-gradient(180deg, #c4956a 0%, #b0845c 40%, #9a7350 100%);
+        }
+        .building-apartment::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                repeating-linear-gradient(0deg, transparent 0px, transparent 14px, rgba(255,255,255,0.15) 14px, rgba(255,255,255,0.15) 15px),
+                repeating-linear-gradient(90deg, transparent 0px, transparent 9px, rgba(255,240,220,0.2) 9px, rgba(255,240,220,0.2) 10px);
+            pointer-events: none;
+        }
+        .building-apartment::after {
+            content: '';
+            position: absolute;
+            bottom: 100%; left: 0;
+            width: 100%; height: 4px;
+            background: #e8c9a0;
+        }
+
+        /* ===== 4. 白色现代主义塔楼 ===== */
+        .building-white-tower {
+            background: linear-gradient(180deg, #e8e8e8 0%, #d5d5d5 30%, #c8c8c8 60%, #bababa 100%);
+            box-shadow: 0 0 8px rgba(255,255,255,0.15);
+        }
+        .building-white-tower::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                repeating-linear-gradient(0deg, transparent 0px, transparent 12px, rgba(0,0,0,0.05) 12px, rgba(0,0,0,0.05) 13px),
+                repeating-linear-gradient(90deg, transparent 0px, transparent 20px, rgba(100,140,180,0.15) 20px, rgba(100,140,180,0.15) 22px);
+            pointer-events: none;
+        }
+
+        /* ===== 5. 棕红砖砌高楼 ===== */
+        .building-red-brick {
+            background: linear-gradient(180deg, #a0523d 0%, #8b3a2d 40%, #7a3328 100%);
+        }
+        .building-red-brick::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                repeating-linear-gradient(0deg, transparent 0px, transparent 8px, rgba(255,200,180,0.12) 8px, rgba(255,200,180,0.12) 9px),
+                repeating-linear-gradient(90deg, transparent 0px, transparent 16px, rgba(60,20,10,0.15) 16px, rgba(60,20,10,0.15) 18px);
+            pointer-events: none;
+        }
+
+        /* ===== 6. 灰蓝工业风大厦 ===== */
+        .building-industrial {
+            background: linear-gradient(180deg, #6b7b8d 0%, #5a6a7c 35%, #4d5d6f 70%, #404f60 100%);
+        }
+        .building-industrial::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                repeating-linear-gradient(0deg, transparent 0px, transparent 10px, rgba(255,255,255,0.08) 10px, rgba(255,255,255,0.08) 11px),
+                repeating-linear-gradient(90deg, transparent 0px, transparent 12px, rgba(180,200,220,0.1) 12px, rgba(180,200,220,0.1) 13px);
+            pointer-events: none;
+        }
+        .building-industrial::after {
+            content: '';
+            position: absolute;
+            bottom: 100%; left: 35%;
+            width: 30%; height: 16px;
+            background: linear-gradient(180deg, #777, #aaa, #777);
+            clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+        }
+
+        /* ===== 7. 深色摩天楼（带天线+红灯） ===== */
+        .building-dark-tower {
+            background: linear-gradient(180deg, #4a5568 0%, #3d4855 35%, #2d3748 70%, #1a2332 100%);
+            box-shadow: 0 0 15px rgba(100,120,150,0.2);
+        }
+        .building-dark-tower::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                repeating-linear-gradient(0deg, transparent 0px, transparent 18px, rgba(255,255,255,0.08) 18px, rgba(255,255,255,0.08) 19px),
+                repeating-linear-gradient(90deg, transparent 0px, transparent 8px, rgba(200,210,220,0.06) 8px, rgba(200,210,220,0.06) 9px);
+            pointer-events: none;
+        }
+        .building-dark-tower::after {
+            content: '';
+            position: absolute;
+            bottom: 100%; left: 50%;
+            transform: translateX(-50%);
+            width: 3px; height: 30px;
+            background: linear-gradient(180deg, #666, #aaa);
+            border-radius: 1px 1px 0 0;
+            box-shadow: 0 0 6px rgba(255,50,50,0.6);
+        }
+
+        /* ===== 8. 阶梯退台建筑 ===== */
+        .building-stepped {
+            background: linear-gradient(180deg, #d4a76a 0%, #c49a5c 40%, #b08a50 100%);
+        }
+        .building-stepped::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                repeating-linear-gradient(0deg, transparent 0px, transparent 15px, rgba(255,255,255,0.12) 15px, rgba(255,255,255,0.12) 16px);
+            pointer-events: none;
+        }
+
+        /* ===== 9. 尖顶小屋（保留） ===== */
         .building-cottage {
             background: linear-gradient(180deg, #cd853f 0%, #deb887 50%, #cd853f 100%);
             border-bottom: 4px solid #8b6914;
@@ -165,27 +281,17 @@
         .building-cottage::before {
             content: '';
             position: absolute;
-            bottom: 100%;
-            left: 50%;
+            bottom: 100%; left: 50%;
             transform: translateX(-50%);
-            border-left: solid transparent;
-            border-right: solid transparent;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
             border-bottom: 30px solid #b8732d;
         }
         .building-cottage::after {
             content: '';
             position: absolute;
-            top: 6px;
-            left: 5px;
-            right: 5px;
-            bottom: 6px;
-            background: repeating-linear-gradient(
-                90deg,
-                transparent 0px,
-                transparent 18px,
-                rgba(255,220,180,0.4) 18px,
-                rgba(255,220,180,0.4) 22px
-            );
+            top: 6px; left: 5px; right: 5px; bottom: 6px;
+            background: repeating-linear-gradient(90deg, transparent 0px, transparent 18px, rgba(255,220,180,0.4) 18px, rgba(255,220,180,0.4) 22px);
         }
 
         /* ===== 树木样式（集中在中间区域）===== */
