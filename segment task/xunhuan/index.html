@@ -1260,9 +1260,9 @@
             triArrow3.classList.add('dashed-connect');
 
             // Reposition drop targets to triangle
-            targetSense.className = 'drop-target sense-triangle';
-            targetDecision.className = 'drop-target decision-triangle';
-            targetAction.className = 'drop-target action-triangle';
+            targetSense.className = 'drop-target sense-triangle' + (state.placedNodes['sense'] ? ' filled' : '');
+            targetDecision.className = 'drop-target decision-triangle' + (state.placedNodes['decision'] ? ' filled' : '');
+            targetAction.className = 'drop-target action-triangle' + (state.placedNodes['action'] ? ' filled' : '');
 
             // Update step labels
             targetSense.querySelector('.step-label').textContent = '感知';
