@@ -1065,133 +1065,63 @@
     </div>
 
     <!-- ===== 二、倒立城市（上半部分）===== -->
-    <!-- 注意：整个区域通过 transform: scaleY(-1) 实现倒立 -->
+    <!-- 整个区域通过 transform: scaleY(-1) 实现倒立 -->
     <div class="inverted-world">
         <div class="inverted-city-content">
-            <!-- 左侧楼房 + 树木 -->
-            <div class="inverted-building" style="left: 0.5%;">
-                <div class="building-base building-modern" style="width: 45px; height: 85px;"></div>
-            </div>
-            <div class="inverted-tree" style="left: 3%;">
-                <div class="tree-trunk" style="width: 10px; height: 25px;"></div>
-                <div class="tree-top tree-round"></div>
-            </div>
-            <div class="inverted-building" style="left: 5%;">
-                <div class="building-base building-brick" style="width: 40px; height: 60px;"></div>
-            </div>
-            <div class="inverted-tree" style="left: 8%;">
-                <div class="tree-trunk" style="width: 12px; height: 32px;"></div>
-                <div class="tree-top tree-cone"></div>
-            </div>
-            <div class="inverted-building" style="left: 10%;">
-                <div class="building-base building-cottage" style="width: 50px; height: 70px;"></div>
-            </div>
-            <div class="inverted-tree" style="left: 14%;">
-                <div class="tree-trunk" style="width: 14px; height: 38px;"></div>
-                <div class="tree-top tree-palm"></div>
-            </div>
-            <div class="inverted-building" style="left: 17%;">
-                <div class="building-base building-modern" style="width: 55px; height: 110px;"></div>
-            </div>
-            <div class="inverted-tree" style="left: 21%;">
-                <div class="tree-trunk" style="width: 10px; height: 28px;"></div>
-                <div class="tree-top tree-round"></div>
-            </div>
-            <div class="inverted-building" style="left: 23%;">
-                <div class="building-base building-brick" style="width: 48px; height: 75px;"></div>
-            </div>
-            <div class="inverted-tree" style="left: 27%;">
-                <div class="tree-trunk" style="width: 12px; height: 35px;"></div>
-                <div class="tree-top tree-cone"></div>
-            </div>
+            <!-- ===== 左侧区域 ===== -->
+            <div class="inverted-building" style="left: 0.3%;"><div class="building-base building-red-brick" style="width:38px;height:62px;"></div></div>
+            <div class="inverted-building" style="left: 1.5%;"><div class="building-base building-white-tower" style="width:35px;height:110px;"></div></div>
+            <div class="inverted-tree" style="left: 3.2%;"><div class="tree-trunk" style="width:10px;height:28px;"></div><div class="tree-top tree-round"></div></div>
+            <div class="inverted-building" style="left: 4.5%;"><div class="building-base building-apartment" style="width:44px;height:88px;"></div></div>
+            <div class="inverted-building" style="left: 6%;"><div class="building-base building-office" style="width:40px;height:130px;"></div></div>
+            <div class="inverted-tree" style="left: 8%;"><div class="tree-trunk" style="width:12px;height:32px;"></div><div class="tree-top tree-cone"></div></div>
+            <div class="inverted-building" style="left: 9.5%;"><div class="building-base building-skyscraper" style="width:48px;height:145px;"></div></div>
+            <div class="inverted-building" style="left: 11.5%;"><div class="building-base building-industrial" style="width:36px;height:75px;"></div></div>
+            <div class="inverted-tree" style="left: 13.5%;"><div class="tree-trunk" style="width:14px;height:40px;"></div><div class="tree-top tree-palm"></div></div>
+            <div class="inverted-building" style="left: 15%;"><div class="building-base building-dark-tower" style="width:42px;height:155px;"></div></div>
+            <div class="inverted-building" style="left: 17%;"><div class="building-base building-stepped" style="width:50px;height:70px;"></div></div>
+            <div class="inverted-tree" style="left: 19.5%;"><div class="tree-trunk" style="width:10px;height:26px;"></div><div class="tree-top tree-round"></div></div>
+            <div class="inverted-building" style="left: 21%;"><div class="building-base building-apartment" style="width:46px;height:100px;"></div></div>
 
-            <!-- 中间树木区域 -->
-            <div class="inverted-tree" style="left: 31%;">
-                <div class="tree-trunk" style="width: 12px; height: 36px;"></div>
-                <div class="tree-top tree-cone"></div>
-            </div>
-            <div class="inverted-tree" style="left: 35%;">
-                <div class="tree-trunk" style="width: 14px; height: 45px;"></div>
-                <div class="tree-top tree-palm"></div>
-            </div>
-            <div class="inverted-tree" style="left: 39%;">
-                <div class="tree-trunk" style="width: 10px; height: 30px;"></div>
-                <div class="tree-top tree-round"></div>
-            </div>
-            <div class="inverted-tree" style="left: 43%;">
-                <div class="tree-trunk" style="width: 12px; height: 38px;"></div>
-                <div class="tree-top tree-cone"></div>
-            </div>
-            <div class="inverted-tree" style="left: 47%;">
-                <div class="tree-trunk" style="width: 14px; height: 48px;"></div>
-                <div class="tree-top tree-palm"></div>
-            </div>
-            <div class="inverted-tree" style="left: 51%;">
-                <div class="tree-trunk" style="width: 10px; height: 32px;"></div>
-                <div class="tree-top tree-round"></div>
-            </div>
-            <div class="inverted-tree" style="left: 55%;">
-                <div class="tree-trunk" style="width: 12px; height: 40px;"></div>
-                <div class="tree-top tree-cone"></div>
-            </div>
+            <!-- ===== 中间区域（书本背后 - 高楼密集区） ===== -->
+            <div class="inverted-building" style="left: 24%;"><div class="building-base building-skyscraper" style="width:52px;height:165px;"></div></div>
+            <div class="inverted-building" style="left: 26.5%;"><div class="building-base building-white-tower" style="width:38px;height:120px;"></div></div>
+            <div class="inverted-building" style="left: 29%;"><div class="building-base building-dark-tower" style="width:44px;height:175px;"></div></div>
+            <div class="inverted-building" style="left: 31.5%;"><div class="building-base building-office" style="width:48px;height:140px;"></div></div>
+            <div class="inverted-tree" style="left: 34%;"><div class="tree-trunk" style="width:14px;height:42px;"></div><div class="tree-top tree-cone"></div></div>
+            <div class="inverted-building" style="left: 36%;"><div class="building-base building-red-brick" style="width:40px;height:85px;"></div></div>
+            <div class="inverted-building" style="left: 38%;"><div class="building-base building-skyscraper" style="width:56px;height:180px;"></div></div>
+            <div class="inverted-building" style="left: 40.5%;"><div class="building-base building-industrial" style="width:42px;height:95px;"></div></div>
+            <div class="inverted-tree" style="left: 43%;"><div class="tree-trunk" style="width:12px;height:35px;"></div><div class="tree-top tree-palm"></div></div>
+            <div class="inverted-building" style="left: 45%;"><div class="building-base building-dark-tower" style="width:50px;height:170px;"></div></div>
+            <div class="inverted-building" style="left: 47.5%;"><div class="building-base building-apartment" style="width:44px;height:105px;"></div></div>
+            <div class="inverted-building" style="left: 49.5%;"><div class="building-base building-stepped" style="width:54px;height:78px;"></div></div>
+            <div class="inverted-tree" style="left: 52%;"><div class="tree-trunk" style="width:10px;height:30px;"></div><div class="tree-top tree-round"></div></div>
+            <div class="inverted-building" style="left: 54%;"><div class="building-base building-office" style="width:46px;height:150px;"></div></div>
+            <div class="inverted-building" style="left: 56.5%;"><div class="building-base building-white-tower" style="width:36px;height:125px;"></div></div>
+            <div class="inverted-building" style="left: 58.5%;"><div class="building-base building-skyscraper" style="width:50px;height:160px;"></div></div>
 
-            <!-- 右侧树木 + 楼房 -->
-            <div class="inverted-tree" style="right: 52%;">
-                <div class="tree-trunk" style="width: 12px; height: 34px;"></div>
-                <div class="tree-top tree-palm"></div>
-            </div>
-            <div class="inverted-building" style="right: 50%;">
-                <div class="building-base building-modern" style="width: 52px; height: 95px;"></div>
-            </div>
-            <div class="inverted-tree" style="right: 46%;">
-                <div class="tree-trunk" style="width: 10px; height: 28px;"></div>
-                <div class="tree-top tree-round"></div>
-            </div>
-            <div class="inverted-building" style="right: 43%;">
-                <div class="building-base building-cottage" style="width: 48px; height: 68px;"></div>
-            </div>
-            <div class="inverted-tree" style="right: 38%;">
-                <div class="tree-trunk" style="width: 14px; height: 40px;"></div>
-                <div class="tree-top tree-cone"></div>
-            </div>
-            <div class="inverted-building" style="right: 35%;">
-                <div class="building-base building-brick" style="width: 55px; height: 80px;"></div>
-            </div>
-            <div class="inverted-tree" style="right: 30%;">
-                <div class="tree-trunk" style="width: 10px; height: 30px;"></div>
-                <div class="tree-top tree-palm"></div>
-            </div>
-            <div class="inverted-building" style="right: 27%;">
-                <div class="building-base building-modern" style="width: 50px; height: 105px;"></div>
-            </div>
-            <div class="inverted-tree" style="right: 23%;">
-                <div class="tree-trunk" style="width: 12px; height: 36px;"></div>
-                <div class="tree-top tree-round"></div>
-            </div>
-            <div class="inverted-building" style="right: 20%;">
-                <div class="building-base building-cottage" style="width: 52px; height: 72px;"></div>
-            </div>
-            <div class="inverted-tree" style="right: 15%;">
-                <div class="tree-trunk" style="width: 14px; height: 42px;"></div>
-                <div class="tree-top tree-cone"></div>
-            </div>
-            <div class="inverted-building" style="right: 12%;">
-                <div class="building-base building-brick" style="width: 58px; height: 88px;"></div>
-            </div>
-            <div class="inverted-tree" style="right: 8%;">
-                <div class="tree-trunk" style="width: 10px; height: 26px;"></div>
-                <div class="tree-top tree-palm"></div>
-            </div>
-            <div class="inverted-building" style="right: 5%;">
-                <div class="building-base building-modern" style="width: 60px; height: 125px;"></div>
-            </div>
-            <div class="inverted-tree" style="right: 2%;">
-                <div class="tree-trunk" style="width: 12px; height: 30px;"></div>
-                <div class="tree-top tree-round"></div>
-            </div>
-            <div class="inverted-building" style="right: 0.5%;">
-                <div class="building-base building-cottage" style="width: 42px; height: 65px;"></div>
-            </div>
+            <!-- ===== 右侧区域 ===== -->
+            <div class="inverted-tree" style="left: 61%;"><div class="tree-trunk" style="width:12px;height:34px;"></div><div class="tree-top tree-cone"></div></div>
+            <div class="inverted-building" style="left: 63%;"><div class="building-base building-red-brick" style="width:42px;height:72px;"></div></div>
+            <div class="inverted-building" style="left: 65%;"><div class="building-base building-dark-tower" style="width:40px;height:148px;"></div></div>
+            <div class="inverted-building" style="left: 67%;"><div class="building-base building-cottage" style="width:48px;height:65px;"></div></div>
+            <div class="inverted-tree" style="left: 69.5%;"><div class="tree-trunk" style="width:14px;height:38px;"></div><div class="tree-top tree-palm"></div></div>
+            <div class="inverted-building" style="left: 71%;"><div class="building-base building-apartment" style="width:45px;height:90px;"></div></div>
+            <div class="inverted-building" style="left: 73%;"><div class="building-base building-industrial" style="width:38px;height:82px;"></div></div>
+            <div class="inverted-building" style="left: 75%;"><div class="building-base building-skyscraper" style="width:46px;height:155px;"></div></div>
+            <div class="inverted-tree" style="left: 77.5%;"><div class="tree-trunk" style="width:10px;height:28px;"></div><div class="tree-top tree-round"></div></div>
+            <div class="inverted-building" style="left: 79%;"><div class="building-base building-stepped" style="width:52px;height:75px;"></div></div>
+            <div class="inverted-building" style="left: 81%;"><div class="building-base building-office" style="width:42px;height:135px;"></div></div>
+            <div class="inverted-tree" style="left: 83.5%;"><div class="tree-trunk" style="width:12px;height:36px;"></div><div class="tree-top tree-cone"></div></div>
+            <div class="inverted-building" style="left: 85%;"><div class="building-base building-white-tower" style="width:40px;height:115px;"></div></div>
+            <div class="inverted-building" style="left: 87%;"><div class="building-base building-dark-tower" style="width:44px;height:162px;"></div></div>
+            <div class="inverted-tree" style="left: 89.5%;"><div class="tree-trunk" style="width:14px;height:42px;"></div><div class="tree-top tree-palm"></div></div>
+            <div class="inverted-building" style="left: 91%;"><div class="building-base building-red-brick" style="width:38px;height:68px;"></div></div>
+            <div class="inverted-building" style="left: 93%;"><div class="building-base building-skyscraper" style="width:50px;height:150px;"></div></div>
+            <div class="inverted-tree" style="left: 95.5%;"><div class="tree-trunk" style="width:10px;height:30px;"></div><div class="tree-top tree-round"></div></div>
+            <div class="inverted-building" style="left: 96.8%;"><div class="building-base building-apartment" style="width:42px;height:95px;"></div></div>
+            <div class="inverted-building" style="left: 98.5%;"><div class="building-base building-cottage" style="width:44px;height:60px;"></div></div>
         </div>
     </div>
 
