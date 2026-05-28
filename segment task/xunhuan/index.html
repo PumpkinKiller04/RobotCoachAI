@@ -11,8 +11,8 @@ body{
     font-family:'Microsoft YaHei','PingFang SC',sans-serif;
     font-size:12px;
     background:#0f172a;
-    width:520px;
-    height:310px;
+    width:400px;
+    height:255px;
     overflow:hidden;
 }
 body::before{
@@ -23,35 +23,12 @@ body::before{
     pointer-events:none;z-index:0;
 }
 
-.container{position:relative;z-index:1;width:520px;height:310px;display:flex;flex-direction:column;}
-
-/* ---- header ---- */
-.header{
-    padding:4px 14px;
-    display:flex;justify-content:space-between;align-items:center;
-    border-bottom:1px solid rgba(255,255,255,0.06);
-    flex-shrink:0;
-}
-.title{color:#cbd5e1;font-size:11px;font-weight:500;letter-spacing:0.5px;}
-.header-right{display:flex;align-items:center;gap:5px;}
-.mode-tag{
-    color:#64748b;font-size:9px;
-    padding:2px 7px;border-radius:5px;
-    border:1px solid rgba(255,255,255,0.08);
-}
-.btn{
-    padding:3px 10px;border:none;border-radius:8px;
-    font-size:10px;font-weight:600;
-    cursor:pointer;transition:all .25s;
-}
-.btn-go{background:#22c55e;color:#fff;box-shadow:0 1px 4px rgba(34,197,94,.25);}
-.btn-go:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 2px 6px rgba(34,197,94,.35);}
-.btn-go:disabled{background:#334155;color:#64748b;cursor:not-allowed;box-shadow:none;}
+.container{position:relative;z-index:1;width:400px;height:255px;display:flex;flex-direction:column;}
 
 /* ---- main ---- */
 .main{
     flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:4px 12px;gap:3px;
+    padding:3px 10px;gap:3px;
 }
 
 /* ---- panel (above canvas) ---- */
@@ -67,7 +44,7 @@ body::before{
 .panel-title{color:#94a3b8;font-size:9px;font-weight:600;text-align:center;}
 .panel-list{display:flex;flex-direction:row;gap:5px;justify-content:center;}
 .mod{
-    flex:1;max-width:135px;padding:4px 7px;border-radius:5px;
+    flex:1;max-width:110px;padding:4px 6px;border-radius:5px;
     display:flex;align-items:center;gap:5px;
     cursor:grab;transition:all .3s;
     box-shadow:0 1px 3px rgba(0,0,0,.3);
@@ -86,10 +63,13 @@ body::before{
 .prog-bar{height:2px;background:rgba(255,255,255,0.08);border-radius:1px;overflow:hidden;}
 .prog-fill{height:100%;background:#4ade80;border-radius:1px;transition:width .3s;}
 
+/* ---- main row: canvas + side buttons ---- */
+.main-row{display:flex;align-items:center;gap:8px;}
+
 /* ---- canvas ---- */
 .canvas-wrap{
     position:relative;
-    width:350px;height:200px;flex-shrink:0;
+    width:300px;height:190px;flex-shrink:0;
     background:rgba(255,255,255,0.012);
     border-radius:8px;
     border:1px solid rgba(255,255,255,0.05);
@@ -100,43 +80,43 @@ body::before{
 }
 .canvas-svg line{
     stroke:rgba(255,255,255,0.16);
-    stroke-width:1.8;
+    stroke-width:1.6;
     transition:stroke .4s,opacity .4s;
 }
-.canvas-svg line.on{stroke:#4ade80;stroke-width:2.2;}
+.canvas-svg line.on{stroke:#4ade80;stroke-width:2;}
 .canvas-svg line.off{opacity:0;}
 .canvas-svg line.wait{
-    stroke:#fbbf24;stroke-width:2.2;
-    stroke-dasharray:5 4;
+    stroke:#fbbf24;stroke-width:2;
+    stroke-dasharray:4 3;
     animation:dashPulse .8s ease-in-out infinite;
 }
 @keyframes dashPulse{
     0%,100%{stroke-dashoffset:0;opacity:.6;}
-    50%{stroke-dashoffset:-10;opacity:1;}
+    50%{stroke-dashoffset:-8;opacity:1;}
 }
 
 /* ---- drop target ---- */
 .dt{
     position:absolute;
-    width:48px;height:48px;
+    width:54px;height:54px;
     border-radius:50%;
-    border:2px dashed rgba(255,255,255,0.13);
+    border:2px dashed rgba(255,255,255,0.14);
     z-index:5;
     transition:border-color .3s,background .3s,transform .2s;
 }
 .dt.filled{border-color:transparent;}
 .dt.hover{border-color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.05);transform:scale(1.04);}
-.dt.p1{left:51px;top:76px;}
-.dt.p2{left:151px;top:76px;}
-.dt.p3{left:251px;top:76px;}
-.dt.t1{left:151px;top:12px;}
-.dt.t2{left:260px;top:140px;}
-.dt.t3{left:42px;top:140px;}
+.dt.p1{left:34px;top:68px;}
+.dt.p2{left:123px;top:68px;}
+.dt.p3{left:212px;top:68px;}
+.dt.t1{left:123px;top:12px;}
+.dt.t2{left:224px;top:124px;}
+.dt.t3{left:22px;top:124px;}
 
 /* ---- placed node ---- */
 .node{
     position:absolute;
-    width:48px;height:48px;
+    width:54px;height:54px;
     border-radius:50%;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     box-shadow:0 3px 12px rgba(0,0,0,.5);
@@ -146,8 +126,8 @@ body::before{
     user-select:none;
 }
 .node:hover{transform:scale(1.06);}
-.node .ni{font-size:16px;}
-.node .nl{font-size:9px;font-weight:700;color:#fff;margin-top:0;letter-spacing:0.5px;}
+.node .ni{font-size:18px;}
+.node .nl{font-size:10px;font-weight:700;color:#fff;margin-top:0;letter-spacing:0.5px;}
 .node.sense{background:linear-gradient(135deg,#ef4444,#dc2626);}
 .node.decision{background:linear-gradient(135deg,#06b6d4,#0891b2);}
 .node.action{background:linear-gradient(135deg,#f59e0b,#d97706);}
@@ -158,56 +138,77 @@ body::before{
     50%{box-shadow:0 3px 10px rgba(0,0,0,.5),0 0 10px rgba(251,191,36,.45);}
 }
 
+/* ---- side buttons ---- */
+.side-actions{
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    flex-shrink:0;
+}
+.mode-tag{
+    color:#64748b;font-size:9px;
+    padding:3px 8px;border-radius:5px;
+    border:1px solid rgba(255,255,255,0.08);
+    white-space:nowrap;
+}
+.btn{
+    padding:4px 10px;border:none;border-radius:8px;
+    font-size:10px;font-weight:600;
+    cursor:pointer;transition:all .25s;
+}
+.btn-go{background:#22c55e;color:#fff;box-shadow:0 1px 4px rgba(34,197,94,.25);}
+.btn-go:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 2px 6px rgba(34,197,94,.35);}
+.btn-go:disabled{background:#334155;color:#64748b;cursor:not-allowed;box-shadow:none;}
+
 /* ---- robot ---- */
 .rb-ct{
     position:absolute;
     z-index:50;pointer-events:none;
     transform:translate(-50%,-75%);
 }
+.rb{display:flex;flex-direction:column;align-items:center;}
 .rb-head{
-    width:14px;height:12px;
+    width:16px;height:13px;
     background:#22c55e;border:1.5px solid #16a34a;
     position:relative;margin-bottom:1px;border-radius:2px;
     box-shadow:0 0 4px rgba(34,197,94,.4);
 }
 .rb-eye{
     position:absolute;width:8px;height:3px;
-    background:#064e3b;top:3px;left:50%;transform:translateX(-50%);border-radius:1px;
+    background:#064e3b;top:4px;left:50%;transform:translateX(-50%);border-radius:1px;
 }
 .rb-body{
-    width:22px;height:16px;
+    width:24px;height:18px;
     background:#22c55e;border:1.5px solid #16a34a;
     border-radius:2px;position:relative;
     box-shadow:0 0 4px rgba(34,197,94,.4);
 }
 .rb-body-inner{
-    position:absolute;top:3px;left:4px;width:13px;height:5px;
+    position:absolute;top:3px;left:5px;width:14px;height:5px;
     background:#16a34a;border-radius:1px;
 }
 .rb-arm{
-    position:absolute;width:5px;height:12px;
+    position:absolute;width:6px;height:13px;
     background:#22c55e;border:1.5px solid #16a34a;
     border-radius:2px;top:2px;
 }
-.rb-arm.l{left:-6px;transform-origin:top center;animation:armL .26s ease-in-out infinite alternate;}
-.rb-arm.r{right:-6px;transform-origin:top center;animation:armR .26s ease-in-out infinite alternate;}
-.rb-legs{display:flex;gap:4px;margin-top:1px;}
+.rb-arm.l{left:-7px;transform-origin:top center;animation:armL .26s ease-in-out infinite alternate;}
+.rb-arm.r{right:-7px;transform-origin:top center;animation:armR .26s ease-in-out infinite alternate;}
+.rb-legs{display:flex;gap:5px;margin-top:1px;}
 .rb-leg{
-    width:6px;height:9px;
+    width:7px;height:10px;
     background:#22c55e;border:1.5px solid #16a34a;
     border-radius:2px;
 }
 .rb-leg.l{transform-origin:top center;animation:legL .26s ease-in-out infinite alternate;}
 .rb-leg.r{transform-origin:top center;animation:legR .26s ease-in-out infinite alternate;}
 .rb-shadow{
-    width:18px;height:4px;background:rgba(0,0,0,.35);
+    width:20px;height:4px;background:rgba(0,0,0,.35);
     border-radius:50%;
     animation:shad .26s ease-in-out infinite alternate;
 }
-@keyframes armL{0%{transform:rotate(-28deg)}100%{transform:rotate(28deg)}}
-@keyframes armR{0%{transform:rotate(28deg)}100%{transform:rotate(-28deg)}}
-@keyframes legL{0%{transform:rotate(-16deg)}100%{transform:rotate(16deg)}}
-@keyframes legR{0%{transform:rotate(16deg)}100%{transform:rotate(-16deg)}}
+@keyframes armL{0%{transform:rotate(-24deg)}100%{transform:rotate(24deg)}}
+@keyframes armR{0%{transform:rotate(24deg)}100%{transform:rotate(-24deg)}}
+@keyframes legL{0%{transform:rotate(-12deg)}100%{transform:rotate(12deg)}}
+@keyframes legR{0%{transform:rotate(12deg)}100%{transform:rotate(-12deg)}}
 @keyframes shad{0%{transform:scaleX(1);opacity:.35}100%{transform:scaleX(.7);opacity:.15}}
 
 .rb-ct.step .rb{animation:bob .26s ease-in-out infinite alternate;}
@@ -224,7 +225,7 @@ body::before{
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .md{
     background:#1e293b;border-radius:10px;
-    padding:14px 12px;max-width:260px;width:92%;
+    padding:14px 12px;max-width:250px;width:92%;
     text-align:center;
     box-shadow:0 8px 24px rgba(0,0,0,.5);
     color:#e2e8f0;
@@ -254,7 +255,7 @@ body::before{
 
 /* ---- bottom hint ---- */
 .btm-hint{
-    position:fixed;bottom:8px;left:50%;transform:translateX(-50%);
+    position:fixed;bottom:6px;left:50%;transform:translateX(-50%);
     background:rgba(0,0,0,.82);
     color:#fbbf24;padding:3px 10px;border-radius:8px;
     font-size:9px;font-weight:600;z-index:400;
@@ -265,7 +266,7 @@ body::before{
 
 /* ---- lap badge ---- */
 .lap-badge{
-    position:fixed;top:50px;right:10px;
+    position:fixed;top:6px;right:8px;
     background:rgba(0,0,0,.75);
     color:#4ade80;padding:2px 7px;border-radius:7px;
     font-size:9px;font-weight:600;z-index:400;
@@ -298,14 +299,6 @@ body::before{
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <h1 class="title">感知 → 决策 → 行动 闭环实验</h1>
-        <div class="header-right">
-            <span class="mode-tag" id="modeTag">第一阶段</span>
-            <button class="btn btn-go" id="submitBtn" disabled>运行</button>
-        </div>
-    </div>
-
     <div class="main">
         <div class="panel">
             <div class="panel-title">拖动下方模块至图中对应位置</div>
@@ -326,25 +319,31 @@ body::before{
             <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
         </div>
 
-        <div class="canvas-wrap" id="canvas">
-            <svg class="canvas-svg" viewBox="0 0 350 200">
-                <defs>
-                    <marker id="ah" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-                        <polygon points="0 0, 7 2.5, 0 5" fill="#4ade80"/>
-                    </marker>
-                    <marker id="ahy" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-                        <polygon points="0 0, 7 2.5, 0 5" fill="#fbbf24"/>
-                    </marker>
-                </defs>
-                <line id="la1" class="on"  x1="105" y1="100" x2="143" y2="100" marker-end="url(#ah)"/>
-                <line id="la2" class="on"  x1="207" y1="100" x2="243" y2="100" marker-end="url(#ah)"/>
-                <line id="ta1" class="off" x1="190" y1="58" x2="266" y2="142" marker-end="url(#ah)"/>
-                <line id="ta2" class="off" x1="258" y1="164" x2="92" y2="164" marker-end="url(#ah)"/>
-                <line id="ta3" class="off" x1="86" y1="144" x2="162" y2="58" marker-end="url(#ahy)"/>
-            </svg>
-            <div class="dt p1" id="dt1" data-target="sense"></div>
-            <div class="dt p2" id="dt2" data-target="decision"></div>
-            <div class="dt p3" id="dt3" data-target="action"></div>
+        <div class="main-row">
+            <div class="canvas-wrap" id="canvas">
+                <svg class="canvas-svg" viewBox="0 0 300 190">
+                    <defs>
+                        <marker id="ah" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+                            <polygon points="0 0, 6 2.5, 0 5" fill="#4ade80"/>
+                        </marker>
+                        <marker id="ahy" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+                            <polygon points="0 0, 6 2.5, 0 5" fill="#fbbf24"/>
+                        </marker>
+                    </defs>
+                    <line id="la1" class="on"  x1="94" y1="95" x2="117" y2="95" marker-end="url(#ah)"/>
+                    <line id="la2" class="on"  x1="183" y1="95" x2="206" y2="95" marker-end="url(#ah)"/>
+                    <line id="ta1" class="off" x1="166" y1="62" x2="236" y2="134" marker-end="url(#ah)"/>
+                    <line id="ta2" class="off" x1="224" y1="151" x2="76" y2="151" marker-end="url(#ah)"/>
+                    <line id="ta3" class="off" x1="70" y1="136" x2="140" y2="62" marker-end="url(#ahy)"/>
+                </svg>
+                <div class="dt p1" id="dt1" data-target="sense"></div>
+                <div class="dt p2" id="dt2" data-target="decision"></div>
+                <div class="dt p3" id="dt3" data-target="action"></div>
+            </div>
+            <div class="side-actions">
+                <span class="mode-tag" id="modeTag">第一阶段</span>
+                <button class="btn btn-go" id="submitBtn" disabled>运行</button>
+            </div>
         </div>
     </div>
 </div>
@@ -573,7 +572,7 @@ function showWarn(){
 // ========== SWITCH TO TRIANGLE ==========
 function toTri(){
     S.mode='connect';S.linked=false;S.sel=null;
-    tag.textContent='第二阶段 · 闭合回路';
+    tag.textContent='第二阶段';
     la1.classList.add('off');la1.classList.remove('on');
     la2.classList.add('off');la2.classList.remove('on');
     ta1.classList.remove('off');ta1.classList.add('on');
@@ -603,7 +602,7 @@ function doConnect(n){
         S.linked=true;S.mode='ready';
         n.classList.add('pick');ta3.classList.remove('wait');ta3.classList.add('on');
         for(const v of Object.values(S.placed))v.node.classList.remove('glow','pick');
-        tag.textContent='第二阶段 · 回路已闭合';
+        tag.textContent='回路闭合';
         hint('回路闭合！点击「运行闭环」');
         document.getElementById('btmHint').classList.add('done');
         updBtn();
