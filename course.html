@@ -1336,6 +1336,53 @@
                 alert('网络错误，请重试');
             }
         }
+
+        async function submitDesign() {
+            const username = localStorage.getItem('username') || '游客';
+            if (username === '游客') {
+                alert('请先登录！');
+                return;
+            }
+            const designData = {
+                scene: document.querySelector('input[name="t3_3a"]')?.value.trim() || '',
+                task: document.querySelector('input[name="t3_3b"]')?.value.trim() || '',
+                sensors: document.querySelector('input[name="t3_3c"]')?.value.trim() || '',
+                training: document.querySelector('input[name="t3_3d"]')?.value.trim() || '',
+                feedback: document.querySelector('input[name="t3_3e"]')?.value.trim() || ''
+            };
+            if (!designData.scene || !designData.task || !designData.sensors || !designData.training || !designData.feedback) {
+                alert('请填写完整的设计方案！\n所有字段都不能为空。');
+                return;
+            }
+            const submitData = {
+                '姓名': username,
+                '题目1': designData.scene,
+                '题目2': designData.task,
+                '题目3': designData.sensors,
+                '题目4': designData.training,
+                '题目5': designData.feedback,
+                '题目6': '设计方案',
+                '题目7': ''
+            };
+            try {
+                const response = await fetch('https://quickform.cn/api/kzw1h47nrm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(submitData)
+                });
+                if (response.ok) {
+                    alert('设计方案提交成功！\n\n即将前往探索广场欣赏其他同学的作品~');
+                    setTimeout(() => {
+                        window.location.href = 'segment task/guangchang/index.html';
+                    }, 1500);
+                } else {
+                    alert('提交失败，请重试');
+                }
+            } catch (error) {
+                console.error('设计方案提交错误:', error);
+                alert('网络错误，请重试');
+            }
+        }
         
         function getFieldNamesForSection(section) {
             const fieldNames = {
