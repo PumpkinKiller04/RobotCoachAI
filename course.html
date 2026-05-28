@@ -551,6 +551,62 @@
             .app-carousel-caption { font-size: 0.95rem; bottom: 1.8rem; }
             .app-carousel-dots { bottom: 0.7rem; }
         }
+        /* 闭环图拖拽 */
+        .closed-loop-diagram { margin-top: 8px; }
+        .diagram-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 6px;
+            position: relative;
+            max-width: 360px;
+            margin: 0 auto;
+        }
+        .drop-zone {
+            border: 2px dashed #d4a574;
+            border-radius: 10px;
+            background: #fff8e7;
+            padding: 16px 10px;
+            text-align: center;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s;
+            position: relative;
+            z-index: 2;
+        }
+        .drop-zone .zone-label { font-weight: 700; color: #c4a882; font-size: 1em; }
+        .drop-zone.drag-over { background: #ffe4b5; border-color: #8b5a2b; box-shadow: 0 0 12px rgba(139,90,43,0.3); }
+        .drop-zone.filled { border-style: solid; background: #e8f5e9; border-color: #2e7d32; }
+        .drop-zone.filled .zone-label { color: #2e7d32; }
+        .diagram-arrows { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+        .diagram-arrows .arrow { position: absolute; font-size: 28px; color: #8b5a2b; font-weight: bold; }
+        .diagram-arrows .arrow-right { top: 28%; right: -4px; }
+        .diagram-arrows .arrow-down { bottom: -4px; right: 28%; }
+        .diagram-arrows .arrow-left { top: 60%; left: -4px; }
+        .diagram-arrows .arrow-up { top: -4px; left: 24%; }
+        .block-pool { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
+        .draggable-block {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #8b5a2b, #a0522d);
+            color: white;
+            border-radius: 8px;
+            cursor: grab;
+            font-weight: 600;
+            font-size: 1em;
+            user-select: none;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .draggable-block:active { cursor: grabbing; }
+        .draggable-block.placed { display: none; }
+        @keyframes bounceBack {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        .draggable-block.bounce-back { animation: bounceBack 0.4s ease; }
+        .diagram-feedback { text-align: center; color: #2e7d32; font-weight: 700; margin-top: 10px; font-size: 1.05em; }
         @media (max-width: 900px) {
             .page-container { grid-template-columns: 1fr; }
             .course-selector { justify-content: center; }
