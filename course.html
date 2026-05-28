@@ -2720,8 +2720,99 @@ ${(() => {
                 if (document.getElementById('appCarousel')) {
                     initAppCarousel();
                 }
+                initClosedLoopDiagram();
             }, 200);
         });
+
+        // ========== 闭环图拖拽 ==========
+        function initClosedLoopDiagram() {
+            var diagram = document.getElementById('closedLoopDiagram');
+            if (!diagram) return;
+
+            var pool = document.getElementById('blockPool');
+            var zones = diagram.querySelectorAll('.drop-zone');
+            var feedback = document.getElementById('diagramFeedback');
+            var placedCount = 0;
+
+            // 重置状态
+            zones.forEach(function(z) { z.classList.remove('filled'); });
+            feedback.style.display = 'none';
+            placedCount = 0;
+
+            // 打乱并创建模块
+            var labels = ['感知', '决策', '行动', '再感知'];
+            for (var i = labels.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var tmp = labels[i]; labels[i] = labels[j]; labels[j] = tmp;
+            }
+
+            pool.innerHTML = '';
+            labels.forEach(function(label) {
+                var block = document.createElement('div');
+                block.className = 'draggable-block';
+                block.draggable = true;
+                block.textContent = label;
+                block.dataset.label = label;
+
+                block.addEventListener('dragstart', function(e) {
+                    if (this.classList.contains('placed')) return;
+                    e.dataTransfer.setData('text/plain', this.dataset.label);
+                    e.dataTransfer.effectAllowed = 'move';
+                    this.classList.add('dragging');
+                });
+
+                block.addEventListener('dragend', function(e) {
+                    this.classList.remove('dragging', 'bounce-back');
+                });
+
+                pool.appendChild(block);
+            });
+
+            // 放置区事件
+            zones.forEach(function(zone) {
+                zone.addEventListener('dragover', function(e) {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                });
+
+                zone.addEventListener('dragenter', function(e) {
+                    e.preventDefault();
+                    if (!this.classList.contains('filled')) {
+                        this.classList.add('drag-over');
+                    }
+                });
+
+                zone.addEventListener('dragleave', function(e) {
+                    this.classList.remove('drag-over');
+                });
+
+                zone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('drag-over');
+                    if (this.classList.contains('filled')) return;
+
+                    var draggedLabel = e.dataTransfer.getData('text/plain');
+                    var answer = this.dataset.answer;
+
+                    if (draggedLabel === answer) {
+                        this.classList.add('filled');
+                        var block = pool.querySelector('.draggable-block[data-label="' + draggedLabel + '"]');
+                        if (block) block.classList.add('placed');
+                        placedCount++;
+                        if (placedCount === 4) {
+                            feedback.textContent = '恭喜！闭环图补全正确！感知→决策→行动→再感知，形成持续循环。';
+                            feedback.style.display = 'block';
+                        }
+                    } else {
+                        var wrongBlock = pool.querySelector('.draggable-block[data-label="' + draggedLabel + '"]');
+                        if (wrongBlock) {
+                            wrongBlock.classList.add('bounce-back');
+                            setTimeout(function() { wrongBlock.classList.remove('bounce-back'); }, 400);
+                        }
+                    }
+                });
+            });
+        }
     </script>
 </body>
 </html>
