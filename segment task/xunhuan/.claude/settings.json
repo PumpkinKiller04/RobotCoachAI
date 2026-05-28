@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(start \"\" \"c:\\\\Users\\\\13241\\\\Desktop\\\\导学单网站\\\\segment task\\\\xunhuan\\\\index.html\")"
+    ]
+  }
+}
