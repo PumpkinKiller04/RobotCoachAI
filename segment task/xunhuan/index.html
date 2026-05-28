@@ -12,7 +12,7 @@ body{
     font-size:13px;
     background:#0f172a;
     width:580px;
-    height:365px;
+    height:395px;
     overflow:hidden;
 }
 body::before{
@@ -23,12 +23,12 @@ body::before{
     pointer-events:none;z-index:0;
 }
 
-.container{position:relative;z-index:1;width:580px;height:365px;display:flex;flex-direction:column;}
+.container{position:relative;z-index:1;width:580px;height:395px;display:flex;flex-direction:column;}
 
 /* ---- main ---- */
 .main{
     flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:6px 14px 10px;gap:5px;
+    padding:6px 14px 14px;gap:5px;
 }
 
 /* ---- panel ---- */
@@ -42,9 +42,9 @@ body::before{
     flex-shrink:0;
 }
 .panel-title{color:#94a3b8;font-size:11px;font-weight:600;text-align:center;}
-.panel-list{display:flex;flex-direction:row;gap:7px;justify-content:center;}
+.panel-list{display:flex;flex-direction:row;gap:8px;justify-content:center;}
 .mod{
-    flex:1;max-width:165px;padding:7px 10px;border-radius:6px;
+    flex:0 1 140px;padding:7px 10px;border-radius:6px;
     display:flex;align-items:center;gap:8px;
     cursor:grab;transition:all .3s;
     box-shadow:0 1px 4px rgba(0,0,0,.3);
@@ -64,12 +64,12 @@ body::before{
 .prog-fill{height:100%;background:#4ade80;border-radius:1px;transition:width .3s;}
 
 /* ---- main row ---- */
-.main-row{display:flex;align-items:center;gap:12px;}
+.main-row{display:flex;align-items:center;gap:6px;}
 
 /* ---- canvas ---- */
 .canvas-wrap{
     position:relative;
-    width:480px;height:270px;flex-shrink:0;
+    width:480px;height:280px;flex-shrink:0;
     background:rgba(255,255,255,0.012);
     border-radius:10px;
     border:1px solid rgba(255,255,255,0.05);
@@ -106,12 +106,12 @@ body::before{
 }
 .dt.filled{border-color:transparent;}
 .dt.hover{border-color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.05);transform:scale(1.04);}
-.dt.p1{left:72px;top:102px;}
-.dt.p2{left:207px;top:102px;}
-.dt.p3{left:342px;top:102px;}
-.dt.t1{left:207px;top:22px;}
-.dt.t2{left:344px;top:180px;}
-.dt.t3{left:70px;top:180px;}
+.dt.p1{left:72px;top:107px;}
+.dt.p2{left:207px;top:107px;}
+.dt.p3{left:342px;top:107px;}
+.dt.t1{left:207px;top:24px;}
+.dt.t2{left:344px;top:188px;}
+.dt.t3{left:70px;top:188px;}
 
 /* ---- placed node ---- */
 .node{
@@ -140,7 +140,7 @@ body::before{
 
 /* ---- side buttons ---- */
 .side-actions{
-    display:flex;flex-direction:column;align-items:center;gap:12px;
+    display:flex;flex-direction:column;align-items:center;gap:10px;
     flex-shrink:0;
 }
 .mode-tag{
@@ -255,7 +255,7 @@ body::before{
 
 /* ---- bottom hint ---- */
 .btm-hint{
-    position:fixed;bottom:14px;left:50%;transform:translateX(-50%);
+    position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
     background:rgba(0,0,0,.82);
     color:#fbbf24;padding:5px 14px;border-radius:12px;
     font-size:11px;font-weight:600;z-index:400;
@@ -321,7 +321,7 @@ body::before{
 
         <div class="main-row">
             <div class="canvas-wrap" id="canvas">
-                <svg class="canvas-svg" viewBox="0 0 480 270">
+                <svg class="canvas-svg" viewBox="0 0 480 280">
                     <defs>
                         <marker id="ah" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
                             <polygon points="0 0, 7 2.5, 0 5" fill="#4ade80"/>
@@ -330,11 +330,11 @@ body::before{
                             <polygon points="0 0, 7 2.5, 0 5" fill="#fbbf24"/>
                         </marker>
                     </defs>
-                    <line id="la1" class="on"  x1="144" y1="135" x2="200" y2="135" marker-end="url(#ah)"/>
-                    <line id="la2" class="on"  x1="279" y1="135" x2="335" y2="135" marker-end="url(#ah)"/>
-                    <line id="ta1" class="off" x1="258" y1="86" x2="358" y2="188" marker-end="url(#ah)"/>
-                    <line id="ta2" class="off" x1="342" y1="213" x2="138" y2="213" marker-end="url(#ah)"/>
-                    <line id="ta3" class="off" x1="134" y1="190" x2="222" y2="86" marker-end="url(#ahy)"/>
+                    <line id="la1" class="on"  x1="144" y1="140" x2="200" y2="140" marker-end="url(#ah)"/>
+                    <line id="la2" class="on"  x1="279" y1="140" x2="335" y2="140" marker-end="url(#ah)"/>
+                    <line id="ta1" class="off" x1="258" y1="90" x2="358" y2="196" marker-end="url(#ah)"/>
+                    <line id="ta2" class="off" x1="342" y1="221" x2="138" y2="221" marker-end="url(#ah)"/>
+                    <line id="ta3" class="off" x1="134" y1="198" x2="222" y2="90" marker-end="url(#ahy)"/>
                 </svg>
                 <div class="dt p1" id="dt1" data-target="sense"></div>
                 <div class="dt p2" id="dt2" data-target="decision"></div>
