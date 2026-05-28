@@ -1098,7 +1098,6 @@
             submitBtn.disabled = true;
             removeExistingRobot();
 
-            const containerRect = circleContainer.getBoundingClientRect();
             const senseNode = state.placedNodes['sense']?.node;
             const decisionNode = state.placedNodes['decision']?.node;
             const actionNode = state.placedNodes['action']?.node;
@@ -1109,10 +1108,11 @@
             const decisionRect = decisionNode.getBoundingClientRect();
             const actionRect = actionNode.getBoundingClientRect();
 
+            // Robot is position:fixed, so use viewport coordinates directly
             const points = [
-                { x: senseRect.left + senseRect.width/2 - containerRect.left - 38, y: senseRect.top + senseRect.height/2 - containerRect.top - 35 },
-                { x: decisionRect.left + decisionRect.width/2 - containerRect.left - 38, y: decisionRect.top + decisionRect.height/2 - containerRect.top - 35 },
-                { x: actionRect.left + actionRect.width/2 - containerRect.left - 38, y: actionRect.top + actionRect.height/2 - containerRect.top - 35 },
+                { x: senseRect.left + senseRect.width/2 - 38, y: senseRect.top + senseRect.height/2 - 35 },
+                { x: decisionRect.left + decisionRect.width/2 - 38, y: decisionRect.top + decisionRect.height/2 - 35 },
+                { x: actionRect.left + actionRect.width/2 - 38, y: actionRect.top + actionRect.height/2 - 35 },
             ];
 
             const robot = createRobot();
