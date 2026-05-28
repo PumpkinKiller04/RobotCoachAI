@@ -1086,16 +1086,35 @@
                         💡 <strong>原因分析：</strong><br>
                         线性模式（感知→决策→行动）只能执行一次，无法持续适应环境变化。
                     </div>
+                    <div style="background:#fffbeb;padding:12px;border-radius:6px;margin-bottom:15px;text-align:left;">
+                        <strong>🤔 思考：</strong>要构成闭环，需要把"行动"和"感知"连接起来，形成"感知→决策→行动→再感知"的循环。<br><br>
+                        请选择应该连接的两个模块：
+                        <div style="margin-top:10px;">
+                            <label style="display:block;margin:5px 0;cursor:pointer;">
+                                <input type="radio" name="connect" value="sense-action" checked> <strong>感知 ↔ 行动</strong>（构成闭环）
+                            </label>
+                            <label style="display:block;margin:5px 0;cursor:pointer;">
+                                <input type="radio" name="connect" value="sense-decision"> 感知 ↔ 决策
+                            </label>
+                            <label style="display:block;margin:5px 0;cursor:pointer;">
+                                <input type="radio" name="connect" value="decision-action"> 决策 ↔ 行动
+                            </label>
+                        </div>
+                    </div>
                     <button class="warning-btn" id="continueBtn">创建闭环</button>
                 </div>
             `;
-            
+
             document.body.appendChild(overlay);
-            
+
             document.getElementById('continueBtn').addEventListener('click', () => {
+                const selected = document.querySelector('input[name="connect"]:checked').value;
                 overlay.remove();
-                clearAllPlacedNodes();
-                switchToTriangleMode();
+                if (selected === 'sense-action') {
+                    switchToTriangleMode();
+                } else {
+                    showError('选择错误！只有将"行动"连接到"感知"才能形成闭环。');
+                }
             });
         }
 
