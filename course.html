@@ -678,11 +678,11 @@
                         ]
                     },
                     {
-                        title: '环节四：本课总结',
+                        title: '环节四：智能小结 & 本课总结',
                         pages: [
                             {
-                                left: { type: 'summary', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节四：本课总结</h3><h4>1. 学习报告（AI生成）</h4><button class="submit-btn" id="generateBtn" onclick="generateReport()">[点击查看学习报告]</button><div id="reportContainer" style="display:none; margin-top: 20px;"><div class="markdown" id="reportContent"></div></div><div id="loadingIndicator" style="display:none; margin-top: 15px; padding: 15px; background: #fff8e7; border-radius: 8px;"><p style="color: #8b5a2b;">AI正在分析你的学习数据，请稍候...</p></div><h4>2. 本课总结</h4><ul><li><strong>单模态：</strong>信息类型单一，就像只用一种感官，判断容易出错。</li><li><strong>多模态感知：</strong>整合多种感官信息（视觉、距离、姿态、触觉等），让AI对世界的理解更完整、判断更可靠。</li><li><strong>多模态应用：</strong>AI不仅能综合理解图文信息（问答），还能进行跨模态创作（文生图、图生文），极大拓展了AI的用途。</li></ul>' },
-                                right: { type: 'conclusion', content: '' }
+                                left: { type: 'summary', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节四：智能小结 & 本课总结</h3><h4>1. 智能小结（AI生成）</h4><button class="submit-btn" id="generateBtn" onclick="generateReport()">[点击查看专属学习报告和勋章进度]</button><div id="reportContainer" style="display:none; margin-top: 20px;"><div class="markdown" id="reportContent"></div></div><div id="loadingIndicator" style="display:none; margin-top: 15px; padding: 15px; background: #fff8e7; border-radius: 8px;"><p style="color: #8b5a2b;">AI正在分析你的学习数据，请稍候...</p></div>' },
+                                right: { type: 'conclusion', content: '<h4>2. 本课总结</h4><ul><li><strong>单模态：</strong>信息类型单一，就像只用一种感官，判断容易出错。</li><li><strong>多模态感知：</strong>整合多种感官信息（视觉、距离、姿态、触觉等），让AI对世界的理解更完整、判断更可靠。</li><li><strong>多模态应用：</strong>AI不仅能综合理解图文信息（问答），还能进行跨模态创作（文生图、图生文），极大拓展了AI的用途。</li></ul>' }
                             }
                         ]
                     }
@@ -727,7 +727,7 @@
                         pages: [
                             {
                                 left: { type: 'knowledge', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节三：AI试错——从菜鸟到健将</h3><h4 style="font-size: 1.4em;">1. 学习知识</h4><ul style="font-size: 1.3em;"><li><strong>试错学习：</strong>机器人自己不断尝试跑赛道 → 撞到障碍就重新开始 → 每次重来都会记住之前的经验 → 慢慢找到正确的跑法。</li><li><strong>关键：</strong>没有老师教，没有遥控，全靠自己反复练。做对了继续跑，做错了重来。</li></ul><h4 style="font-size: 1.4em;">2. 动手求证</h4><p style="font-size: 1.1em;"><strong>体验：观察AI训练机器人跳跃跨障碍</strong></p><iframe src="segment task/robot/ai-training.html" width="100%" height="320" frameborder="0" style="border: none; background: transparent; overflow: hidden;"></iframe>' },
-                                right: { type: 'activity', content: '<p style="font-size: 1.1em;"><strong>【试错学习观察记录】</strong>（观看时注意以下现象，简要记录）</p><table class="observation-table"><thead><tr><th style="font-size: 1.3em; width: 45%;">观察点</th><th style="font-size: 1.3em; width: 55%;">你的发现</th></tr></thead><tbody><tr><td style="font-size: 1.3em;">1. 最初3次尝试，机器人一般能跑多远？</td><td><div class="multiple-choice"><label><input type="radio" name="obs1" value="a"> 刚起步就撞</label><label><input type="radio" name="obs1" value="b"> 能过1-2个障碍</label><label><input type="radio" name="obs1" value="c"> 其他：<input type="text" name="obs1_other" placeholder="请说明" class="worksheet-input" style="width:80px;"></label></div></td></tr><tr><td style="font-size: 1.3em;">2. 机器人每次"重来"后，动作和之前相比有什么变化？</td><td><div class="multiple-choice"><label><input type="radio" name="obs2" value="a"> A. 一模一样，纯随机</label><label><input type="radio" name="obs2" value="b"> B. 有时会调整时机</label><label><input type="radio" name="obs2" value="c"> C. 明显和前一次摔的位置不同</label></div></td></tr></tbody></table>' }
+                                right: { type: 'activity', content: '<p style="font-size: 1.1em;"><strong>【试错学习观察记录】</strong>（观看时注意以下现象，简要记录）</p><table class="observation-table"><thead><tr><th style="font-size: 1.3em; width: 45%;">观察点</th><th style="font-size: 1.3em; width: 55%;">你的发现</th></tr></thead><tbody><tr><td style="font-size: 1.3em;">1. 最初3次尝试，机器人一般能跑多远？</td><td><div class="multiple-choice"><label><input type="radio" name="obs1" value="a"> 刚起步就撞</label><label><input type="radio" name="obs1" value="b"> 能过1-2个障碍</label><label><input type="radio" name="obs1" value="c"> 其他：<input type="text" name="obs1_other" placeholder="请说明" class="worksheet-input" style="width:80px;"></label></div></td></tr><tr><td style="font-size: 1.3em;">2. 成功跳过几次后，它是否逐渐稳定重复这个动作？</td><td><div class="multiple-choice"><label><input type="radio" name="obs2" value="a"> 仍然是运气</label><label><input type="radio" name="obs2" value="b"> 开始稳定重复动作</label></div></td></tr></tbody></table>' }
                             },
                             {
                                 left: { type: 'analysis', content: '<h4 style="font-size: 1.4em;">3. 核心发现</h4><p style="font-size: 1.1em;"><strong>机器人没有记路线，也没有人教它。它是靠什么一点点变强的？</strong></p><textarea name="t2_3a" placeholder="我的回答：" class="worksheet-textarea" style="height:80px;"></textarea><h4 style="font-size: 1.4em; margin-top: 1.5rem;">4. 分析解释</h4><p style="font-size: 1.1em;"><strong>1. 在环节三的训练中，机器人怎么知道自己的动作是"好"还是"坏"？</strong></p><div class="multiple-choice"><label><input type="radio" name="q2_3a" value="a"> A. 有人告诉它</label><label><input type="radio" name="q2_3a" value="b"> B. 屏幕上显示分数</label><label><input type="radio" name="q2_3a" value="c"> C. 撞到障碍就得重来，没撞就继续跑</label><label><input type="radio" name="q2_3a" value="d"> D. 它自己猜的</label></div>' },
@@ -736,11 +736,11 @@
                         ]
                     },
                     {
-                        title: '环节四：本课总结',
+                        title: '环节四：智能小结 & 本课总结',
                         pages: [
                             {
-                                left: { type: 'summary', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节四：本课总结</h3><h4>1. 学习报告（AI生成）</h4><button class="submit-btn" id="generateBtn" onclick="generateReport()">[点击查看学习报告]</button><div id="reportContainer" style="display:none; margin-top: 20px;"><div class="markdown" id="reportContent"></div></div><div id="loadingIndicator" style="display:none; margin-top: 15px; padding: 15px; background: #fff8e7; border-radius: 8px;"><p style="color: #8b5a2b;">AI正在分析你的学习数据，请稍候...</p></div><h4>2. 本课核心</h4><ul><li><strong>行为克隆：</strong>照抄示范，不会应变。</li><li><strong>强化学习：</strong>通过试错，自己学会最优策略。</li></ul>' },
-                                right: { type: 'conclusion', content: '' }
+                                left: { type: 'summary', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节四：智能小结 & 本课总结</h3><h4>1. 智能小结（AI生成）</h4><button class="submit-btn" id="generateBtn" onclick="generateReport()">[点击查看专属学习报告和勋章进度]</button><div id="reportContainer" style="display:none; margin-top: 20px;"><div class="markdown" id="reportContent"></div></div><div id="loadingIndicator" style="display:none; margin-top: 15px; padding: 15px; background: #fff8e7; border-radius: 8px;"><p style="color: #8b5a2b;">AI正在分析你的学习数据，请稍候...</p></div>' },
+                                right: { type: 'conclusion', content: '<h4>2. 本课核心</h4><ul><li><strong>行为克隆：</strong>照抄示范，不会应变。</li><li><strong>强化学习：</strong>通过试错，自己学会最优策略。</li></ul>' }
                             }
                         ]
                     }
@@ -808,11 +808,11 @@
                         ]
                     },
                     {
-                        title: '环节五：本课总结',
+                        title: '环节五：智能小结 & 本课总结',
                         pages: [
                             {
-                                left: { type: 'summary', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节五：本课总结</h3><h4>1. 学习报告（AI生成）</h4><button class="submit-btn" id="generateBtn" onclick="generateReport()">[点击查看学习报告]</button><div id="reportContainer" style="display:none; margin-top: 20px;"><div class="markdown" id="reportContent"></div></div><div id="loadingIndicator" style="display:none; margin-top: 15px; padding: 15px; background: #fff8e7; border-radius: 8px;"><p style="color: #8b5a2b;">AI正在分析你的学习数据，请稍候...</p></div><h4>2. 本课核心</h4><ul><li><strong>闭环四环节：</strong>感知 → 决策 → 行动 → 再感知，环环相扣。</li><li><strong>再感知关键：</strong>执行后必须检查，否则前期积累失效。</li><li><strong>迁移应用：</strong>同一套闭环逻辑可迁移到不同场景。</li></ul>' },
-                                right: { type: 'conclusion', content: '' }
+                                left: { type: 'summary', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节五：智能小结 & 本课总结</h3><h4>1. 智能小结（AI生成）</h4><button class="submit-btn" id="generateBtn" onclick="generateReport()">[点击查看专属学习报告和勋章进度]</button><div id="reportContainer" style="display:none; margin-top: 20px;"><div class="markdown" id="reportContent"></div></div><div id="loadingIndicator" style="display:none; margin-top: 15px; padding: 15px; background: #fff8e7; border-radius: 8px;"><p style="color: #8b5a2b;">AI正在分析你的学习数据，请稍候...</p></div>' },
+                                right: { type: 'conclusion', content: '<h4>2. 本课核心</h4><ul><li><strong>闭环四环节：</strong>感知 → 决策 → 行动 → 再感知，环环相扣。</li><li><strong>再感知关键：</strong>执行后必须检查，否则前期积累失效。</li><li><strong>迁移应用：</strong>同一套闭环逻辑可迁移到不同场景。</li></ul>' }
                             }
                         ]
                     }
@@ -1455,7 +1455,7 @@
                 document.getElementById('generateBtn').disabled = false;
                 
                 const missingNames = incompleteSections.map(s => s.sectionName).join('、');
-                alert(`请先完成以下环节再来生成报告：\n${missingNames}\n\n完成所有环节后才能获得学习报告！`);
+                alert(`请先完成以下环节再来生成报告：\n${missingNames}\n\n完成所有环节后才能获得勋章和学习报告！`);
                 return;
             }
             
@@ -1521,11 +1521,20 @@ ${(() => {
     }
 })()}
 
-${(() => {
-    const medalText = currentModule === 0 ? '白银勋章' : (currentModule === 1 ? '黄金勋章' : '星耀徽章+AI总教练称号');
-    return `\n\n请按照以下格式生成学习报告（用中文，语气亲切鼓励，控制在150字以内）：\n\n---\n\n**核心总结**：恭喜完成所有部分，获得${medalText}！[1-2句总结表现，包含正确率和评定等级]\n\n**建议**：[1条最关键的改进建议]\n\n---\n\n注意：报告要精简，根据学生的实际正确率数据来写，语气要鼓励性。`;
-})()}
-`
+请按照以下格式生成学习报告（用中文，语气亲切鼓励，控制在150字以内）：
+
+---
+
+**核心总结**：[1-2句总结表现，包含正确率和评定等级]
+
+**勋章**：[勋章名称]
+
+**建议**：[1条最关键的改进建议]
+
+---
+
+注意：报告要精简，根据学生的实际正确率数据来写，语气要鼓励性。`;
+            
             try {
                 const model = localStorage.getItem('ai_model') || 'deepseek-ai/DeepSeek-V4-Flash';
 
