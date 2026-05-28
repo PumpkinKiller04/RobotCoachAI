@@ -3,13 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>补全闭环图 - 感知→决策→行动→再感知</title>
+    <title>认识「感知→决策→行动」闭环</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
@@ -25,50 +21,46 @@
             flex-direction: column;
         }
 
+        /* ---- Header ---- */
         .header {
-            padding: 12px 24px;
+            padding: 14px 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: rgba(0,0,0,0.2);
             border-bottom: 1px solid rgba(255,255,255,0.05);
+            flex-shrink: 0;
         }
-
         .title {
             color: #e0e0e0;
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 600;
             letter-spacing: 0.5px;
         }
-
         .mode-indicator {
             color: #aaa;
-            font-size: 12px;
-            padding: 5px 14px;
+            font-size: 13px;
+            padding: 6px 16px;
             background: rgba(255,255,255,0.08);
             border-radius: 15px;
             border: 1px solid rgba(255,255,255,0.1);
         }
-
         .submit-btn {
-            padding: 9px 22px;
+            padding: 10px 26px;
             background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
             border: none;
             border-radius: 20px;
             color: #fff;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 3px 12px rgba(74, 222, 128, 0.3);
-            letter-spacing: 0.5px;
         }
-
         .submit-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 5px 18px rgba(74, 222, 128, 0.45);
         }
-
         .submit-btn:disabled {
             background: #4b5563;
             cursor: not-allowed;
@@ -77,152 +69,143 @@
             opacity: 0.6;
         }
 
+        /* ---- Main ---- */
         .main-content {
             flex: 1;
             display: flex;
-            flex-direction: row;
-            justify-content: space-around;
-            align-items: center;
-            padding: 20px;
-            gap: 20px;
-        }
-
-        .drop-zone {
-            flex: 1;
-            display: flex;
             justify-content: center;
             align-items: center;
+            padding: 30px;
+            gap: 40px;
         }
 
-        .circle-container {
-            width: 600px;
-            height: 380px;
+        /* ---- Canvas (SVG-based, all positioned elements inside) ---- */
+        .canvas-wrapper {
             position: relative;
+            width: 780px;
+            height: 460px;
+            flex-shrink: 0;
         }
 
-        .arrow-container {
+        .canvas-svg {
             position: absolute;
+            top: 0; left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
         }
 
-        .arrow-container svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .arrow-line {
-            stroke: rgba(255,255,255,0.35);
+        .canvas-svg line {
+            stroke: rgba(255,255,255,0.3);
             stroke-width: 2.5;
-            stroke-dasharray: 6,4;
             transition: all 0.4s ease;
         }
-
-        .arrow-line.hidden {
-            opacity: 0;
-        }
-
-        .arrow-line.active {
+        .canvas-svg line.active {
             stroke: #4ade80;
             stroke-width: 4;
-            stroke-dasharray: none;
         }
-
-        .arrow-line.dashed-connect {
+        .canvas-svg line.dashed {
             stroke: #fbbf24;
             stroke-width: 3;
-            stroke-dasharray: 8,5;
+            stroke-dasharray: 8 6;
             animation: dashPulse 0.8s ease-in-out infinite;
-            cursor: pointer;
-            pointer-events: auto;
         }
-
-        .arrow-line.dashed-connect:hover {
-            stroke: #f59e0b;
-            stroke-width: 4;
+        .canvas-svg line.hidden-line {
+            opacity: 0;
         }
-
         @keyframes dashPulse {
             0%, 100% { stroke-dashoffset: 0; opacity: 0.7; }
-            50% { stroke-dashoffset: -13; opacity: 1; }
+            50% { stroke-dashoffset: -14; opacity: 1; }
         }
 
-        .connect-hitbox {
-            position: absolute;
-            pointer-events: auto;
-            cursor: pointer;
-            z-index: 30;
-        }
-
+        /* ---- Drop Targets (on the canvas) ---- */
         .drop-target {
             position: absolute;
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.06);
-            border: 2px dashed rgba(255,255,255,0.2);
+            border: 2px dashed rgba(255,255,255,0.25);
+            background: rgba(255,255,255,0.04);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
             z-index: 5;
+            transition: border-color 0.3s, background 0.3s;
         }
-
-        .drop-target.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .drop-target:hover,
-        .drop-target.drag-over {
-            background: rgba(255,255,255,0.12);
-            border-color: rgba(255,255,255,0.4);
-            transform: scale(1.06);
-        }
-
         .drop-target.filled {
             border-color: transparent;
             background: transparent;
         }
-
-        .drop-target.sense {
-            top: 50%;
-            left: 30px;
-            transform: translateY(-50%);
+        .drop-target.drag-over {
+            border-color: rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.1);
+            transform: scale(1.05);
         }
 
-        .drop-target.decision {
-            top: 50%;
-            left: 260px;
-            transform: translate(-50%, -50%);
+        /* Target positions — linear layout */
+        .drop-target.pos-sense  { left: 45px;  top: 185px; }
+        .drop-target.pos-dec    { left: 345px; top: 185px; }
+        .drop-target.pos-action { left: 645px; top: 185px; }
+
+        /* Target positions — triangle layout */
+        .drop-target.pos-sense-tri  { left: 345px; top: 35px; }
+        .drop-target.pos-dec-tri    { left: 590px; top: 340px; }
+        .drop-target.pos-action-tri { left: 100px; top: 340px; }
+
+        .target-label {
+            position: absolute;
+            color: rgba(255,255,255,0.45);
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            pointer-events: none;
         }
 
-        .drop-target.action {
-            top: 50%;
-            right: 30px;
-            transform: translateY(-50%);
+        /* ---- Placed Nodes ---- */
+        .placed-node {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            z-index: 20;
+            cursor: pointer;
+            transition: box-shadow 0.3s, border 0.3s;
+            user-select: none;
+        }
+        .placed-node:hover {
+            box-shadow: 0 6px 28px rgba(0,0,0,0.6);
+        }
+        .placed-node .node-icon { font-size: 22px; }
+        .placed-node .node-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #fff;
+            margin-top: 1px;
+            letter-spacing: 1px;
         }
 
-        /* Triangle positions */
-        .drop-target.sense-triangle {
-            top: 25px;
-            left: 300px;
-            transform: translate(-50%, 0);
+        .placed-node.sense    { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+        .placed-node.decision { background: linear-gradient(135deg, #4ecdc4, #2d8a7e); }
+        .placed-node.action   { background: linear-gradient(135deg, #ffd93d, #f0a500); }
+
+        .placed-node.selectable {
+            animation: glowPulse 1s ease-in-out infinite;
+        }
+        .placed-node.selected {
+            box-shadow: 0 0 0 4px #4ade80, 0 0 20px rgba(74,222,128,0.5);
+            animation: none;
+        }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 6px rgba(251,191,36,0.3); }
+            50% { box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 20px rgba(251,191,36,0.5); }
         }
 
-        .drop-target.decision-triangle {
-            top: 275px;
-            left: 480px;
-            transform: translate(-50%, -50%);
-        }
-
-        .drop-target.action-triangle {
-            top: 275px;
-            left: 120px;
-            transform: translate(-50%, -50%);
-        }
-
+        /* ---- Modules Panel ---- */
         .modules-panel {
             width: 240px;
             background: rgba(0,0,0,0.25);
@@ -233,8 +216,8 @@
             flex-direction: column;
             gap: 15px;
             border: 1px solid rgba(255,255,255,0.06);
+            flex-shrink: 0;
         }
-
         .modules-title {
             color: #ccc;
             font-size: 15px;
@@ -243,13 +226,7 @@
             padding-bottom: 10px;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-
-        .modules-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
+        .modules-list { display: flex; flex-direction: column; gap: 12px; }
         .module {
             width: 100%;
             padding: 13px;
@@ -262,387 +239,29 @@
             box-shadow: 0 3px 12px rgba(0,0,0,0.3);
             user-select: none;
         }
-
         .module:hover:not(.used) {
             transform: translateX(4px);
             box-shadow: 0 5px 18px rgba(0,0,0,0.4);
         }
+        .module.dragging { opacity: 0.5; }
+        .module.used { opacity: 0.3; cursor: not-allowed; }
+        .module .mod-icon { font-size: 24px; }
+        .module .mod-info { display: flex; flex-direction: column; }
+        .module .mod-label { font-size: 14px; font-weight: 600; color: #fff; }
+        .module .mod-desc { font-size: 10px; color: rgba(255,255,255,0.65); margin-top: 2px; }
 
-        .module.dragging {
-            opacity: 0.5;
-            transform: scale(1.02);
-            cursor: grabbing;
-        }
+        .module.sense-bg    { background: linear-gradient(135deg, #ff6b6b, #ee5a24); }
+        .module.decision-bg { background: linear-gradient(135deg, #4ecdc4, #2d8a7e); }
+        .module.action-bg   { background: linear-gradient(135deg, #ffd93d, #f0a500); }
 
-        .module.used {
-            opacity: 0.35;
-            cursor: not-allowed;
-        }
-
-        .module-icon {
-            font-size: 24px;
-        }
-
-        .module-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .module-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: white;
-        }
-
-        .module-desc {
-            font-size: 10px;
-            color: rgba(255,255,255,0.7);
-            margin-top: 2px;
-        }
-
-        .module-sense {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-        }
-
-        .module-decision {
-            background: linear-gradient(135deg, #4ecdc4 0%, #2d8a7e 100%);
-        }
-
-        .module-action {
-            background: linear-gradient(135deg, #ffd93d 0%, #f0a500 100%);
-        }
-
-        .placed-node {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            z-index: 20;
-            animation: popIn 0.35s ease;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .placed-node:hover {
-            transform: scale(1.06);
-            box-shadow: 0 6px 25px rgba(0,0,0,0.5);
-        }
-
-        .placed-node.selectable {
-            animation: nodeGlow 1s ease-in-out infinite;
-            border: 3px solid rgba(251, 191, 36, 0.6);
-        }
-
-        .placed-node.selected {
-            border: 4px solid #4ade80;
-            box-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
-            animation: none;
-        }
-
-        @keyframes nodeGlow {
-            0%, 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 8px rgba(251,191,36,0.3); }
-            50% { box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 18px rgba(251,191,36,0.6); }
-        }
-
-        @keyframes popIn {
-            from { opacity: 0; transform: scale(0.4); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .placed-node-icon {
-            font-size: 20px;
-            margin-bottom: 2px;
-        }
-
-        .placed-node-label {
-            font-size: 10px;
-            font-weight: 600;
-            color: white;
-            text-align: center;
-        }
-
-        /* ---- Green Pixel Robot ---- */
-        .robot-container {
-            position: fixed;
-            z-index: 500;
-            pointer-events: none;
-        }
-
-        .robot {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            image-rendering: pixelated;
-            position: relative;
-        }
-
-        .robot-head {
-            width: 24px;
-            height: 20px;
-            background: #00ff00;
-            border: 2px solid #00aa00;
-            position: relative;
-            margin-bottom: 3px;
-            border-radius: 2px;
-            box-shadow: 0 0 6px rgba(0,255,0,0.4);
-        }
-
-        .robot-eye {
-            position: absolute;
-            width: 12px;
-            height: 4px;
-            background: #111;
-            top: 5px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .robot-body {
-            width: 38px;
-            height: 28px;
-            background: #00ff00;
-            border: 2px solid #00aa00;
-            border-radius: 2px;
-            position: relative;
-            box-shadow: 0 0 6px rgba(0,255,0,0.4);
-        }
-
-        .robot-body-inner {
-            position: absolute;
-            top: 5px;
-            left: 8px;
-            width: 22px;
-            height: 8px;
-            background: #00cc00;
-            border-radius: 1px;
-        }
-
-        .robot-arm {
-            position: absolute;
-            width: 10px;
-            height: 20px;
-            background: #00ff00;
-            border: 2px solid #00aa00;
-            border-radius: 2px;
-            top: 4px;
-        }
-
-        .robot-arm.left {
-            left: -12px;
-            transform-origin: top center;
-            animation: armSwingL 0.3s ease-in-out infinite alternate;
-        }
-
-        .robot-arm.right {
-            right: -12px;
-            transform-origin: top center;
-            animation: armSwingR 0.3s ease-in-out infinite alternate;
-        }
-
-        .robot-legs {
-            display: flex;
-            gap: 6px;
-            margin-top: 2px;
-        }
-
-        .robot-leg {
-            width: 10px;
-            height: 14px;
-            background: #00ff00;
-            border: 2px solid #00aa00;
-            border-radius: 2px;
-        }
-
-        .robot-leg.left {
-            transform-origin: top center;
-            animation: legSwingL 0.3s ease-in-out infinite alternate;
-        }
-
-        .robot-leg.right {
-            transform-origin: top center;
-            animation: legSwingR 0.3s ease-in-out infinite alternate;
-        }
-
-        .robot-shadow {
-            width: 32px;
-            height: 8px;
-            background: rgba(0, 0, 0, 0.35);
-            border-radius: 50%;
-            margin-top: 2px;
-            animation: shadowPulse 0.3s ease-in-out infinite alternate;
-        }
-
-        @keyframes armSwingL {
-            0% { transform: rotate(-25deg); }
-            100% { transform: rotate(25deg); }
-        }
-
-        @keyframes armSwingR {
-            0% { transform: rotate(25deg); }
-            100% { transform: rotate(-25deg); }
-        }
-
-        @keyframes legSwingL {
-            0% { transform: rotate(-15deg); }
-            100% { transform: rotate(15deg); }
-        }
-
-        @keyframes legSwingR {
-            0% { transform: rotate(15deg); }
-            100% { transform: rotate(-15deg); }
-        }
-
-        @keyframes shadowPulse {
-            0% { transform: scaleX(1); opacity: 0.35; }
-            100% { transform: scaleX(0.75); opacity: 0.2; }
-        }
-
-        .robot-container.stepping .robot {
-            animation: stepBob 0.3s ease-in-out infinite alternate;
-        }
-
-        @keyframes stepBob {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-5px); }
-        }
-
-        /* ---- Popups ---- */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.65);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal {
-            background: #1e293b;
-            border-radius: 16px;
-            padding: 30px 28px;
-            max-width: 430px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            animation: popIn 0.35s ease;
-            color: #e2e8f0;
-        }
-
-        .modal.warning {
-            border: 2px solid #f59e0b;
-        }
-
-        .modal.success {
-            border: 2px solid #22c55e;
-        }
-
-        .modal-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 14px;
-            font-size: 28px;
-        }
-
-        .modal-icon.warning {
-            background: rgba(245, 158, 11, 0.15);
-            color: #f59e0b;
-        }
-
-        .modal-icon.success {
-            background: rgba(34, 197, 94, 0.15);
-            color: #22c55e;
-        }
-
-        .modal-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .modal-title.warning { color: #f59e0b; }
-        .modal-title.success { color: #4ade80; }
-
-        .modal-text {
-            font-size: 13px;
-            line-height: 1.8;
-            color: #94a3b8;
-            margin-bottom: 10px;
-        }
-
-        .modal-hint {
-            background: rgba(255,255,255,0.05);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 18px;
-            text-align: left;
-            font-size: 12px;
-            line-height: 1.7;
-            color: #cbd5e1;
-            border: 1px solid rgba(255,255,255,0.08);
-        }
-
-        .modal-hint strong {
-            color: #fbbf24;
-        }
-
-        .modal-btn {
-            padding: 10px 32px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            letter-spacing: 0.5px;
-        }
-
-        .modal-btn.warning {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: #fff;
-        }
-
-        .modal-btn.warning:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
-        }
-
-        .modal-btn.success {
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-            color: #fff;
-        }
-
-        .modal-btn.success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
-        }
-
+        /* ---- Progress ---- */
         .progress-bar {
             height: 4px;
             background: rgba(255,255,255,0.1);
             border-radius: 2px;
             overflow: hidden;
-            margin-top: 5px;
+            margin-top: 4px;
         }
-
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #4ade80, #22c55e);
@@ -650,802 +269,730 @@
             transition: width 0.3s ease;
         }
 
-        .connect-hint {
+        /* ---- Green Pixel Robot ---- */
+        .robot-ct {
             position: fixed;
-            bottom: 30px;
-            left: 50%;
+            z-index: 500;
+            pointer-events: none;
+        }
+        .robot {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .robot-head {
+            width: 26px; height: 22px;
+            background: #00ff00;
+            border: 2px solid #009900;
+            position: relative;
+            margin-bottom: 3px;
+            border-radius: 3px;
+            box-shadow: 0 0 8px rgba(0,255,0,0.4);
+        }
+        .robot-eye {
+            position: absolute;
+            width: 14px; height: 5px;
+            background: #111;
+            top: 5px; left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
+            border-radius: 1px;
+        }
+        .robot-body {
+            width: 40px; height: 30px;
+            background: #00ff00;
+            border: 2px solid #009900;
+            border-radius: 3px;
+            position: relative;
+            box-shadow: 0 0 8px rgba(0,255,0,0.4);
+        }
+        .robot-body-inner {
+            position: absolute;
+            top: 6px; left: 9px;
+            width: 22px; height: 8px;
+            background: #00cc00;
+            border-radius: 2px;
+        }
+        .robot-arm {
+            position: absolute;
+            width: 10px; height: 22px;
+            background: #00ff00;
+            border: 2px solid #009900;
+            border-radius: 2px;
+            top: 4px;
+        }
+        .robot-arm.l { left: -13px; transform-origin: top center; animation: armL 0.28s ease-in-out infinite alternate; }
+        .robot-arm.r { right: -13px; transform-origin: top center; animation: armR 0.28s ease-in-out infinite alternate; }
+        .robot-legs { display: flex; gap: 7px; margin-top: 3px; }
+        .robot-leg {
+            width: 11px; height: 15px;
+            background: #00ff00;
+            border: 2px solid #009900;
+            border-radius: 2px;
+        }
+        .robot-leg.l { transform-origin: top center; animation: legL 0.28s ease-in-out infinite alternate; }
+        .robot-leg.r { transform-origin: top center; animation: legR 0.28s ease-in-out infinite alternate; }
+        .robot-shadow {
+            width: 34px; height: 8px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 50%;
+            margin-top: 3px;
+            animation: shad 0.28s ease-in-out infinite alternate;
+        }
+
+        @keyframes armL { 0% { transform: rotate(-30deg); } 100% { transform: rotate(30deg); } }
+        @keyframes armR { 0% { transform: rotate(30deg); } 100% { transform: rotate(-30deg); } }
+        @keyframes legL { 0% { transform: rotate(-18deg); } 100% { transform: rotate(18deg); } }
+        @keyframes legR { 0% { transform: rotate(18deg); } 100% { transform: rotate(-18deg); } }
+        @keyframes shad { 0% { transform: scaleX(1); opacity: 0.3; } 100% { transform: scaleX(0.7); opacity: 0.15; } }
+
+        .robot-ct.stepping .robot {
+            animation: bob 0.28s ease-in-out infinite alternate;
+        }
+        @keyframes bob {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-6px); }
+        }
+
+        /* ---- Overlays & Modals ---- */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal {
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 30px 28px;
+            max-width: 440px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            color: #e2e8f0;
+        }
+        .modal.warn { border: 2px solid #f59e0b; }
+        .modal.ok   { border: 2px solid #22c55e; }
+
+        .modal .icon-circle {
+            width: 60px; height: 60px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 14px; font-size: 28px;
+        }
+        .modal .icon-circle.warn { background: rgba(245,158,11,0.15); }
+        .modal .icon-circle.ok   { background: rgba(34,197,94,0.15); }
+
+        .modal .m-title { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+        .modal .m-title.warn { color: #f59e0b; }
+        .modal .m-title.ok   { color: #4ade80; }
+
+        .modal .m-text {
+            font-size: 13px; line-height: 1.8; color: #94a3b8; margin-bottom: 10px;
+        }
+        .modal .m-hint {
+            background: rgba(255,255,255,0.05);
+            padding: 12px; border-radius: 8px;
+            margin-bottom: 18px; text-align: left;
+            font-size: 12px; line-height: 1.7; color: #cbd5e1;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .modal .m-hint strong { color: #fbbf24; }
+
+        .m-btn {
+            padding: 10px 32px; border: none; border-radius: 8px;
+            font-size: 14px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; letter-spacing: 0.5px;
+        }
+        .m-btn.warn { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+        .m-btn.ok   { background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; }
+        .m-btn:hover { transform: translateY(-2px); }
+
+        /* ---- Bottom hint ---- */
+        .bottom-hint {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
             color: #fbbf24;
-            padding: 10px 24px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
+            padding: 10px 24px; border-radius: 20px;
+            font-size: 14px; font-weight: 600;
             z-index: 400;
-            animation: fadeIn 0.5s ease;
-            letter-spacing: 0.5px;
             border: 1px solid rgba(251,191,36,0.3);
         }
+        .bottom-hint.done { color: #4ade80; border-color: rgba(74,222,128,0.3); }
 
-        .connect-hint.done {
-            color: #4ade80;
-            border-color: rgba(74,222,128,0.3);
-        }
-
-        .loop-indicator {
-            position: fixed;
-            top: 100px;
-            right: 30px;
+        /* ---- Lap counter ---- */
+        .lap-badge {
+            position: fixed; top: 110px; right: 30px;
             background: rgba(0,0,0,0.7);
             color: #4ade80;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
+            padding: 8px 16px; border-radius: 20px;
+            font-size: 13px; font-weight: 600;
             z-index: 400;
             border: 1px solid rgba(74,222,128,0.3);
         }
 
-        .step-label {
-            position: absolute;
-            color: rgba(255,255,255,0.4);
-            font-size: 10px;
-            font-weight: 600;
-            text-align: center;
-            pointer-events: none;
-            z-index: 2;
-            letter-spacing: 0.5px;
-        }
-
-        .error-toast {
-            position: fixed;
-            top: 50%;
-            left: 50%;
+        /* ---- Error toast ---- */
+        .err-toast {
+            position: fixed; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(239, 68, 68, 0.95);
-            color: white;
-            padding: 18px 36px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
+            background: rgba(239,68,68,0.95);
+            color: #fff;
+            padding: 16px 32px; border-radius: 12px;
+            font-size: 15px; font-weight: 600;
             box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+            z-index: 1500; text-align: center;
             animation: shake 0.5s ease;
-            z-index: 1500;
-            text-align: center;
         }
-
         @keyframes shake {
             0%, 100% { transform: translate(-50%, -50%); }
             25% { transform: translate(calc(-50% - 8px), -50%); }
             75% { transform: translate(calc(-50% + 8px), -50%); }
         }
-
-        .arrow-label {
-            position: absolute;
-            font-size: 10px;
-            color: rgba(255,255,255,0.5);
-            pointer-events: none;
-            z-index: 3;
-            font-weight: 500;
-        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1 class="title">认识「感知→决策→行动」闭环</h1>
-            <div class="mode-indicator" id="modeIndicator">阶段一：线性流程</div>
-            <button class="submit-btn" id="submitBtn" disabled>测试运行</button>
+<div class="container">
+    <div class="header">
+        <h1 class="title">认识「感知→决策→行动」闭环</h1>
+        <div class="mode-indicator" id="modeIndicator">阶段一：线性流程</div>
+        <button class="submit-btn" id="submitBtn" disabled>测试运行</button>
+    </div>
+
+    <div class="main-content">
+        <!-- Canvas: 780×460, all positions relative to this -->
+        <div class="canvas-wrapper" id="canvas">
+            <svg class="canvas-svg" viewBox="0 0 780 460">
+                <defs>
+                    <marker id="ah" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                        <polygon points="0 0, 10 4, 0 8" fill="#4ade80" />
+                    </marker>
+                    <marker id="ah-yellow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+                        <polygon points="0 0, 10 4, 0 8" fill="#fbbf24" />
+                    </marker>
+                </defs>
+
+                <!-- Linear arrows -->
+                <line id="la1" class="active"       x1="140" y1="230" x2="300" y2="230" marker-end="url(#ah)" />
+                <line id="la2" class="active"       x1="390" y1="230" x2="550" y2="230" marker-end="url(#ah)" />
+
+                <!-- Triangle arrows -->
+                <line id="ta1" class="hidden-line"  x1="390" y1="125" x2="545" y2="300" marker-end="url(#ah)" />
+                <line id="ta2" class="hidden-line"  x1="545" y1="340" x2="235" y2="340" marker-end="url(#ah)" />
+                <line id="ta3" class="hidden-line"  x1="200" y1="300" x2="345" y2="130" marker-end="url(#ah-yellow)" />
+            </svg>
+
+            <!-- Drop targets (positioned with CSS) -->
+            <div class="drop-target pos-sense" id="tgSense" data-target="sense">
+                <span class="target-label" style="top:-20px;left:50%;transform:translateX(-50%);">① 感知</span>
+            </div>
+            <div class="drop-target pos-dec" id="tgDecision" data-target="decision">
+                <span class="target-label" style="top:-20px;left:50%;transform:translateX(-50%);">② 决策</span>
+            </div>
+            <div class="drop-target pos-action" id="tgAction" data-target="action">
+                <span class="target-label" style="top:-20px;left:50%;transform:translateX(-50%);">③ 行动</span>
+            </div>
         </div>
 
-        <div class="main-content">
-            <div class="drop-zone">
-                <div class="circle-container" id="circleContainer">
-                    <div class="arrow-container" id="arrowContainer">
-                        <svg width="600" height="380" viewBox="0 0 600 380">
-                            <defs>
-                                <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
-                                    <polygon points="0 0, 10 4, 0 8" fill="#4ade80" />
-                                </marker>
-                                <marker id="arrowhead-yellow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
-                                    <polygon points="0 0, 10 4, 0 8" fill="#fbbf24" />
-                                </marker>
-                            </defs>
-
-                            <!-- Linear arrows: sense→decision, decision→action -->
-                            <line id="linearArrow1" class="arrow-line active" x1="115" y1="190" x2="215" y2="190" marker-end="url(#arrowhead)" />
-                            <line id="linearArrow2" class="arrow-line active" x1="305" y1="190" x2="485" y2="190" marker-end="url(#arrowhead)" />
-
-                            <!-- Triangle arrows: sense→decision, decision→action -->
-                            <line id="triArrow1" class="arrow-line hidden" x1="330" y1="100" x2="440" y2="235" marker-end="url(#arrowhead)" />
-                            <line id="triArrow2" class="arrow-line hidden" x1="440" y1="275" x2="165" y2="275" marker-end="url(#arrowhead)" />
-
-                            <!-- Triangle arrow: action→sense (dashed, needs connection) -->
-                            <line id="triArrow3" class="arrow-line hidden dashed-connect" x1="155" y1="240" x2="270" y2="95" marker-end="url(#arrowhead-yellow)" />
-                        </svg>
+        <!-- Modules panel -->
+        <div class="modules-panel">
+            <div class="modules-title">可用模块</div>
+            <div class="modules-list">
+                <div class="module sense-bg" draggable="true" data-module="sense">
+                    <div class="mod-icon">👁️</div>
+                    <div class="mod-info">
+                        <div class="mod-label">感知</div>
+                        <div class="mod-desc">收集信息，识别环境</div>
                     </div>
-
-                    <!-- Linear drop targets -->
-                    <div class="drop-target sense" id="targetSense" data-target="sense">
-                        <span class="step-label" style="top:-18px;left:50%;transform:translateX(-50%);">① 感知</span>
+                </div>
+                <div class="module decision-bg" draggable="true" data-module="decision">
+                    <div class="mod-icon">🧠</div>
+                    <div class="mod-info">
+                        <div class="mod-label">决策</div>
+                        <div class="mod-desc">分析判断，制定策略</div>
                     </div>
-                    <div class="drop-target decision" id="targetDecision" data-target="decision">
-                        <span class="step-label" style="top:-18px;left:50%;transform:translateX(-50%);">② 决策</span>
-                    </div>
-                    <div class="drop-target action" id="targetAction" data-target="action">
-                        <span class="step-label" style="top:-18px;left:50%;transform:translateX(-50%);">③ 行动</span>
+                </div>
+                <div class="module action-bg" draggable="true" data-module="action">
+                    <div class="mod-icon">⚡</div>
+                    <div class="mod-info">
+                        <div class="mod-label">行动</div>
+                        <div class="mod-desc">执行计划，产生影响</div>
                     </div>
                 </div>
             </div>
-
-            <div class="modules-panel">
-                <div class="modules-title">可用模块</div>
-                <div class="modules-list">
-                    <div class="module module-sense" draggable="true" data-module="sense">
-                        <div class="module-icon">👁️</div>
-                        <div class="module-info">
-                            <div class="module-label">感知</div>
-                            <div class="module-desc">收集信息，识别环境</div>
-                        </div>
-                    </div>
-                    <div class="module module-decision" draggable="true" data-module="decision">
-                        <div class="module-icon">🧠</div>
-                        <div class="module-info">
-                            <div class="module-label">决策</div>
-                            <div class="module-desc">分析判断，制定策略</div>
-                        </div>
-                    </div>
-                    <div class="module module-action" draggable="true" data-module="action">
-                        <div class="module-icon">⚡</div>
-                        <div class="module-info">
-                            <div class="module-label">行动</div>
-                            <div class="module-desc">执行计划，产生影响</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-                </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width:0%"></div>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        // ---- State ----
-        const state = {
-            mode: 'linear',          // 'linear' | 'triangle-connect' | 'loop-ready' | 'running'
-            placedNodes: {},         // { sense: {node, type}, decision, action }
-            connectionMade: false,
-            selectedForConnection: null,
-            isRunning: false,
-            robotEl: null,
-            loopAnimId: null,
-        };
+<script>
+// ============ STATE ============
+const S = {
+    mode: 'linear',           // linear | tri-connect | loop-ready | running
+    placed: {},               // { sense: {node,type}, decision, action }
+    connected: false,
+    selConn: null,
+    running: false,
+    robotEl: null,
+    loopId: null,
+};
 
-        // ---- DOM refs ----
-        const modules = document.querySelectorAll('.module');
-        const dropTargets = document.querySelectorAll('.drop-target');
-        const circleContainer = document.getElementById('circleContainer');
-        const submitBtn = document.getElementById('submitBtn');
-        const modeIndicator = document.getElementById('modeIndicator');
-        const progressFill = document.getElementById('progressFill');
-        const targetSense = document.getElementById('targetSense');
-        const targetDecision = document.getElementById('targetDecision');
-        const targetAction = document.getElementById('targetAction');
-        const linearArrow1 = document.getElementById('linearArrow1');
-        const linearArrow2 = document.getElementById('linearArrow2');
-        const triArrow1 = document.getElementById('triArrow1');
-        const triArrow2 = document.getElementById('triArrow2');
-        const triArrow3 = document.getElementById('triArrow3');
+// ============ DOM REFS ============
+const canvas    = document.getElementById('canvas');
+const submitBtn = document.getElementById('submitBtn');
+const modeInd   = document.getElementById('modeIndicator');
+const progFill  = document.getElementById('progressFill');
+const tgSense   = document.getElementById('tgSense');
+const tgDec     = document.getElementById('tgDecision');
+const tgAct     = document.getElementById('tgAction');
+const la1 = document.getElementById('la1'), la2 = document.getElementById('la2');
+const ta1 = document.getElementById('ta1'), ta2 = document.getElementById('ta2'), ta3 = document.getElementById('ta3');
 
-        let draggedModule = null;
+const modules = document.querySelectorAll('.module');
+const targets = document.querySelectorAll('.drop-target');
+let dragMod = null;
 
-        // ---- Drag and Drop ----
-        modules.forEach(m => {
-            m.addEventListener('dragstart', dragStart);
-            m.addEventListener('dragend', dragEnd);
-        });
+// ============ DRAG & DROP ============
+modules.forEach(m => {
+    m.addEventListener('dragstart', e => {
+        if (m.classList.contains('used')) { e.preventDefault(); return; }
+        dragMod = m;
+        m.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+    });
+    m.addEventListener('dragend', () => {
+        if (dragMod) { dragMod.classList.remove('dragging'); dragMod = null; }
+    });
+});
 
-        dropTargets.forEach(t => {
-            t.addEventListener('dragover', dragOver);
-            t.addEventListener('dragleave', dragLeave);
-            t.addEventListener('drop', drop);
-        });
+targets.forEach(t => {
+    t.addEventListener('dragover', e => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        t.classList.add('drag-over');
+    });
+    t.addEventListener('dragleave', e => t.classList.remove('drag-over'));
+    t.addEventListener('drop', e => {
+        e.preventDefault();
+        t.classList.remove('drag-over');
+        if (!dragMod || S.placed[t.dataset.target]) return;
 
-        submitBtn.addEventListener('click', handleSubmit);
+        const modType = dragMod.dataset.module;
+        const tgtType = t.dataset.target;
 
-        function dragStart(e) {
-            if (e.target.closest('.module').classList.contains('used')) {
-                e.preventDefault();
-                return;
-            }
-            draggedModule = e.target.closest('.module');
-            draggedModule.classList.add('dragging');
-            e.dataTransfer.effectAllowed = 'move';
+        const node = mkNode(modType);
+        snapNodeTo(node, t);
+        canvas.appendChild(node);
+        S.placed[tgtType] = { node, type: modType };
+
+        t.classList.add('filled');
+        dragMod.classList.add('used');
+        dragMod.draggable = false;
+
+        updateBtn();
+        updateProg();
+    });
+});
+
+submitBtn.addEventListener('click', () => {
+    if (S.running) return;
+    if (S.mode === 'linear')    handleLinear();
+    if (S.mode === 'loop-ready') handleLoop();
+});
+
+// ============ NODE HELPERS ============
+function snapNodeTo(node, target) {
+    const tr = target.getBoundingClientRect();
+    const cr = canvas.getBoundingClientRect();
+    node.style.left = (tr.left - cr.left) + 'px';
+    node.style.top  = (tr.top - cr.top) + 'px';
+}
+
+function mkNode(type) {
+    const n = document.createElement('div');
+    n.className = `placed-node ${type}`;
+    n.dataset.type = type;
+    const icons = { sense:'👁️', decision:'🧠', action:'⚡' };
+    const labels = { sense:'感知', decision:'决策', action:'行动' };
+    n.innerHTML = `<div class="node-icon">${icons[type]}</div><div class="node-label">${labels[type]}</div>`;
+    n.addEventListener('click', e => onNodeClick(n));
+    return n;
+}
+
+function onNodeClick(node) {
+    if (S.mode === 'tri-connect' && !S.connected) {
+        handleConnClick(node);
+        return;
+    }
+    if (S.mode === 'linear' && !S.running) {
+        removeNode(node);
+    }
+}
+
+function removeNode(node) {
+    const type = node.dataset.type;
+    node.remove();
+    for (const [k, v] of Object.entries(S.placed)) {
+        if (v.type === type) {
+            delete S.placed[k];
+            const tg = document.querySelector(`.drop-target[data-target="${k}"]`);
+            if (tg) tg.classList.remove('filled');
+            break;
+        }
+    }
+    const mod = document.querySelector(`.module[data-module="${type}"]`);
+    if (mod) { mod.classList.remove('used'); mod.draggable = true; }
+    updateBtn(); updateProg();
+}
+
+// ============ BUTTON / PROGRESS ============
+function updateBtn() {
+    const n = Object.keys(S.placed).length;
+    if (S.mode === 'loop-ready') {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '运行闭环';
+    } else if (S.mode === 'tri-connect') {
+        submitBtn.disabled = true;
+        submitBtn.textContent = '请先连线';
+    } else {
+        submitBtn.disabled = n < 3;
+        submitBtn.textContent = '测试运行';
+    }
+}
+function updateProg() {
+    progFill.style.width = (Object.keys(S.placed).length / 3 * 100) + '%';
+}
+
+// ============ SUBMIT LOGIC ============
+function placedOrder() {
+    return ['sense','decision','action'].map(k => S.placed[k]?.type).filter(Boolean);
+}
+function isCorrect() {
+    return placedOrder().join(',') === 'sense,decision,action';
+}
+
+function handleLinear() {
+    if (Object.keys(S.placed).length < 3) return;
+    if (!isCorrect()) { toast('顺序错误！请按 ①感知→②决策→③行动 放置'); return; }
+    runLinear();
+}
+
+function handleLoop() {
+    if (!S.connected) return;
+    runLoop();
+}
+
+// ============ ROBOT CREATION ============
+function mkRobot() {
+    const ct = document.createElement('div');
+    ct.className = 'robot-ct';
+    ct.innerHTML = `
+        <div class="robot">
+            <div class="robot-head"><div class="robot-eye"></div></div>
+            <div class="robot-body">
+                <div class="robot-body-inner"></div>
+                <div class="robot-arm l"></div>
+                <div class="robot-arm r"></div>
+            </div>
+            <div class="robot-legs">
+                <div class="robot-leg l"></div>
+                <div class="robot-leg r"></div>
+            </div>
+        </div>
+        <div class="robot-shadow"></div>`;
+    return ct;
+}
+
+function killRobot() {
+    if (S.robotEl) { S.robotEl.remove(); S.robotEl = null; }
+    if (S.loopId)  { cancelAnimationFrame(S.loopId); S.loopId = null; }
+    const lb = document.getElementById('lapBadge');
+    if (lb) lb.remove();
+}
+
+function nodeCenter(node) {
+    const r = node.getBoundingClientRect();
+    return { x: r.left + r.width/2, y: r.top + r.height/2 };
+}
+
+// ============ LINEAR ROBOT RUN ============
+function runLinear() {
+    S.running = true; submitBtn.disabled = true; killRobot();
+
+    const sn = S.placed['sense']?.node;
+    const dn = S.placed['decision']?.node;
+    const an = S.placed['action']?.node;
+    if (!sn || !dn || !an) return;
+
+    // Viewport coords (robot is position:fixed)
+    const sc = nodeCenter(sn), dc = nodeCenter(dn), ac = nodeCenter(an);
+    // offset by half robot size (~38w × 50h)
+    const pts = [
+        { x: sc.x - 38, y: sc.y - 50 },
+        { x: dc.x - 38, y: dc.y - 50 },
+        { x: ac.x - 38, y: ac.y - 50 },
+    ];
+
+    const robot = mkRobot();
+    document.body.appendChild(robot);
+    robot.style.left = pts[0].x + 'px';
+    robot.style.top  = pts[0].y + 'px';
+    S.robotEl = robot;
+
+    const segs = [
+        { a: pts[0], b: pts[1], ms: 1200 },
+        { a: pts[1], b: pts[2], ms: 1200 },
+    ];
+    let si = 0, t0 = Date.now();
+
+    function tick() {
+        if (si >= segs.length) {
+            robot.classList.add('stepping');
+            setTimeout(showWarnModal, 600);
+            return;
+        }
+        const s = segs[si];
+        const p = Math.min((Date.now() - t0) / s.ms, 1);
+        robot.style.left = (s.a.x + (s.b.x - s.a.x) * p) + 'px';
+        robot.style.top  = (s.a.y + (s.b.y - s.a.y) * p) + 'px';
+        if (p >= 1) { si++; t0 = Date.now(); }
+        requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+}
+
+// ============ LOOP ROBOT RUN ============
+function runLoop() {
+    S.running = true; submitBtn.disabled = true; killRobot();
+
+    const sn = S.placed['sense']?.node;
+    const dn = S.placed['decision']?.node;
+    const an = S.placed['action']?.node;
+    if (!sn || !dn || !an) return;
+
+    const sc = nodeCenter(sn), dc = nodeCenter(dn), ac = nodeCenter(an);
+    const pts = [
+        { x: sc.x - 38, y: sc.y - 50 },
+        { x: dc.x - 38, y: dc.y - 50 },
+        { x: ac.x - 38, y: ac.y - 50 },
+    ];
+
+    const robot = mkRobot();
+    document.body.appendChild(robot);
+    robot.style.left = pts[0].x + 'px';
+    robot.style.top  = pts[0].y + 'px';
+    S.robotEl = robot;
+
+    const badge = document.createElement('div');
+    badge.className = 'lap-badge';
+    badge.id = 'lapBadge';
+    badge.textContent = '闭环运行中… 圈数: 0';
+    document.body.appendChild(badge);
+
+    let seg = 0, t0 = Date.now(), laps = 0;
+    const MAX = 3;
+
+    function tick() {
+        const p = Math.min((Date.now() - t0) / 1000, 1);
+        const a = pts[seg], b = pts[(seg + 1) % 3];
+        robot.style.left = (a.x + (b.x - a.x) * p) + 'px';
+        robot.style.top  = (a.y + (b.y - a.y) * p) + 'px';
+
+        if (p >= 1) {
+            seg++;
+            if (seg >= 3) { seg = 0; laps++; badge.textContent = `闭环运行中… 圈数: ${laps}`; }
+            t0 = Date.now();
         }
 
-        function dragEnd() {
-            if (draggedModule) {
-                draggedModule.classList.remove('dragging');
-                draggedModule = null;
-            }
+        if (laps < MAX) {
+            S.loopId = requestAnimationFrame(tick);
+        } else {
+            robot.classList.add('stepping');
+            badge.textContent = `完成 ${MAX} 圈！闭环运转正常`;
+            badge.style.color = '#4ade80';
+            badge.style.borderColor = 'rgba(74,222,128,0.5)';
+            setTimeout(showSuccessModal, 800);
         }
+    }
+    S.loopId = requestAnimationFrame(tick);
+}
 
-        function dragOver(e) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            e.target.closest('.drop-target')?.classList.add('drag-over');
+// ============ WARNING MODAL ============
+function showWarnModal() {
+    const ov = document.createElement('div');
+    ov.className = 'overlay';
+    ov.innerHTML = `
+        <div class="modal warn">
+            <div class="icon-circle warn">⚠️</div>
+            <div class="m-title warn">线性流程有风险！</div>
+            <div class="m-text">
+                机器人按「感知→决策→行动」跑完一趟就停了。<br>
+                如果途中出现突发情况（对手失控冲过来），<br>
+                它无法继续感知和应对变化。
+            </div>
+            <div class="m-hint">
+                <strong>💡 要持续安全运转，必须形成闭环：</strong><br>
+                把「行动」的结果送回「感知」，让机器人不断<br>
+                <span style="color:#fbbf24;">感知→决策→行动→再感知→…</span> 循环往复。
+            </div>
+            <div class="m-text" style="color:#fbbf24;font-weight:600;">
+                接下来，请你亲手把「行动」和「感知」连接起来！
+            </div>
+            <button class="m-btn warn" id="goConnBtn">开始连线</button>
+        </div>`;
+    document.body.appendChild(ov);
+    document.getElementById('goConnBtn').addEventListener('click', () => {
+        ov.remove();
+        killRobot();
+        toTriangle();
+    });
+}
+
+// ============ SWITCH TO TRIANGLE ============
+function toTriangle() {
+    S.mode = 'tri-connect';
+    S.connected = false;
+    S.selConn = null;
+    modeInd.textContent = '阶段二：闭合回路 — 请连接 行动→感知';
+
+    // swap arrows
+    la1.classList.add('hidden-line'); la1.classList.remove('active');
+    la2.classList.add('hidden-line'); la2.classList.remove('active');
+    ta1.classList.remove('hidden-line'); ta1.classList.add('active');
+    ta2.classList.remove('hidden-line'); ta2.classList.add('active');
+    ta3.classList.remove('hidden-line'); ta3.classList.add('dashed');
+
+    // reposition targets
+    setTargetClass(tgSense, 'pos-sense-tri', '感知', !!S.placed['sense']);
+    setTargetClass(tgDec,   'pos-dec-tri',   '决策', !!S.placed['decision']);
+    setTargetClass(tgAct,   'pos-action-tri','行动', !!S.placed['action']);
+
+    // snap nodes to new targets
+    const map = { sense: tgSense, decision: tgDec, action: tgAct };
+    for (const [k, v] of Object.entries(S.placed)) {
+        if (map[k]) snapNodeTo(v.node, map[k]);
+        v.node.classList.add('selectable');
+    }
+
+    showHint('👆 请依次点击「行动」和「感知」来闭合回路');
+    updateBtn();
+}
+
+function setTargetClass(el, posClass, label, filled) {
+    el.className = 'drop-target ' + posClass + (filled ? ' filled' : '');
+    el.querySelector('.target-label').textContent = label;
+}
+
+// ============ CONNECTION CLICKS ============
+function handleConnClick(node) {
+    const t = node.dataset.type;
+
+    if (!S.selConn) {
+        if (t !== 'action') { toast('请先点击「行动」节点'); return; }
+        S.selConn = t;
+        node.classList.add('selected');
+        showHint('已选中「行动」→ 现在请点击「感知」');
+    } else if (S.selConn === 'action') {
+        if (t !== 'sense') { toast('请点击「感知」节点来连接'); return; }
+        // connected!
+        S.connected = true;
+        S.mode = 'loop-ready';
+        node.classList.add('selected');
+        ta3.classList.remove('dashed');
+        ta3.classList.add('active');
+
+        for (const v of Object.values(S.placed)) {
+            v.node.classList.remove('selectable', 'selected');
         }
-
-        function dragLeave(e) {
-            e.target.closest('.drop-target')?.classList.remove('drag-over');
-        }
-
-        function drop(e) {
-            e.preventDefault();
-            const target = e.target.closest('.drop-target');
-            target?.classList.remove('drag-over');
-            if (!target || !draggedModule) return;
-
-            const moduleType = draggedModule.dataset.module;
-            const targetType = target.dataset.target;
-
-            if (!state.placedNodes[targetType]) {
-                const placedNode = createPlacedNode(moduleType);
-                positionNodeToTarget(placedNode, target);
-                circleContainer.appendChild(placedNode);
-                state.placedNodes[targetType] = { node: placedNode, type: moduleType };
-
-                target.classList.add('filled');
-                draggedModule.classList.add('used');
-                draggedModule.draggable = false;
-
-                updateSubmitButton();
-                updateProgress();
-            }
-        }
-
-        function positionNodeToTarget(node, target) {
-            const targetRect = target.getBoundingClientRect();
-            const containerRect = circleContainer.getBoundingClientRect();
-            node.style.left = `${targetRect.left - containerRect.left}px`;
-            node.style.top = `${targetRect.top - containerRect.top}px`;
-        }
-
-        function createPlacedNode(type) {
-            const node = document.createElement('div');
-            node.className = `placed-node module-${type}`;
-            node.dataset.type = type;
-
-            const icons = { sense: '👁️', decision: '🧠', action: '⚡' };
-            const labels = { sense: '感知', decision: '决策', action: '行动' };
-            const colors = {
-                sense: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
-                decision: 'linear-gradient(135deg, #4ecdc4 0%, #2d8a7e 100%)',
-                action: 'linear-gradient(135deg, #ffd93d 0%, #f0a500 100%)'
-            };
-
-            node.style.background = colors[type];
-            node.innerHTML = `
-                <div class="placed-node-icon">${icons[type]}</div>
-                <div class="placed-node-label">${labels[type]}</div>
-            `;
-
-            node.addEventListener('click', (e) => onNodeClick(e, node));
-            return node;
-        }
-
-        function onNodeClick(e, node) {
-            // In triangle-connect mode, handle connection clicking
-            if (state.mode === 'triangle-connect' && !state.connectionMade) {
-                handleConnectionClick(node);
-                return;
-            }
-
-            // Otherwise, clicking removes the node (only in linear mode, not running)
-            if (state.mode === 'linear' && !state.isRunning) {
-                removePlacedNode(node);
-            }
-        }
-
-        function removePlacedNode(node) {
-            if (!node) return;
-            const type = node.dataset.type;
-            node.remove();
-
-            for (const [targetType, data] of Object.entries(state.placedNodes)) {
-                if (data.type === type) {
-                    delete state.placedNodes[targetType];
-                    const target = document.querySelector(`.drop-target[data-target="${targetType}"]`);
-                    target?.classList.remove('filled');
-                    break;
-                }
-            }
-
-            const module = document.querySelector(`.module[data-module="${type}"]`);
-            if (module) {
-                module.classList.remove('used');
-                module.draggable = true;
-            }
-
-            updateSubmitButton();
-            updateProgress();
-        }
-
-        function updateSubmitButton() {
-            const count = Object.keys(state.placedNodes).length;
-            if (state.mode === 'loop-ready') {
-                submitBtn.disabled = false;
-                submitBtn.textContent = '运行闭环';
-            } else if (state.mode === 'triangle-connect') {
-                submitBtn.disabled = true;
-                submitBtn.textContent = '请先连线';
-            } else {
-                submitBtn.disabled = count < 3;
-                submitBtn.textContent = '测试运行';
-            }
-        }
-
-        function updateProgress() {
-            const count = Object.keys(state.placedNodes).length;
-            progressFill.style.width = `${(count / 3) * 100}%`;
-        }
-
-        // ---- Submit ----
-        function handleSubmit() {
-            if (state.isRunning) return;
-
-            if (state.mode === 'linear') {
-                handleLinearSubmit();
-            } else if (state.mode === 'loop-ready') {
-                handleLoopSubmit();
-            }
-        }
-
-        function getPlacedOrder() {
-            const order = ['sense', 'decision', 'action'];
-            return order.map(k => state.placedNodes[k]?.type).filter(Boolean);
-        }
-
-        function isCorrectOrder() {
-            return getPlacedOrder().join(',') === 'sense,decision,action';
-        }
-
-        function handleLinearSubmit() {
-            if (Object.keys(state.placedNodes).length < 3) return;
-
-            if (!isCorrectOrder()) {
-                showErrorToast('顺序错误！请按正确顺序放置：①感知 → ②决策 → ③行动');
-                return;
-            }
-
-            runRobotLinear();
-        }
-
-        function handleLoopSubmit() {
-            if (!state.connectionMade) return;
-            runRobotLoop();
-        }
-
-        // ---- Robot: Linear Run (sense→decision→action, then step in place) ----
-        function runRobotLinear() {
-            state.isRunning = true;
-            submitBtn.disabled = true;
-            removeExistingRobot();
-
-            const senseNode = state.placedNodes['sense']?.node;
-            const decisionNode = state.placedNodes['decision']?.node;
-            const actionNode = state.placedNodes['action']?.node;
-
-            if (!senseNode || !decisionNode || !actionNode) return;
-
-            const senseRect = senseNode.getBoundingClientRect();
-            const decisionRect = decisionNode.getBoundingClientRect();
-            const actionRect = actionNode.getBoundingClientRect();
-
-            // Robot is position:fixed, so use viewport coordinates directly
-            const points = [
-                { x: senseRect.left + senseRect.width/2 - 38, y: senseRect.top + senseRect.height/2 - 35 },
-                { x: decisionRect.left + decisionRect.width/2 - 38, y: decisionRect.top + decisionRect.height/2 - 35 },
-                { x: actionRect.left + actionRect.width/2 - 38, y: actionRect.top + actionRect.height/2 - 35 },
-            ];
-
-            const robot = createRobot();
-            document.body.appendChild(robot);
-            robot.style.left = `${points[0].x}px`;
-            robot.style.top = `${points[0].y}px`;
-            state.robotEl = robot;
-
-            const segments = [
-                { from: points[0], to: points[1], duration: 1200 },
-                { from: points[1], to: points[2], duration: 1200 },
-            ];
-
-            let segIdx = 0;
-            let segStart = Date.now();
-
-            function animate() {
-                if (segIdx >= segments.length) {
-                    // Arrived at action - step in place
-                    robot.classList.add('stepping');
-                    setTimeout(() => showLinearWarningModal(), 600);
-                    return;
-                }
-
-                const seg = segments[segIdx];
-                const elapsed = Date.now() - segStart;
-                const progress = Math.min(elapsed / seg.duration, 1);
-
-                const cx = seg.from.x + (seg.to.x - seg.from.x) * progress;
-                const cy = seg.from.y + (seg.to.y - seg.from.y) * progress;
-                robot.style.left = `${cx}px`;
-                robot.style.top = `${cy}px`;
-
-                if (progress >= 1) {
-                    segIdx++;
-                    segStart = Date.now();
-                }
-
-                requestAnimationFrame(animate);
-            }
-
-            requestAnimationFrame(animate);
-        }
-
-        // ---- Robot: Loop Run (continuous triangle) ----
-        function runRobotLoop() {
-            state.isRunning = true;
-            submitBtn.disabled = true;
-            removeExistingRobot();
-
-            const senseNode = state.placedNodes['sense']?.node;
-            const decisionNode = state.placedNodes['decision']?.node;
-            const actionNode = state.placedNodes['action']?.node;
-
-            if (!senseNode || !decisionNode || !actionNode) return;
-
-            const senseRect = senseNode.getBoundingClientRect();
-            const decisionRect = decisionNode.getBoundingClientRect();
-            const actionRect = actionNode.getBoundingClientRect();
-
-            // Robot is position:fixed, so use viewport coordinates directly
-            const points = [
-                { x: senseRect.left + senseRect.width/2 - 38, y: senseRect.top + senseRect.height/2 - 35 },
-                { x: decisionRect.left + decisionRect.width/2 - 38, y: decisionRect.top + decisionRect.height/2 - 35 },
-                { x: actionRect.left + actionRect.width/2 - 38, y: actionRect.top + actionRect.height/2 - 35 },
-            ];
-
-            const robot = createRobot();
-            document.body.appendChild(robot);
-            robot.style.left = `${points[0].x}px`;
-            robot.style.top = `${points[0].y}px`;
-            state.robotEl = robot;
-
-            // Show lap counter
-            const lapIndicator = document.createElement('div');
-            lapIndicator.className = 'loop-indicator';
-            lapIndicator.id = 'lapIndicator';
-            lapIndicator.textContent = '闭环运行中… 圈数: 0';
-            document.body.appendChild(lapIndicator);
-
-            let currentSeg = 0;
-            let segStart = Date.now();
-            const segDuration = 1000;
-            let laps = 0;
-            const maxLaps = 3;
-
-            function animate() {
-                const elapsed = Date.now() - segStart;
-                const progress = Math.min(elapsed / segDuration, 1);
-
-                const from = points[currentSeg];
-                const to = points[(currentSeg + 1) % 3];
-
-                const cx = from.x + (to.x - from.x) * progress;
-                const cy = from.y + (to.y - from.y) * progress;
-                robot.style.left = `${cx}px`;
-                robot.style.top = `${cy}px`;
-
-                if (progress >= 1) {
-                    currentSeg++;
-                    if (currentSeg >= 3) {
-                        currentSeg = 0;
-                        laps++;
-                        lapIndicator.textContent = `闭环运行中… 圈数: ${laps}`;
-                    }
-                    segStart = Date.now();
-                }
-
-                if (laps < maxLaps) {
-                    state.loopAnimId = requestAnimationFrame(animate);
-                } else {
-                    // Done - robot keeps stepping in place
-                    robot.classList.add('stepping');
-                    lapIndicator.textContent = `完成 ${maxLaps} 圈！闭环运转正常`;
-                    lapIndicator.style.color = '#4ade80';
-                    lapIndicator.style.borderColor = 'rgba(74,222,128,0.5)';
-                    setTimeout(() => showSuccessLoopModal(), 800);
-                }
-            }
-
-            state.loopAnimId = requestAnimationFrame(animate);
-        }
-
-        function createRobot() {
-            const container = document.createElement('div');
-            container.className = 'robot-container';
-            container.innerHTML = `
-                <div class="robot">
-                    <div class="robot-head"><div class="robot-eye"></div></div>
-                    <div class="robot-body">
-                        <div class="robot-body-inner"></div>
-                        <div class="robot-arm left"></div>
-                        <div class="robot-arm right"></div>
-                    </div>
-                    <div class="robot-legs">
-                        <div class="robot-leg left"></div>
-                        <div class="robot-leg right"></div>
-                    </div>
-                </div>
-                <div class="robot-shadow"></div>
-            `;
-            return container;
-        }
-
-        function removeExistingRobot() {
-            if (state.robotEl) {
-                state.robotEl.remove();
-                state.robotEl = null;
-            }
-            if (state.loopAnimId) {
-                cancelAnimationFrame(state.loopAnimId);
-                state.loopAnimId = null;
-            }
-            const lapInd = document.getElementById('lapIndicator');
-            if (lapInd) lapInd.remove();
-        }
-
-        // ---- Warning Modal (linear mode → need loop) ----
-        function showLinearWarningModal() {
-            const overlay = document.createElement('div');
-            overlay.className = 'overlay';
-            overlay.id = 'warningOverlay';
-            overlay.innerHTML = `
-                <div class="modal warning">
-                    <div class="modal-icon warning">⚠️</div>
-                    <div class="modal-title warning">线性流程有风险！</div>
-                    <div class="modal-text">
-                        机器人按照「感知→决策→行动」跑完了一趟，<br>
-                        但如果途中出现突发情况（比如对手失控冲过来），<br>
-                        它跑完之后就停在那里，无法继续应对变化。
-                    </div>
-                    <div class="modal-hint">
-                        <strong>💡 要让机器人持续安全运转，需要形成闭环：</strong><br>
-                        把「行动」的结果重新送回「感知」，让机器人不断<br>
-                        感知→决策→行动→<span style="color:#fbbf24;">再感知</span>→再决策→再行动…
-                    </div>
-                    <div class="modal-text" style="color:#fbbf24;font-weight:600;">
-                        接下来，请你亲手把「行动」和「感知」连接起来！
-                    </div>
-                    <button class="modal-btn warning" id="goConnectBtn">开始连线</button>
-                </div>
-            `;
-
-            document.body.appendChild(overlay);
-
-            document.getElementById('goConnectBtn').addEventListener('click', () => {
-                overlay.remove();
-                removeExistingRobot();
-                switchToTriangleMode();
-            });
-        }
-
-        // ---- Switch to Triangle Mode ----
-        function switchToTriangleMode() {
-            state.mode = 'triangle-connect';
-            state.connectionMade = false;
-            state.selectedForConnection = null;
-            modeIndicator.textContent = '阶段二：闭合回路 — 请连接 行动→感知';
-
-            // Switch arrows
-            linearArrow1.classList.add('hidden');
-            linearArrow1.classList.remove('active');
-            linearArrow2.classList.add('hidden');
-            linearArrow2.classList.remove('active');
-            triArrow1.classList.remove('hidden');
-            triArrow1.classList.add('active');
-            triArrow2.classList.remove('hidden');
-            triArrow2.classList.add('active');
-            triArrow3.classList.remove('hidden');
-            triArrow3.classList.add('dashed-connect');
-
-            // Reposition drop targets to triangle
-            targetSense.className = 'drop-target sense-triangle' + (state.placedNodes['sense'] ? ' filled' : '');
-            targetDecision.className = 'drop-target decision-triangle' + (state.placedNodes['decision'] ? ' filled' : '');
-            targetAction.className = 'drop-target action-triangle' + (state.placedNodes['action'] ? ' filled' : '');
-
-            // Update step labels
-            targetSense.querySelector('.step-label').textContent = '感知';
-            targetDecision.querySelector('.step-label').textContent = '决策';
-            targetAction.querySelector('.step-label').textContent = '行动';
-
-            // Reposition placed nodes
-            repositionAllNodes();
-            makeNodesSelectable();
-
-            // Show connect hint
-            showConnectHint();
-            updateSubmitButton();
-        }
-
-        function repositionAllNodes() {
-            const targets = {
-                sense: targetSense,
-                decision: targetDecision,
-                action: targetAction,
-            };
-
-            for (const [key, data] of Object.entries(state.placedNodes)) {
-                if (targets[key]) {
-                    positionNodeToTarget(data.node, targets[key]);
-                }
-            }
-        }
-
-        function makeNodesSelectable() {
-            for (const data of Object.values(state.placedNodes)) {
-                data.node.classList.add('selectable');
-            }
-        }
-
-        function showConnectHint(text) {
-            removeConnectHint();
-            const hint = document.createElement('div');
-            hint.className = 'connect-hint';
-            hint.id = 'connectHint';
-            hint.textContent = text || '👆 请依次点击「行动」和「感知」来闭合回路';
-            document.body.appendChild(hint);
-        }
-
-        function removeConnectHint() {
-            const el = document.getElementById('connectHint');
-            if (el) el.remove();
-        }
-
-        // ---- Connection Drawing ----
-        function handleConnectionClick(node) {
-            const nodeType = node.dataset.type;
-
-            if (!state.selectedForConnection) {
-                // First click
-                if (nodeType !== 'action') {
-                    showErrorToast('请先点击「行动」节点');
-                    return;
-                }
-                state.selectedForConnection = nodeType;
-                node.classList.add('selected');
-                showConnectHint('已选中「行动」→ 现在请点击「感知」');
-            } else if (state.selectedForConnection === 'action') {
-                // Second click
-                if (nodeType !== 'sense') {
-                    showErrorToast('请点击「感知」节点来连接');
-                    return;
-                }
-
-                // Connection made!
-                state.connectionMade = true;
-                state.mode = 'loop-ready';
-                node.classList.add('selected');
-
-                // Solidify arrow
-                triArrow3.classList.remove('dashed-connect');
-                triArrow3.classList.add('active');
-
-                // Remove selectable styles
-                for (const data of Object.values(state.placedNodes)) {
-                    data.node.classList.remove('selectable', 'selected');
-                }
-
-                modeIndicator.textContent = '阶段二：闭环已闭合！点击运行';
-                removeConnectHint();
-                showConnectHint('✅ 闭环回路已闭合！点击「运行闭环」测试');
-                setTimeout(() => {
-                    const hint = document.getElementById('connectHint');
-                    if (hint) hint.classList.add('done');
-                }, 100);
-
-                updateSubmitButton();
-            }
-        }
-
-        // ---- Success Modal ----
-        function showSuccessLoopModal() {
-            const overlay = document.createElement('div');
-            overlay.className = 'overlay';
-            overlay.id = 'successOverlay';
-            overlay.innerHTML = `
-                <div class="modal success">
-                    <div class="modal-icon success">🎉</div>
-                    <div class="modal-title success">闭环运转成功！</div>
-                    <div class="modal-text">
-                        机器人通过「感知→决策→行动→再感知」的闭环，<br>
-                        持续感知环境、做出决策、执行行动，<br>
-                        从「盲目行动」变得「稳妥可靠」。
-                    </div>
-                    <div class="modal-hint">
-                        <strong>🏆 赛场上躲开失控对手，靠的就是这套闭环逻辑：</strong><br>
-                        不断感知对手位置 → 决策如何躲避 → 执行躲避动作<br>
-                        → 再感知是否成功 → 再调整… 循环往复。
-                    </div>
-                    <div class="modal-text" style="color:#4ade80;font-weight:600;">
-                        这就是 AI 持续可靠运转的核心机制！
-                    </div>
-                    <button class="modal-btn success" id="resetBtn">重新体验</button>
-                </div>
-            `;
-
-            document.body.appendChild(overlay);
-
-            document.getElementById('resetBtn').addEventListener('click', () => {
-                overlay.remove();
-                resetAll();
-            });
-        }
-
-        // ---- Error Toast ----
-        function showErrorToast(msg) {
-            const toast = document.createElement('div');
-            toast.className = 'error-toast';
-            toast.textContent = msg;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 2200);
-        }
-
-        // ---- Reset ----
-        function resetAll() {
-            removeExistingRobot();
-            removeConnectHint();
-            const lapInd = document.getElementById('lapIndicator');
-            if (lapInd) lapInd.remove();
-
-            // Clear placed nodes
-            document.querySelectorAll('.placed-node').forEach(n => n.remove());
-            state.placedNodes = {};
-            state.mode = 'linear';
-            state.connectionMade = false;
-            state.selectedForConnection = null;
-            state.isRunning = false;
-
-            // Reset modules
-            modules.forEach(m => {
-                m.classList.remove('used');
-                m.draggable = true;
-            });
-
-            // Reset drop targets to linear positions
-            targetSense.className = 'drop-target sense';
-            targetSense.querySelector('.step-label').textContent = '① 感知';
-            targetDecision.className = 'drop-target decision';
-            targetDecision.querySelector('.step-label').textContent = '② 决策';
-            targetAction.className = 'drop-target action';
-            targetAction.querySelector('.step-label').textContent = '③ 行动';
-
-            // Reset arrows
-            linearArrow1.classList.remove('hidden');
-            linearArrow1.classList.add('active');
-            linearArrow2.classList.remove('hidden');
-            linearArrow2.classList.add('active');
-            triArrow1.classList.add('hidden');
-            triArrow1.classList.remove('active');
-            triArrow2.classList.add('hidden');
-            triArrow2.classList.remove('active');
-            triArrow3.classList.add('hidden');
-            triArrow3.classList.remove('active', 'dashed-connect');
-
-            modeIndicator.textContent = '阶段一：线性流程';
-            updateSubmitButton();
-            updateProgress();
-        }
-    </script>
+        modeInd.textContent = '阶段二：闭环已闭合！点击运行';
+        showHint('✅ 闭环回路已闭合！点击「运行闭环」测试');
+        document.getElementById('btmHint').classList.add('done');
+        updateBtn();
+    }
+}
+
+// ============ SUCCESS MODAL ============
+function showSuccessModal() {
+    const ov = document.createElement('div');
+    ov.className = 'overlay';
+    ov.innerHTML = `
+        <div class="modal ok">
+            <div class="icon-circle ok">🎉</div>
+            <div class="m-title ok">闭环运转成功！</div>
+            <div class="m-text">
+                机器人通过「感知→决策→行动→再感知」的闭环，<br>
+                持续感知环境、做出决策、执行行动，<br>
+                从「盲目行动」变得「稳妥可靠」。
+            </div>
+            <div class="m-hint">
+                <strong>🏆 赛场上躲开失控对手，靠的就是这套闭环逻辑：</strong><br>
+                不断感知对手位置 → 决策如何躲避 → 执行躲避动作<br>
+                → 再感知是否成功 → 再调整… 循环往复。
+            </div>
+            <div class="m-text" style="color:#4ade80;font-weight:600;">
+                这就是 AI 持续可靠运转的核心机制！
+            </div>
+            <button class="m-btn ok" id="rstBtn">重新体验</button>
+        </div>`;
+    document.body.appendChild(ov);
+    document.getElementById('rstBtn').addEventListener('click', () => {
+        ov.remove();
+        resetAll();
+    });
+}
+
+// ============ HELPERS ============
+function showHint(msg) {
+    const old = document.getElementById('btmHint');
+    if (old) old.remove();
+    const h = document.createElement('div');
+    h.className = 'bottom-hint';
+    h.id = 'btmHint';
+    h.textContent = msg;
+    document.body.appendChild(h);
+}
+
+function toast(msg) {
+    const t = document.createElement('div');
+    t.className = 'err-toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2200);
+}
+
+// ============ RESET ============
+function resetAll() {
+    killRobot();
+    const h = document.getElementById('btmHint');
+    if (h) h.remove();
+    const lb = document.getElementById('lapBadge');
+    if (lb) lb.remove();
+
+    document.querySelectorAll('.placed-node').forEach(n => n.remove());
+    S.placed = {};
+    S.mode = 'linear';
+    S.connected = false;
+    S.selConn = null;
+    S.running = false;
+
+    modules.forEach(m => { m.classList.remove('used'); m.draggable = true; });
+
+    setTargetClass(tgSense, 'pos-sense', '① 感知', false);
+    setTargetClass(tgDec,   'pos-dec',   '② 决策', false);
+    setTargetClass(tgAct,   'pos-action','③ 行动', false);
+
+    la1.classList.remove('hidden-line'); la1.classList.add('active');
+    la2.classList.remove('hidden-line'); la2.classList.add('active');
+    ta1.classList.add('hidden-line'); ta1.classList.remove('active');
+    ta2.classList.add('hidden-line'); ta2.classList.remove('active');
+    ta3.classList.add('hidden-line'); ta3.classList.remove('active', 'dashed');
+
+    modeInd.textContent = '阶段一：线性流程';
+    updateBtn(); updateProg();
+}
+</script>
 </body>
 </html>
