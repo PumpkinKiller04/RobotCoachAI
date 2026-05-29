@@ -1536,6 +1536,7 @@
             document.getElementById('loadingIndicator').style.display = 'block';
             document.getElementById('reportContainer').style.display = 'none';
             document.getElementById('generateBtn').disabled = true;
+            document.getElementById('rightContent').innerHTML = '<div style="text-align:center;padding:40px 20px;"><p style="color:#8b5a2b;font-size:15px;">正在生成学习报告...</p><p style="color:#999;font-size:12px;margin-top:8px;">AI 正在分析你的学习数据</p></div>';
             
             const reportData = await collectAllStudentAnswers(username);
             
@@ -1659,6 +1660,11 @@ ${(() => {
                     
                     document.getElementById('reportContent').innerHTML = convertMarkdownToHtml(reportText);
                     document.getElementById('reportContainer').style.display = 'block';
+                    if (currentModule === 0) {
+                        document.getElementById('rightContent').innerHTML = '<div style="text-align:center;padding:20px;"><h4 style="color:#8b5a2b;margin-bottom:16px;">勋章授予</h4><img src="resource/白银.png" alt="白银勋章" style="max-width:200px;height:auto;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.15);"><p style="color:#6b4423;font-size:16px;font-weight:600;margin-top:12px;">白银勋章</p><p style="color:#888;font-size:13px;">导学单一完成</p></div>';
+                    } else if (currentModule === 1) {
+                        document.getElementById('rightContent').innerHTML = '<div style="text-align:center;padding:20px;"><h4 style="color:#8b5a2b;margin-bottom:16px;">勋章授予</h4><img src="resource/黄金.png" alt="黄金勋章" style="max-width:200px;height:auto;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.15);"><p style="color:#6b4423;font-size:16px;font-weight:600;margin-top:12px;">黄金勋章</p><p style="color:#888;font-size:13px;">导学单二完成</p></div>';
+                    }
                 } else {
                     const errorText = await response.text();
                     console.log('API错误响应:', errorText);
