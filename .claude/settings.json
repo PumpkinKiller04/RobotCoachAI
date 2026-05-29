@@ -63,7 +63,8 @@
       "Bash(powershell -Command \"Get-ChildItem 'c:\\\\Users\\\\13241\\\\Desktop\\\\导学单网站' -Filter '*.pdf' -Recurse | Select-Object FullName\")",
       "Bash(powershell -Command \"Get-ChildItem 'c:\\\\Users\\\\13241\\\\Desktop\\\\导学单网站\\\\resource' -Name\")",
       "Bash(python3 -c \"from PIL import Image; print\\('Pillow available'\\)\")",
-      "Bash(python -c \"from PIL import Image; print\\('Pillow available'\\)\")"
+      "Bash(python -c \"from PIL import Image; print\\('Pillow available'\\)\")",
+      "Bash(python3)"
     ],
     "additionalDirectories": [
       "C:\\Users\\13241\\Desktop\\导学单网站",
