@@ -66,7 +66,8 @@
       "Bash(python -c \"from PIL import Image; print\\('Pillow available'\\)\")",
       "Bash(python3)",
       "Bash(python3 -c \"from PIL import Image; img = Image.open\\('resource/白银.png'\\); print\\(img.size\\)\")",
-      "Bash(python3 -c \"print\\('hello'\\)\")"
+      "Bash(python3 -c \"print\\('hello'\\)\")",
+      "Bash(python -c \"print\\('hello'\\)\")"
     ],
     "additionalDirectories": [
       "C:\\Users\\13241\\Desktop\\导学单网站",
