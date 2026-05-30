@@ -12,7 +12,7 @@ body{
     font-size:13px;
     background:linear-gradient(160deg, #1a1d2e 0%, #1e2235 40%, #1c1f30 100%);
     width:560px;
-    height:360px;
+    height:370px;
     overflow:hidden;
 }
 body::before{
@@ -23,31 +23,35 @@ body::before{
     pointer-events:none;z-index:0;
 }
 
-.container{position:relative;z-index:1;width:560px;height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.container{position:relative;z-index:1;width:560px;height:370px;display:flex;align-items:center;justify-content:center;}
 
 /* ---- canvas ---- */
 .canvas-wrap{
     position:relative;
-    width:420px;height:260px;flex-shrink:0;
+    width:400px;height:280px;flex-shrink:0;
+    margin-left:10px;
 }
 .canvas-svg{
     position:absolute;top:0;left:0;width:100%;height:100%;
     pointer-events:none;
 }
 .canvas-svg line{
-    stroke:rgba(255,255,255,0.18);
-    stroke-width:2.5;
-    transition:stroke .4s;
+    stroke:#4ade80;
+    stroke-width:3.5;
+    transition:stroke .4s,opacity .4s;
+    filter:drop-shadow(0 0 3px rgba(74,222,128,.35));
 }
 .canvas-svg line.broken{
-    stroke:rgba(255,255,255,0.06);
+    stroke:rgba(255,255,255,0.08);
+    stroke-width:2;
     stroke-dasharray:8 6;
+    filter:none;
 }
 
 /* ---- nodes ---- */
 .node{
     position:absolute;
-    width:60px;height:60px;
+    width:62px;height:62px;
     border-radius:50%;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
     box-shadow:0 4px 18px rgba(0,0,0,.4);
@@ -55,42 +59,42 @@ body::before{
     transition:all .3s;
     user-select:none;
 }
-.node .ni{font-size:20px;}
-.node .nl{font-size:10px;font-weight:700;color:#fff;margin-top:1px;letter-spacing:1px;text-shadow:0 1px 2px rgba(0,0,0,.3);}
-.node.sense{background:linear-gradient(145deg,#f87171,#dc2626);left:180px;top:16px;}
-.node.decision{background:linear-gradient(145deg,#22d3ee,#0891b2);left:310px;top:184px;}
-.node.action{background:linear-gradient(145deg,#fbbf24,#d97706);left:50px;top:184px;}
+.node .ni{font-size:21px;}
+.node .nl{font-size:11px;font-weight:700;color:#fff;margin-top:1px;letter-spacing:1px;text-shadow:0 1px 2px rgba(0,0,0,.3);}
+.node.sense{background:linear-gradient(145deg,#f87171,#dc2626);left:169px;top:18px;}
+.node.decision{background:linear-gradient(145deg,#22d3ee,#0891b2);left:308px;top:196px;}
+.node.action{background:linear-gradient(145deg,#fbbf24,#d97706);left:30px;top:196px;}
 .node.off{
-    filter:grayscale(1) brightness(.5);
+    filter:grayscale(1) brightness(.45);
     box-shadow:0 2px 8px rgba(0,0,0,.3);
 }
 
 /* ---- close buttons on nodes ---- */
 .node-close{
     position:absolute;
-    width:20px;height:20px;
+    width:22px;height:22px;
     border-radius:50%;
-    background:rgba(239,68,68,.85);
+    background:rgba(239,68,68,.9);
     color:#fff;
     font-size:12px;font-weight:700;
     display:flex;align-items:center;justify-content:center;
     cursor:pointer;
     z-index:30;
-    top:-6px;right:-6px;
+    top:-8px;right:-8px;
     transition:all .2s;
     border:none;
     line-height:1;
 }
 .node-close:hover{transform:scale(1.15);background:#ef4444;}
-.node-close.off{background:rgba(74,222,128,.85);}
+.node-close.off{background:rgba(74,222,128,.9);}
 .node-close.off:hover{background:#4ade80;}
 
-/* ---- arrow close button ---- */
+/* ---- arrow close button on the loop line ---- */
 .arrow-close{
     position:absolute;
-    width:18px;height:18px;
+    width:20px;height:20px;
     border-radius:50%;
-    background:rgba(239,68,68,.85);
+    background:rgba(239,68,68,.9);
     color:#fff;
     font-size:11px;font-weight:700;
     display:flex;align-items:center;justify-content:center;
@@ -101,36 +105,23 @@ body::before{
     line-height:1;
 }
 .arrow-close:hover{transform:scale(1.15);background:#ef4444;}
-.arrow-close.off{background:rgba(74,222,128,.85);}
+.arrow-close.off{background:rgba(74,222,128,.9);}
 .arrow-close.off:hover{background:#4ade80;}
-
-/* ---- label tags ---- */
-.label-tag{
-    position:absolute;
-    font-size:12px;font-weight:600;
-    color:#e2e8f0;
-    pointer-events:none;
-    z-index:5;
-}
-.label-tag.t1{left:260px;top:86px;color:#22d3ee;}
-.label-tag.t2{left:198px;top:220px;color:#fbbf24;}
-.label-tag.t3{left:150px;top:86px;color:#f87171;}
 
 /* ---- side panel ---- */
 .side-panel{
-    position:absolute;
-    right:14px;top:50%;transform:translateY(-50%);
     display:flex;flex-direction:column;align-items:center;gap:10px;
-    z-index:20;
+    z-index:20;flex-shrink:0;
+    margin-left:16px;margin-right:8px;
 }
 .btn-run{
-    padding:8px 22px;border:none;border-radius:10px;
-    font-size:13px;font-weight:600;
+    padding:9px 24px;border:none;border-radius:10px;
+    font-size:14px;font-weight:600;
     cursor:pointer;transition:all .25s;
     background:linear-gradient(135deg,#34d399,#22c55e);
     color:#fff;
     box-shadow:0 2px 10px rgba(34,197,94,.25);
-    letter-spacing:0.5px;
+    letter-spacing:1px;
 }
 .btn-run:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 4px 18px rgba(34,197,94,.4);}
 .btn-run:disabled{background:linear-gradient(135deg,#334155,#2d3748);color:#64748b;cursor:not-allowed;box-shadow:none;}
@@ -147,7 +138,7 @@ body::before{
 
 .hint-text{
     color:#64748b;font-size:10px;text-align:center;
-    max-width:70px;line-height:1.4;
+    max-width:80px;line-height:1.4;
 }
 
 /* ---- robot ---- */
@@ -218,7 +209,7 @@ body::before{
 .md{
     background:linear-gradient(160deg,#1e293b,#1a2235);
     border-radius:14px;
-    padding:22px 20px;max-width:300px;width:92%;
+    padding:22px 20px;max-width:310px;width:92%;
     text-align:center;
     box-shadow:0 16px 40px rgba(0,0,0,.5);
     color:#e2e8f0;
@@ -256,55 +247,55 @@ body::before{
 
 /* ---- bottom hint ---- */
 .btm-hint{
-    position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+    position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
     background:rgba(15,17,25,.85);
     color:#94a3b8;padding:5px 14px;border-radius:12px;
     font-size:10px;z-index:100;
     border:1px solid rgba(255,255,255,0.08);
+    white-space:nowrap;
 }
 </style>
 </head>
 <body>
 <div class="container">
     <div class="canvas-wrap" id="canvas">
-        <svg class="canvas-svg" viewBox="0 0 420 260">
+        <svg class="canvas-svg" viewBox="0 0 400 280">
             <defs>
                 <marker id="ah" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
-                    <polygon points="0 0, 7 2.5, 0 5" fill="rgba(255,255,255,0.18)"/>
+                    <polygon points="0 0, 7 2.5, 0 5" fill="#4ade80"/>
                 </marker>
             </defs>
-            <line id="arr1" x1="235" y1="60" x2="305" y2="195" marker-end="url(#ah)"/>
-            <line id="arr2" x1="305" y1="214" x2="115" y2="214" marker-end="url(#ah)"/>
-            <line id="arr3" x1="115" y1="195" x2="230" y2="65" marker-end="url(#ah)"/>
+            <!-- 感知 → 决策 -->
+            <line id="arr1" x1="226" y1="62" x2="304" y2="210" marker-end="url(#ah)"/>
+            <!-- 决策 → 行动 -->
+            <line id="arr2" x1="300" y1="227" x2="100" y2="227" marker-end="url(#ah)"/>
+            <!-- 行动 → 感知 (闭环) -->
+            <line id="arr3" x1="98" y1="212" x2="222" y2="68" marker-end="url(#ah)"/>
         </svg>
 
         <!-- 感知 -->
         <div class="node sense" id="nodeSense">
             <div class="ni">&#x1F441;&#xFE0F;</div>
             <div class="nl">感知</div>
-            <button class="node-close" id="closeSense" onclick="toggleNode('sense')" title="关闭感知">&#x2715;</button>
+            <button class="node-close" id="closeSense" onclick="toggleNode('sense')" title="开关感知">&#x2715;</button>
         </div>
 
         <!-- 决策 -->
         <div class="node decision" id="nodeDecision">
             <div class="ni">&#x1F9E0;</div>
             <div class="nl">决策</div>
-            <button class="node-close" id="closeDecision" onclick="toggleNode('decision')" title="关闭决策">&#x2715;</button>
+            <button class="node-close" id="closeDecision" onclick="toggleNode('decision')" title="开关决策">&#x2715;</button>
         </div>
 
         <!-- 行动 -->
         <div class="node action" id="nodeAction">
             <div class="ni">&#x26A1;</div>
             <div class="nl">行动</div>
-            <button class="node-close" id="closeAction" onclick="toggleNode('action')" title="关闭行动">&#x2715;</button>
+            <button class="node-close" id="closeAction" onclick="toggleNode('action')" title="开关行动">&#x2715;</button>
         </div>
 
-        <!-- loop arrow close button (centered on the 行动→感知 line) -->
-        <button class="arrow-close" id="closeLoop" style="left:150px;top:112px;" onclick="toggleLoop()" title="关闭闭环箭头">&#x2715;</button>
-
-        <div class="label-tag t1">&#x2192;</div>
-        <div class="label-tag t2">&#x2190;</div>
-        <div class="label-tag t3">&#x2196;</div>
+        <!-- 闭环箭头关闭按钮（行动→感知连线中点） -->
+        <button class="arrow-close" id="closeLoop" style="left:143px;top:120px;" onclick="toggleLoop()" title="开关闭环箭头(行动→感知)">&#x2715;</button>
 
         <!-- robot -->
         <div class="rb-ct" id="robot">
@@ -324,17 +315,16 @@ body::before{
         </div>
     </div>
 
-    <div class="btm-hint">点击节点或箭头上的 &#x2715; 关闭，再次点击恢复</div>
-</div>
+    <div class="side-panel">
+        <button class="btn-run" id="btnRun" onclick="runSimulation()">运 行</button>
+        <button class="btn-reset" onclick="resetAll()">重置</button>
+        <div class="hint-text">点击 ✕ 关闭环节</div>
+    </div>
 
-<div class="side-panel">
-    <button class="btn-run" id="btnRun" onclick="runSimulation()">运 行</button>
-    <button class="btn-reset" onclick="resetAll()">重置</button>
-    <div class="hint-text">关闭一个环节看看</div>
+    <div class="btm-hint">点击节点或箭头上的 ✕ 关闭，再次点击恢复</div>
 </div>
 
 <script>
-// State
 const state = {
     senseOn: true,
     decisionOn: true,
@@ -343,7 +333,6 @@ const state = {
     running: false,
 };
 
-// DOM refs
 const canvas = document.getElementById('canvas');
 const robot = document.getElementById('robot');
 const btnRun = document.getElementById('btnRun');
@@ -351,7 +340,6 @@ const arr1 = document.getElementById('arr1');
 const arr2 = document.getElementById('arr2');
 const arr3 = document.getElementById('arr3');
 
-// Node & button refs
 const nodes = {
     sense: document.getElementById('nodeSense'),
     decision: document.getElementById('nodeDecision'),
@@ -388,31 +376,28 @@ function resetAll() {
 }
 
 function updateUI() {
-    // Nodes
     for (const [type, el] of Object.entries(nodes)) {
         el.classList.toggle('off', !state[type + 'On']);
     }
-    // Close buttons - show ✓ when off
     for (const [type, el] of Object.entries(closes)) {
         const isOn = type === 'loop' ? state.loopOn : state[type + 'On'];
         el.classList.toggle('off', !isOn);
         el.innerHTML = isOn ? '&#x2715;' : '&#x2713;';
     }
-    // Arrows
+    // Arrows: an arrow is broken if either its source or target node is off,
+    // or (for arr3) if the loop itself is off
     arr1.classList.toggle('broken', !state.senseOn || !state.decisionOn);
     arr2.classList.toggle('broken', !state.decisionOn || !state.actionOn);
-    arr3.classList.toggle('broken', !state.actionOn || !state.loopOn || !state.senseOn);
+    arr3.classList.toggle('broken', !state.actionOn || !state.senseOn || !state.loopOn);
 
-    // Update hint
     const h = document.querySelector('.btm-hint');
-    if (!state.senseOn) h.textContent = '已关闭：感知 — 机器人将看不到障碍';
-    else if (!state.decisionOn) h.textContent = '已关闭：决策 — 机器人将无法判断';
-    else if (!state.actionOn) h.textContent = '已关闭：行动 — 机器人将无法移动';
-    else if (!state.loopOn) h.textContent = '已关闭：闭环箭头 — 机器人无法再次感知';
+    if (!state.senseOn) h.textContent = '已关闭：感知 — 看不到障碍';
+    else if (!state.decisionOn) h.textContent = '已关闭：决策 — 无法判断';
+    else if (!state.actionOn) h.textContent = '已关闭：行动 — 无法移动';
+    else if (!state.loopOn) h.textContent = '已关闭：闭环箭头(行动→感知) — 跑完一圈后无法再次感知';
     else h.textContent = '点击节点或箭头上的 ✕ 关闭，再次点击恢复';
 }
 
-// Node center positions (canvas-relative)
 function getNodeCenter(type) {
     const el = nodes[type];
     const r = el.getBoundingClientRect();
@@ -431,7 +416,6 @@ function posRobot(cp) {
 function showRobot() { robot.style.display = 'block'; }
 function hideRobot() { robot.style.display = 'none'; }
 
-// Modal helpers
 function removeModal() {
     document.querySelectorAll('.ov').forEach(el => el.remove());
 }
@@ -470,7 +454,6 @@ function showSuccess() {
     }, 1800);
 }
 
-// Animation: move robot from point A to B over ms duration
 function animatePath(a, b, ms) {
     return new Promise(resolve => {
         const t0 = Date.now();
@@ -488,7 +471,6 @@ function animatePath(a, b, ms) {
     });
 }
 
-// Main simulation
 async function runSimulation() {
     if (state.running) return;
     state.running = true;
@@ -506,60 +488,52 @@ async function runSimulation() {
 
     // Check 感知
     if (!state.senseOn) {
-        showModal(
-            '感知关闭：看不到障碍',
+        showModal('感知关闭：看不到障碍',
             '机器人无法获取环境信息，看不到前方有什么。',
-            '看不到障碍，直接撞上。'
-        );
+            '看不到障碍，直接撞上。');
         return;
     }
 
-    // Move 感知 → 决策
+    // 感知 → 决策
     await animatePath(sense, decision, 900);
     await sleep(300);
 
     // Check 决策
     if (!state.decisionOn) {
-        showModal(
-            '决策关闭：不知道怎么办',
+        showModal('决策关闭：不知道怎么办',
             '机器人看到了障碍物，但无法分析判断该做什么。',
-            '能看到障碍，但不知道怎么躲。'
-        );
+            '能看到障碍，但不知道怎么躲。');
         return;
     }
 
-    // Move 决策 → 行动
+    // 决策 → 行动
     await animatePath(decision, action, 900);
     await sleep(300);
 
     // Check 行动
     if (!state.actionOn) {
-        showModal(
-            '行动关闭：无法移动',
+        showModal('行动关闭：无法移动',
             '机器人已经做好了判断，但执行模块失效，无法控制身体。',
-            '知道怎么躲，但无法移动。'
-        );
+            '知道怎么躲，但无法移动。');
         return;
     }
 
-    // Move 行动 → 感知 (loop back)
+    // 行动 → 感知 (闭环)
+    // Check loop arrow: if broken, robot at action can't go back to sense
+    if (!state.loopOn) {
+        showModal('闭环断裂：再次遇到障碍',
+            '机器人完成了一次应对，但"行动→感知"的回路断了——它无法从行动回到感知，不再观察环境变化。',
+            '再次遇到障碍，直接撞上去。');
+        return;
+    }
+
     await animatePath(action, sense, 900);
     await sleep(300);
 
-    // Check loop arrow
-    if (!state.loopOn) {
-        showModal(
-            '闭环断裂：再次遇到障碍',
-            '机器人完成了一次应对，但"行动→感知"的回环断了，它不再观察环境变化。',
-            '再次遇到障碍，直接撞上去。'
-        );
-        return;
-    }
-
-    // All good - loop complete
+    // All good
     showSuccess();
 
-    // Continue looping a few more times
+    // Extra laps
     for (let lap = 1; lap <= 2; lap++) {
         await animatePath(sense, decision, 600);
         await animatePath(decision, action, 600);
