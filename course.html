@@ -2917,6 +2917,80 @@ ${(() => {
                 });
             });
         }
+        // ========== 人气作品 TOP3 ==========
+        async function loadTopWorks() {
+            var container = document.getElementById('topWorksContainer');
+            if (!container) return;
+            container.innerHTML = '<p style="color:#999;font-size:12px;">正在加载...</p>';
+
+            try {
+                var DESIGN_API = 'https://quickform.cn/api/kzw1h47nrm/all';
+                var FLOWER_API = 'https://quickform.cn/api/6pnetifmia/all';
+
+                var _b = await fetch(DESIGN_API);
+                var _f = await fetch(FLOWER_API);
+
+                // Parse flowers
+                var flowerMap = {};
+                if (_f.ok) {
+                    var fd = await _f.json();
+                    var fr = [];
+                    if (Array.isArray(fd)) fr = fd;
+                    else if (fd && fd.submissions && Array.isArray(fd.submissions)) fr = fd.submissions;
+                    else if (fd && fd.data && Array.isArray(fd.data)) fr = fd.data;
+                    fr.forEach(function(r) {
+                        var pid = r['题目1'] || r['题目1'] || '';
+                        if (pid) flowerMap[pid] = (flowerMap[pid] || 0) + 1;
+                    });
+                }
+
+                if (!_b.ok) { container.innerHTML = '<p style="color:#999;font-size:12px;">暂无作品</p>'; return; }
+                var dd = await _b.json();
+                var subs = [];
+                if (Array.isArray(dd)) subs = dd;
+                else if (dd && dd.submissions && Array.isArray(dd.submissions)) subs = dd.submissions;
+                else if (dd && dd.data && Array.isArray(dd.data)) subs = dd.data;
+
+                // Sort oldest first, assign IDs
+                subs.sort(function(a, b) {
+                    return (a.submitted_at || a.created_at || '').localeCompare(b.submitted_at || b.created_at || '');
+                });
+
+                var works = subs.map(function(item, i) {
+                    var pid = String(i + 1);
+                    return {
+                        id: pid,
+                        author: item['姓名'] || item['姓名'] || '匿名',
+                        scene: item['题目1'] || item['题目1'] || '',
+                        flowers: flowerMap[pid] || 0
+                    };
+                });
+
+                // Sort by flowers descending, take top 3
+                works.sort(function(a, b) { return b.flowers - a.flowers; });
+                var top3 = works.slice(0, 3);
+
+                var medals = ['🥇', '🥈', '🥉'];
+                var html = '';
+                top3.forEach(function(w, i) {
+                    html += '<div class="top-work-card">' +
+                        '<div class="tw-rank">' + medals[i] + '</div>' +
+                        '<div class="tw-author">' + (w.author || '匿名') + '</div>' +
+                        '<div class="tw-scene">' + (w.scene || '未填写') + '</div>' +
+                        '<div class="tw-flowers">🌸 ' + w.flowers + '</div>' +
+                        '</div>';
+                });
+
+                if (top3.length === 0) {
+                    html = '<p style="color:#999;font-size:12px;">还没有作品，快来提交吧！</p>';
+                }
+
+                container.innerHTML = html;
+            } catch (e) {
+                console.error('加载TOP3失败:', e);
+                container.innerHTML = '<p style="color:#999;font-size:12px;">加载失败</p>';
+            }
+        }
     </script>
 </body>
 </html>
