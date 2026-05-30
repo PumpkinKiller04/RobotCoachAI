@@ -1758,6 +1758,18 @@ ${(() => {
             for (let i = 0; i < sectionsToLoad.length; i++) {
                 const section = sectionsToLoad[i];
                 const sectionIndex = currentModule === 0 ? section : i + 1;
+                
+                if (currentModule === 2 && section === 11) {
+                    reportData.push({
+                        sectionName: sectionNames[sectionIndex - 1],
+                        completed: true,
+                        score: 0,
+                        total: 0,
+                        isSummary: true
+                    });
+                    continue;
+                }
+                
                 try {
                     const apiUrl = API_READ_URLS['section' + section];
                     const response = await fetch(apiUrl);
