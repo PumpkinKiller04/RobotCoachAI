@@ -57,6 +57,10 @@ logs/
 
 # 视频文件
 *.mp4
+!resource/感知关闭.mp4
+!resource/决策关闭.mp4
+!resource/行动关闭.mp4
+!resource/闭环断裂.mp4
 *.avi
 *.mov
 *.wmv
