@@ -209,7 +209,7 @@
             submissions.sort((a, b) => {
                 const timeA = a.submitted_at || a.created_at || '';
                 const timeB = b.submitted_at || b.created_at || '';
-                return timeA.localeCompare(timeB);
+                return timeB.localeCompare(timeA);
             });
 
             allProjects = submissions.map((item, idx) => {
