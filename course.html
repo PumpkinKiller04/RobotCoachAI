@@ -1692,6 +1692,10 @@ ${(() => {
                         document.getElementById('rightContent').innerHTML = '<div style="text-align:center;padding:20px;"><h4 style="color:#8b5a2b;margin-bottom:16px;">勋章授予</h4><img src="resource/白银.png" alt="白银勋章" style="max-width:200px;height:auto;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.15);"><p style="color:#6b4423;font-size:16px;font-weight:600;margin-top:12px;">白银勋章</p><p style="color:#888;font-size:13px;">导学单一完成</p></div>';
                     } else if (currentModule === 1) {
                         document.getElementById('rightContent').innerHTML = '<div style="text-align:center;padding:20px;"><h4 style="color:#8b5a2b;margin-bottom:16px;">勋章授予</h4><img src="resource/黄金.png" alt="黄金勋章" style="max-width:200px;height:auto;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.15);"><p style="color:#6b4423;font-size:16px;font-weight:600;margin-top:12px;">黄金勋章</p><p style="color:#888;font-size:13px;">导学单二完成</p></div>';
+                    } else if (currentModule === 2) {
+                        var hasAll3 = localStorage.getItem('module0Completed') && localStorage.getItem('module1Completed');
+                        var extra3 = hasAll3 ? '<p style="color:#6b4423;font-size:16px;font-weight:700;margin-top:4px;">⭐ AI总教练</p>' : '';
+                        document.getElementById('rightContent').innerHTML = '<div style="text-align:center;padding:20px;"><h4 style="color:#8b5a2b;margin-bottom:16px;">勋章授予</h4><img src="resource/钻石.png" alt="钻石勋章" style="max-width:200px;height:auto;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.15);"><p style="color:#6b4423;font-size:16px;font-weight:600;margin-top:12px;">钻石勋章</p><p style="color:#888;font-size:13px;">导学单三完成</p>' + extra3 + '</div>';
                     }
                 } else {
                     const errorText = await response.text();
