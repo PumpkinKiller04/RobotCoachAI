@@ -325,9 +325,19 @@
                         type: 'design'
                     };
                 } else {
+                    // 分析解释类型，收集所有题目答案
+                    const answers = [];
+                    for (let i = 1; i <= 10; i++) {
+                        const qKey = '题目' + i;
+                        const qKeyUnicode = '\u9898\u76ee' + i;
+                        const value = item[qKey] || item[qKeyUnicode];
+                        if (value && value.trim()) {
+                            answers.push({ question: i, answer: value });
+                        }
+                    }
                     return {
                         author: item['姓名'] || item['\u59d3\u540d'] || '匿名创作者',
-                        answer: item['题目1'] || item['\u9898\u76ee1'] || '',
+                        answers: answers,
                         time: item.submitted_at || item.created_at || new Date().toISOString(),
                         type: 'analysis'
                     };
