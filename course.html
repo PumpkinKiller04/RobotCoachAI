@@ -1601,8 +1601,9 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         model: model,
+                        max_tokens: 200,
                         messages: [
-                            { role: 'system', content: '你是一位AI学习教练，善于分析学生的学习数据并给出鼓励和建议。' },
+                            { role: 'system', content: '你是AI学习教练。用中文回复，80字以内，语气鼓励。' },
                             { role: 'user', content: reportPrompt }
                         ]
                     })
