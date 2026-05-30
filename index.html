@@ -1050,23 +1050,17 @@
                 height: 100vh;
                 min-height: 100dvh;
             }
-            .inverted-world {
-                height: calc(45% - 45px);
-            }
             .book-container {
-                width: 95%;
-                max-width: none;
-                margin: 0 auto;
-                left: 2.5%;
-                right: 2.5%;
+                transform: translate(-50%, -50%) !important;
             }
-            .book-title {
-                font-size: 24px;
+            .book-wrapper {
+                width: 95% !important;
+                max-width: 760px;
             }
             .login-area {
-                right: 15px;
-                bottom: 15px;
-                width: 260px;
+                right: 10px;
+                bottom: 10px;
+                width: 240px;
             }
         }
 
@@ -1074,97 +1068,133 @@
             html, body {
                 height: 100vh;
                 min-height: 100dvh;
+                overflow-y: auto;
+            }
+            body {
+                background: linear-gradient(180deg, 
+                    #87ceeb 0%, 
+                    #add8e6 30%,
+                    #b0e0e6 50%,
+                    #98d8c8 65%,
+                    #7cb342 85%,
+                    #558b2f 100%);
             }
             .top-road {
-                height: 40px;
-            }
-            .road-line-segment {
-                width: 40px;
-                height: 5px;
+                height: 35px;
             }
             .road-lines {
-                gap: 25px;
+                gap: 20px;
+            }
+            .road-line-segment {
+                width: 35px;
+                height: 4px;
             }
             .inverted-world {
-                top: 40px;
-                height: calc(40% - 40px);
+                top: 35px;
+                height: 25%;
             }
             .book-container {
-                width: 100%;
-                max-width: none;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                border-radius: 0;
-                box-shadow: none;
+                position: static !important;
+                transform: none !important;
+                width: 100% !important;
+                padding: 15px;
+                box-sizing: border-box;
+            }
+            .book-wrapper {
+                width: 100% !important;
+                height: auto !important;
+                min-height: calc(75vh - 35px);
+                perspective: none;
+            }
+            .book {
+                border-radius: 8px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                overflow: hidden;
+            }
+            .book-spine {
+                display: none;
             }
             .book-content-wrapper {
                 padding: 15px;
+                padding-left: 15px !important;
             }
             .book-title {
-                font-size: 18px;
+                font-size: 20px;
                 letter-spacing: 2px;
+                text-align: center;
+                margin-bottom: 10px;
             }
             .book-subtitle {
                 font-size: 14px;
+                text-align: center;
             }
             .robot-image {
-                width: 80px;
-                height: 80px;
-                right: 15px;
+                display: none;
             }
             .login-area {
-                position: static;
-                width: 100%;
-                max-width: 320px;
-                margin: 20px auto 0;
-                padding: 18px;
+                position: static !important;
+                width: 100% !important;
+                max-width: none;
+                margin: 20px 0 0 !important;
+                padding: 20px;
+                box-sizing: border-box;
+            }
+            .login-row {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
             }
             .login-label {
                 font-size: 16px;
-                width: 50px;
+                width: auto;
             }
             .login-input {
-                font-size: 15px;
-                padding: 12px 10px;
-                width: 100%;
+                width: 100% !important;
+                font-size: 16px;
+                padding: 14px 12px;
             }
             .bookmark-buttons {
                 display: none;
             }
             .login-btn {
+                width: 100%;
                 font-size: 18px;
-                padding: 12px 24px;
+                padding: 14px;
+                margin-top: 10px;
             }
-            .input-group {
-                margin-bottom: 12px;
+            .register-link {
+                text-align: center;
+                margin-top: 15px;
             }
         }
 
         @media (max-width: 480px) {
             .top-road {
-                height: 35px;
+                height: 30px;
             }
             .road-line-segment {
-                width: 30px;
-                height: 4px;
+                width: 25px;
+                height: 3px;
             }
             .road-lines {
-                gap: 20px;
+                gap: 15px;
             }
             .inverted-world {
-                height: calc(35% - 35px);
+                height: 20%;
+            }
+            .book-container {
+                padding: 10px;
+            }
+            .book-content-wrapper {
+                padding: 12px;
             }
             .book-title {
-                font-size: 16px;
+                font-size: 17px;
                 letter-spacing: 1px;
             }
             .book-subtitle {
                 font-size: 12px;
-            }
-            .robot-image {
-                width: 65px;
-                height: 65px;
             }
             .login-area {
                 padding: 15px;
@@ -1174,11 +1204,11 @@
             }
             .login-input {
                 font-size: 14px;
-                padding: 10px;
+                padding: 12px 10px;
             }
             .login-btn {
                 font-size: 16px;
-                padding: 10px 20px;
+                padding: 12px;
             }
         }
     </style>
