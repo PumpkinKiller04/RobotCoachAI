@@ -325,9 +325,9 @@
                         type: 'design'
                     };
                 } else {
-                    // 分析解释类型，收集所有题目答案
+                    // 分析解释类型，收集题目1-5的答案
                     const answers = [];
-                    for (let i = 1; i <= 10; i++) {
+                    for (let i = 1; i <= 5; i++) {
                         const qKey = '题目' + i;
                         const qKeyUnicode = '\u9898\u76ee' + i;
                         const value = item[qKey] || item[qKeyUnicode];
