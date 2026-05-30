@@ -330,14 +330,24 @@
     
     <script>
         const API_URL = 'https://quickform.cn/api/kzw1h47nrm/all';
+        const LIKE_API_URL = 'https://quickform.cn/api/6pnetifmia';
+        const LIKE_API_URL_ALL = 'https://quickform.cn/api/6pnetifmia/all';
         let allProjects = [];
+        let likeData = {};
         
         async function loadProjects() {
             try {
-                const response = await fetch(API_URL);
-                if (response.ok) {
-                    const data = await response.json();
-                    processData(data);
+                const [projectsResponse, likeResponse] = await Promise.all([
+                    fetch(API_URL),
+                    fetch(LIKE_API_URL_ALL)
+                ]);
+                
+                if (projectsResponse.ok && likeResponse.ok) {
+                    const projectsData = await projectsResponse.json();
+                    const likeResponseData = await likeResponse.json();
+                    
+                    processLikeData(likeResponseData);
+                    processData(projectsData);
                 } else {
                     document.getElementById('gallery').innerHTML = `
                         <div class="empty-state">
@@ -357,6 +367,37 @@
             }
         }
         
+        function processLikeData(data) {
+            likeData = {};
+            let submissions = [];
+            
+            if (Array.isArray(data)) {
+                submissions = data;
+            } else if (data && data.submissions && Array.isArray(data.submissions)) {
+                submissions = data.submissions;
+            } else if (data && data.data && Array.isArray(data.data)) {
+                submissions = data.data;
+            }
+            
+            submissions.forEach(item => {
+                const projectId = item['项目ID'] || item['\u9879\u76EEID'] || '';
+                if (projectId) {
+                    if (!likeData[projectId]) {
+                        likeData[projectId] = { likes: 0, comments: [] };
+                    }
+                    if (item['类型'] === 'like') {
+                        likeData[projectId].likes++;
+                    } else if (item['类型'] === 'comment') {
+                        likeData[projectId].comments.push({
+                            author: item['评论者'] || '匿名',
+                            content: item['评论内容'],
+                            time: item.submitted_at || item.created_at || new Date().toISOString()
+                        });
+                    }
+                }
+            });
+        }
+        
         function processData(data) {
             let submissions = [];
 
@@ -374,11 +415,14 @@
                 return timeB.localeCompare(timeA);
             });
 
-            allProjects = submissions.map(item => {
+            allProjects = submissions.map((item, index) => {
                 const typeField = item['题目6'] || item['\u9898\u76ee6'] || '';
                 const isDesign = typeField === '设计方案';
+                const projectId = item.id || item._id || `project_${index}_${Date.now()}`;
+                const projectLikeData = likeData[projectId] || { likes: 0, comments: [] };
 
                 return {
+                    id: projectId,
                     author: item['姓名'] || item['\u59d3\u540d'] || '匿名创作者',
                     scene: item['题目1'] || item['\u9898\u76ee1'] || '',
                     task: item['题目2'] || item['\u9898\u76ee2'] || '',
@@ -386,7 +430,9 @@
                     training: item['题目4'] || item['\u9898\u76ee4'] || '',
                     feedback: item['题目5'] || item['\u9898\u76ee5'] || '',
                     time: item.submitted_at || item.created_at || new Date().toISOString(),
-                    type: isDesign ? 'design' : 'analysis'
+                    type: isDesign ? 'design' : 'analysis',
+                    likes: projectLikeData.likes,
+                    comments: projectLikeData.comments
                 };
             });
 
