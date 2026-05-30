@@ -1787,70 +1787,9 @@ ${(() => {
                     }
                     return { sectionName: sectionNames[sectionIndex - 1], completed: false };
                 }).catch(function() { return { sectionName: sectionNames[sectionIndex - 1], completed: false, error: true }; });
-                        let submissions = [];
-                        
-                        if (Array.isArray(data)) {
-                            submissions = data;
-                        } else if (data && data.submissions && Array.isArray(data.submissions)) {
-                            submissions = data.submissions;
-                        }
-                        
-                        const userRecords = submissions.filter(item => {
-                            const name = item['姓名'] || item['\u59d3\u540d'];
-                            return name === username;
-                        });
-                        
-                        if (userRecords.length > 0) {
-                            const latestRecord = userRecords[0];
-                            const fields = fieldNamesMap[section];
-                            const correctAnswers = correctAnswersMap[section];
-                            const sectionData = {
-                                sectionName: sectionNames[sectionIndex - 1],
-                                completed: true,
-                                answers: {},
-                                score: 0,
-                                total: 0
-                            };
-                            
-                            fields.forEach(field => {
-                                const value = latestRecord['题目' + (fields.indexOf(field) + 1)] || 
-                                             latestRecord['\u9898\u76ee' + (fields.indexOf(field) + 1)] || '';
-                                sectionData.answers[field] = value;
-                            });
-                            
-                            Object.keys(correctAnswers).forEach(q => {
-                                sectionData.total += 1;
-                                if (sectionData.answers[q] === correctAnswers[q]) {
-                                    sectionData.score += 1;
-                                }
-                            });
-                            
-                            reportData.push(sectionData);
-                            console.log('环节' + sectionIndex + '数据已收集:', sectionData);
-                        } else {
-                            reportData.push({
-                                sectionName: sectionNames[sectionIndex - 1],
-                                completed: false
-                            });
-                            console.log('环节' + sectionIndex + '无数据');
-                        }
-                    } else {
-                        reportData.push({
-                            sectionName: sectionNames[sectionIndex - 1],
-                            completed: false
-                        });
-                        console.log('环节' + sectionIndex + '加载失败');
-                    }
-                } catch (e) {
-                    console.warn('加载环节' + sectionIndex + '数据失败:', e);
-                    reportData.push({
-                        sectionName: sectionNames[sectionIndex - 1],
-                        completed: false,
-                        error: true
-                    });
-                }
-            }
-            
+            });
+            reportData = await Promise.all(promises);
+
             return reportData;
         }
 
