@@ -419,8 +419,16 @@
             const avatar = project.author.charAt(0).toUpperCase();
             const formattedTime = formatTime(project.time);
 
+            const commentsHTML = project.comments ? project.comments.map((c, idx) => `
+                <div class="comment-item">
+                    <div class="comment-author">${escapeHtml(c.author || '匿名')}</div>
+                    <div class="comment-content">${escapeHtml(c.content)}</div>
+                    <div class="comment-time">${formatTime(c.time)}</div>
+                </div>
+            `).join('') : '';
+
             return `
-                <div class="card">
+                <div class="card" data-project-id="${project.id}">
                     <div class="card-header">
                         <div class="card-author">
                             <div class="author-avatar">${avatar}</div>
@@ -451,6 +459,21 @@
                         <div class="design-item">
                             <span class="design-label">反馈检查项:</span>
                             <span class="design-value">${escapeHtml(project.feedback) || '未填写'}</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <div class="action-row">
+                            <button class="like-btn" onclick="likeProject('${project.id}')">
+                                <span>🌸</span>
+                                <span>${project.likes || 0}</span>
+                            </button>
+                        </div>
+                        <div class="comment-section">
+                            <textarea class="comment-input" rows="2" id="comment-${project.id}" placeholder="写下你的评论..."></textarea>
+                            <button class="comment-btn" onclick="submitComment('${project.id}')">发表评论</button>
+                            <div class="comments-list" id="comments-${project.id}">
+                                ${commentsHTML || '<p style="color:#999;font-size:13px;">暂无评论，快来发表第一条评论吧！</p>'}
+                            </div>
                         </div>
                     </div>
                 </div>
