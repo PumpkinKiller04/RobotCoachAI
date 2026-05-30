@@ -374,6 +374,13 @@
             const formattedTime = formatTime(project.time);
 
             if (project.type === 'analysis') {
+                const answersHTML = project.answers.map((ans, idx) => `
+                    <div class="design-item">
+                        <span class="design-label">题目${ans.question}:</span>
+                        <span class="design-value">${escapeHtml(ans.answer)}</span>
+                    </div>
+                `).join('');
+
                 return `
                 <div class="card">
                     <div class="card-header" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
@@ -387,10 +394,7 @@
                     </div>
                     <div class="card-body">
                         <div class="card-title">📝 分析解释答案</div>
-                        <div class="design-item">
-                            <span class="design-label">答案:</span>
-                            <span class="design-value">${escapeHtml(project.answer) || '未填写'}</span>
-                        </div>
+                        ${answersHTML}
                     </div>
                 </div>
             `;
