@@ -1043,6 +1043,144 @@
             background: #8b5a2b;
             color: white;
         }
+
+        /* ===== 响应式适配 ===== */
+        @media (max-width: 900px) {
+            html, body {
+                height: 100vh;
+                min-height: 100dvh;
+            }
+            .inverted-world {
+                height: calc(45% - 45px);
+            }
+            .book-container {
+                width: 95%;
+                max-width: none;
+                margin: 0 auto;
+                left: 2.5%;
+                right: 2.5%;
+            }
+            .book-title {
+                font-size: 24px;
+            }
+            .login-area {
+                right: 15px;
+                bottom: 15px;
+                width: 260px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            html, body {
+                height: 100vh;
+                min-height: 100dvh;
+            }
+            .top-road {
+                height: 40px;
+            }
+            .road-line-segment {
+                width: 40px;
+                height: 5px;
+            }
+            .road-lines {
+                gap: 25px;
+            }
+            .inverted-world {
+                top: 40px;
+                height: calc(40% - 40px);
+            }
+            .book-container {
+                width: 100%;
+                max-width: none;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            .book-content-wrapper {
+                padding: 15px;
+            }
+            .book-title {
+                font-size: 18px;
+                letter-spacing: 2px;
+            }
+            .book-subtitle {
+                font-size: 14px;
+            }
+            .robot-image {
+                width: 80px;
+                height: 80px;
+                right: 15px;
+            }
+            .login-area {
+                position: static;
+                width: 100%;
+                max-width: 320px;
+                margin: 20px auto 0;
+                padding: 18px;
+            }
+            .login-label {
+                font-size: 16px;
+                width: 50px;
+            }
+            .login-input {
+                font-size: 15px;
+                padding: 12px 10px;
+                width: 100%;
+            }
+            .bookmark-buttons {
+                display: none;
+            }
+            .login-btn {
+                font-size: 18px;
+                padding: 12px 24px;
+            }
+            .input-group {
+                margin-bottom: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .top-road {
+                height: 35px;
+            }
+            .road-line-segment {
+                width: 30px;
+                height: 4px;
+            }
+            .road-lines {
+                gap: 20px;
+            }
+            .inverted-world {
+                height: calc(35% - 35px);
+            }
+            .book-title {
+                font-size: 16px;
+                letter-spacing: 1px;
+            }
+            .book-subtitle {
+                font-size: 12px;
+            }
+            .robot-image {
+                width: 65px;
+                height: 65px;
+            }
+            .login-area {
+                padding: 15px;
+            }
+            .login-label {
+                font-size: 14px;
+            }
+            .login-input {
+                font-size: 14px;
+                padding: 10px;
+            }
+            .login-btn {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+        }
     </style>
 </head>
 <body>
