@@ -1774,44 +1774,6 @@ ${(() => {
                     continue;
                 }
                 
-                if (currentModule === 2 && section === 10) {
-                    try {
-                        const apiUrl = API_READ_URLS['section' + section];
-                        const response = await fetch(apiUrl);
-                        if (response.ok) {
-                            const data = await response.json();
-                            let submissions = [];
-                            if (Array.isArray(data)) {
-                                submissions = data;
-                            } else if (data && data.submissions && Array.isArray(data.submissions)) {
-                                submissions = data.submissions;
-                            }
-                            const userRecords = submissions.filter(item => {
-                                const name = item['姓名'] || item['\u59d3\u540d'];
-                                return name === username;
-                            });
-                            if (userRecords.length > 0) {
-                                reportData.push({
-                                    sectionName: sectionNames[sectionIndex - 1],
-                                    completed: true,
-                                    score: 0,
-                                    total: 0,
-                                    isDesign: true
-                                });
-                                console.log('环节三（设计方案）已确认完成');
-                                continue;
-                            }
-                        }
-                    } catch (e) {
-                        console.warn('加载环节三数据失败:', e);
-                    }
-                    reportData.push({
-                        sectionName: sectionNames[sectionIndex - 1],
-                        completed: false
-                    });
-                    continue;
-                }
-                
                 try {
                     const apiUrl = API_READ_URLS['section' + section];
                     const response = await fetch(apiUrl);
