@@ -313,35 +313,16 @@
                 const typeField = item['题目6'] || item['\u9898\u76ee6'] || '';
                 const isDesign = typeField === '设计方案';
 
-                if (isDesign) {
-                    return {
-                        author: item['姓名'] || item['\u59d3\u540d'] || '匿名创作者',
-                        scene: item['题目1'] || item['\u9898\u76ee1'] || '',
-                        task: item['题目2'] || item['\u9898\u76ee2'] || '',
-                        sensors: item['题目3'] || item['\u9898\u76ee3'] || '',
-                        training: item['题目4'] || item['\u9898\u76ee4'] || '',
-                        feedback: item['题目5'] || item['\u9898\u76ee5'] || '',
-                        time: item.submitted_at || item.created_at || new Date().toISOString(),
-                        type: 'design'
-                    };
-                } else {
-                    // 分析解释类型，收集题目1-5的答案
-                    const answers = [];
-                    for (let i = 1; i <= 5; i++) {
-                        const qKey = '题目' + i;
-                        const qKeyUnicode = '\u9898\u76ee' + i;
-                        const value = item[qKey] || item[qKeyUnicode];
-                        if (value && value.trim()) {
-                            answers.push({ question: i, answer: value });
-                        }
-                    }
-                    return {
-                        author: item['姓名'] || item['\u59d3\u540d'] || '匿名创作者',
-                        answers: answers,
-                        time: item.submitted_at || item.created_at || new Date().toISOString(),
-                        type: 'analysis'
-                    };
-                }
+                return {
+                    author: item['姓名'] || item['\u59d3\u540d'] || '匿名创作者',
+                    scene: item['题目1'] || item['\u9898\u76ee1'] || '',
+                    task: item['题目2'] || item['\u9898\u76ee2'] || '',
+                    sensors: item['题目3'] || item['\u9898\u76ee3'] || '',
+                    training: item['题目4'] || item['\u9898\u76ee4'] || '',
+                    feedback: item['题目5'] || item['\u9898\u76ee5'] || '',
+                    time: item.submitted_at || item.created_at || new Date().toISOString(),
+                    type: isDesign ? 'design' : 'analysis'
+                };
             });
 
             updateStats();
