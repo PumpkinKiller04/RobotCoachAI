@@ -2043,37 +2043,44 @@ ${(() => {
                 return { valid: false, missing: fieldNames };
             }
             
+            // 定义环节8中需要条件验证的字段映射
+            const conditionalFields = {
+                8: {
+                    't3_1a': 'q3_1a',  // t3_1a 只在 q3_1a 选 'c' 时需要填写
+                    't3_1b': 'q3_1b'   // t3_1b 只在 q3_1b 选 'c' 时需要填写
+                }
+            };
+            
             fieldNames.forEach((fieldName, idx) => {
                 const value = answers[idx + 1];
+                
+                // 如果是环节8的条件字段，跳过常规验证
+                if (section === 8 && conditionalFields[8][fieldName]) {
+                    return;
+                }
+                
                 if (!value || value.trim() === '') {
                     missing.push(fieldName);
                 }
             });
             
             // 条件验证：当选择题选了C（其他）时，对应的输入框必须填写
-            if (section === 8) {
+            if (section === 8 && conditionalFields[8]) {
                 const fieldIndex = {};
                 fieldNames.forEach((field, idx) => {
                     fieldIndex[field] = idx;
                 });
                 
-                // 如果 q3_1a 选了 'c'，则 t3_1a 必须填写
-                if (fieldIndex['q3_1a'] !== undefined && fieldIndex['t3_1a'] !== undefined) {
-                    const q3_1aValue = answers[fieldIndex['q3_1a'] + 1];
-                    const t3_1aValue = answers[fieldIndex['t3_1a'] + 1];
-                    if (q3_1aValue === 'c' && (!t3_1aValue || t3_1aValue.trim() === '')) {
-                        missing.push('t3_1a');
+                // 检查所有条件字段
+                Object.entries(conditionalFields[8]).forEach(([inputField, radioField]) => {
+                    if (fieldIndex[radioField] !== undefined && fieldIndex[inputField] !== undefined) {
+                        const radioValue = answers[fieldIndex[radioField] + 1];
+                        const inputValue = answers[fieldIndex[inputField] + 1];
+                        if (radioValue === 'c' && (!inputValue || inputValue.trim() === '')) {
+                            missing.push(inputField);
+                        }
                     }
-                }
-                
-                // 如果 q3_1b 选了 'c'，则 t3_1b 必须填写
-                if (fieldIndex['q3_1b'] !== undefined && fieldIndex['t3_1b'] !== undefined) {
-                    const q3_1bValue = answers[fieldIndex['q3_1b'] + 1];
-                    const t3_1bValue = answers[fieldIndex['t3_1b'] + 1];
-                    if (q3_1bValue === 'c' && (!t3_1bValue || t3_1bValue.trim() === '')) {
-                        missing.push('t3_1b');
-                    }
-                }
+                });
             }
             
             return { valid: missing.length === 0, missing: [...new Set(missing)] };
