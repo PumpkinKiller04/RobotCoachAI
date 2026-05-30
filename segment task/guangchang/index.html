@@ -15,201 +15,106 @@
             min-height: 100vh;
             padding: 40px 20px;
         }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        .header h1 {
-            font-size: 36px;
-            color: white;
-            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-            margin-bottom: 15px;
-        }
-        .header p {
-            font-size: 18px;
-            color: rgba(255,255,255,0.9);
-        }
-        .search-bar {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-            gap: 10px;
-        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 50px; }
+        .header h1 { font-size: 36px; color: white; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); margin-bottom: 15px; }
+        .header p { font-size: 18px; color: rgba(255,255,255,0.9); }
+        .search-bar { display: flex; justify-content: center; margin-bottom: 30px; gap: 10px; }
         .search-input {
-            padding: 12px 20px;
-            width: 300px;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            padding: 12px 20px; width: 300px; border: none; border-radius: 25px;
+            font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .search-btn {
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+            padding: 12px 30px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white; border: none; border-radius: 25px; font-size: 16px; font-weight: 600;
+            cursor: pointer; transition: transform 0.3s, box-shadow 0.3s;
             box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
         }
-        .search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.5);
-        }
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 30px;
-        }
+        .search-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245, 87, 108, 0.5); }
+        .stats-bar { display: flex; justify-content: center; gap: 40px; margin-bottom: 30px; flex-wrap: wrap; }
         .stat-item {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(10px);
-            padding: 15px 30px;
-            border-radius: 15px;
-            text-align: center;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+            padding: 15px 30px; border-radius: 15px; text-align: center;
         }
-        .stat-number {
-            font-size: 28px;
-            font-weight: 700;
-            color: white;
-        }
-        .stat-label {
-            font-size: 14px;
-            color: rgba(255,255,255,0.8);
-        }
+        .stat-number { font-size: 28px; font-weight: 700; color: white; }
+        .stat-label { font-size: 14px; color: rgba(255,255,255,0.8); }
         .gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 25px;
         }
         .card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
+            background: white; border-radius: 20px; overflow: hidden;
             box-shadow: 0 10px 40px rgba(0,0,0,0.15);
             transition: transform 0.3s, box-shadow 0.3s;
+            display: flex; flex-direction: column;
         }
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
-        }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(0,0,0,0.25); }
         .card-header {
             background: linear-gradient(135deg, #8b5a2b 0%, #a0522d 100%);
-            padding: 20px;
-            color: white;
+            padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center;
         }
-        .card-author {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .card-author { display: flex; align-items: center; gap: 12px; }
         .author-avatar {
-            width: 45px;
-            height: 45px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: 700;
+            width: 45px; height: 45px; background: rgba(255,255,255,0.2);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 20px; font-weight: 700;
         }
-        .author-info {
-            display: flex;
-            flex-direction: column;
+        .author-info { display: flex; flex-direction: column; }
+        .author-name { font-size: 16px; font-weight: 600; }
+        .submit-time { font-size: 12px; opacity: 0.8; }
+        .card-number {
+            background: rgba(255,255,255,0.2); border-radius: 50%;
+            width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+            font-size: 18px; font-weight: 700; flex-shrink: 0;
         }
-        .author-name {
-            font-size: 16px;
-            font-weight: 600;
-        }
-        .submit-time {
-            font-size: 12px;
-            opacity: 0.8;
-        }
-        .card-body {
-            padding: 20px;
-        }
-        .card-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #8b5a2b;
-            margin-bottom: 18px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #d4a574;
-        }
-        .design-item {
-            display: flex;
-            margin-bottom: 12px;
-            align-items: flex-start;
-        }
-        .design-label {
-            width: 85px;
-            font-weight: 600;
-            color: #6b4423;
-            flex-shrink: 0;
-        }
+        .card-body { padding: 20px; flex: 1; }
+        .card-title { font-size: 20px; font-weight: 700; color: #8b5a2b; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid #d4a574; }
+        .design-item { display: flex; margin-bottom: 12px; align-items: flex-start; }
+        .design-label { width: 85px; font-weight: 600; color: #6b4423; flex-shrink: 0; }
         .design-value {
-            flex: 1;
-            color: #333;
-            background: #fff8e7;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            line-height: 1.5;
+            flex: 1; color: #333; background: #fff8e7;
+            padding: 8px 12px; border-radius: 8px; font-size: 14px; line-height: 1.5;
         }
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: white;
+        /* ---- flower section ---- */
+        .card-footer {
+            padding: 12px 20px 16px;
+            border-top: 1px solid #f0e0c8;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
-        .empty-state h3 {
-            font-size: 24px;
-            margin-bottom: 15px;
+        .flower-btn {
+            padding: 8px 20px; border: 2px solid #f9a8d4; border-radius: 20px;
+            background: linear-gradient(135deg, #fce7f3, #fdf2f8);
+            color: #db2777; font-size: 15px; font-weight: 600;
+            cursor: pointer; transition: all .25s;
+            display: flex; align-items: center; gap: 6px;
+            user-select: none;
         }
-        .empty-state p {
-            font-size: 16px;
-            opacity: 0.9;
+        .flower-btn:hover { transform: scale(1.05); border-color: #f472b6; background: #fce7f3; }
+        .flower-btn:active { transform: scale(.95); }
+        .flower-btn .fl-icon { font-size: 18px; }
+        .flower-count { font-size: 15px; color: #db2777; font-weight: 700; min-width: 20px; text-align: center; }
+        .flower-btn.flowered { animation: flowerPop .5s ease; }
+        @keyframes flowerPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
-        .loading {
-            text-align: center;
-            color: white;
-            font-size: 18px;
-            padding: 50px;
-        }
+        .empty-state { text-align: center; padding: 60px 20px; color: white; }
+        .empty-state h3 { font-size: 24px; margin-bottom: 15px; }
+        .empty-state p { font-size: 16px; opacity: 0.9; }
+        .loading { text-align: center; color: white; font-size: 18px; padding: 50px; }
         .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
+            width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: white; border-radius: 50%;
+            animation: spin 1s linear infinite; margin: 0 auto 20px;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 28px;
-            }
-            .gallery {
-                grid-template-columns: 1fr;
-            }
-            .stats-bar {
-                flex-wrap: wrap;
-                gap: 15px;
-            }
-            .search-input {
-                width: 200px;
-            }
+            .header h1 { font-size: 28px; }
+            .gallery { grid-template-columns: 1fr; }
+            .stats-bar { flex-wrap: wrap; gap: 15px; }
+            .search-input { width: 200px; }
         }
     </style>
 </head>
@@ -219,12 +124,12 @@
             <h1>🎨 AI创意广场</h1>
             <p>探索全国总教练的创意设计方案</p>
         </div>
-        
+
         <div class="search-bar">
             <input type="text" class="search-input" id="searchInput" placeholder="搜索场景、任务、传感器...">
             <button class="search-btn" onclick="filterCards()">搜索</button>
         </div>
-        
+
         <div class="stats-bar">
             <div class="stat-item">
                 <div class="stat-number" id="totalCount">0</div>
@@ -234,8 +139,12 @@
                 <div class="stat-number" id="uniqueAuthors">0</div>
                 <div class="stat-label">创意作者</div>
             </div>
+            <div class="stat-item">
+                <div class="stat-number" id="totalFlowers">0</div>
+                <div class="stat-label">献花总数</div>
+            </div>
         </div>
-        
+
         <div class="gallery" id="gallery">
             <div class="loading">
                 <div class="loading-spinner"></div>
@@ -243,97 +152,111 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         const API_URL = 'https://quickform.cn/api/kzw1h47nrm/all';
+        const FLOWER_API = 'https://quickform.cn/api/6pnetifmia';
+        const FLOWER_READ = 'https://quickform.cn/api/6pnetifmia/all';
         let allProjects = [];
-        
+        let flowerCounts = {};
+        const username = localStorage.getItem('username') || '游客';
+
         async function loadProjects() {
             try {
-                const response = await fetch(API_URL);
-                if (response.ok) {
-                    const data = await response.json();
+                const [designResp, flowerResp] = await Promise.all([
+                    fetch(API_URL),
+                    fetch(FLOWER_READ)
+                ]);
+
+                // Parse flowers
+                if (flowerResp.ok) {
+                    const flowerData = await flowerResp.json();
+                    let flowerRecords = [];
+                    if (Array.isArray(flowerData)) flowerRecords = flowerData;
+                    else if (flowerData && flowerData.submissions && Array.isArray(flowerData.submissions)) flowerRecords = flowerData.submissions;
+                    else if (flowerData && flowerData.data && Array.isArray(flowerData.data)) flowerRecords = flowerData.data;
+
+                    flowerCounts = {};
+                    flowerRecords.forEach(r => {
+                        const pid = r['题目1'] || r['题目1'] || '';
+                        if (pid) {
+                            flowerCounts[pid] = (flowerCounts[pid] || 0) + 1;
+                        }
+                    });
+                }
+
+                if (designResp.ok) {
+                    const data = await designResp.json();
                     processData(data);
                 } else {
                     document.getElementById('gallery').innerHTML = `
-                        <div class="empty-state">
-                            <h3>📭 暂无作品</h3>
-                            <p>还没有同学提交设计方案，快来成为第一个创作者吧！</p>
-                        </div>
-                    `;
+                        <div class="empty-state"><h3>📭 暂无作品</h3><p>还没有同学提交设计方案，快来成为第一个创作者吧！</p></div>`;
                 }
             } catch (error) {
                 console.error('加载数据失败:', error);
                 document.getElementById('gallery').innerHTML = `
-                    <div class="empty-state">
-                        <h3>🔌 网络连接失败</h3>
-                        <p>无法连接到服务器，请稍后重试</p>
-                    </div>
-                `;
+                    <div class="empty-state"><h3>🔌 网络连接失败</h3><p>无法连接到服务器，请稍后重试</p></div>`;
             }
         }
-        
+
         function processData(data) {
             let submissions = [];
+            if (Array.isArray(data)) submissions = data;
+            else if (data && data.submissions && Array.isArray(data.submissions)) submissions = data.submissions;
+            else if (data && data.data && Array.isArray(data.data)) submissions = data.data;
 
-            if (Array.isArray(data)) {
-                submissions = data;
-            } else if (data && data.submissions && Array.isArray(data.submissions)) {
-                submissions = data.submissions;
-            } else if (data && data.data && Array.isArray(data.data)) {
-                submissions = data.data;
-            }
-
+            // Sort from oldest to newest for numbering
             submissions.sort((a, b) => {
                 const timeA = a.submitted_at || a.created_at || '';
                 const timeB = b.submitted_at || b.created_at || '';
-                return timeB.localeCompare(timeA);
+                return timeA.localeCompare(timeB);
             });
 
-            allProjects = submissions.map(item => {
-                const typeField = item['题目6'] || item['\u9898\u76ee6'] || '';
+            allProjects = submissions.map((item, idx) => {
+                const typeField = item['题目6'] || item['题目6'] || '';
                 const isDesign = typeField === '设计方案';
+                const projectId = String(idx + 1);
 
                 return {
-                    author: item['姓名'] || item['\u59d3\u540d'] || '匿名创作者',
-                    scene: item['题目1'] || item['\u9898\u76ee1'] || '',
-                    task: item['题目2'] || item['\u9898\u76ee2'] || '',
-                    sensors: item['题目3'] || item['\u9898\u76ee3'] || '',
-                    training: item['题目4'] || item['\u9898\u76ee4'] || '',
-                    feedback: item['题目5'] || item['\u9898\u76ee5'] || '',
+                    id: projectId,
+                    author: item['姓名'] || item['姓名'] || '匿名创作者',
+                    scene: item['题目1'] || item['题目1'] || '',
+                    task: item['题目2'] || item['题目2'] || '',
+                    sensors: item['题目3'] || item['题目3'] || '',
+                    training: item['题目4'] || item['题目4'] || '',
+                    feedback: item['题目5'] || item['题目5'] || '',
                     time: item.submitted_at || item.created_at || new Date().toISOString(),
-                    type: isDesign ? 'design' : 'analysis'
+                    type: isDesign ? 'design' : 'analysis',
+                    flowers: flowerCounts[projectId] || 0
                 };
             });
 
             updateStats();
             renderCards(allProjects);
         }
-        
+
         function updateStats() {
             document.getElementById('totalCount').textContent = allProjects.length;
             const authors = new Set(allProjects.map(p => p.author));
             document.getElementById('uniqueAuthors').textContent = authors.size;
+            const totalF = Object.values(flowerCounts).reduce((s, c) => s + c, 0);
+            document.getElementById('totalFlowers').textContent = totalF;
         }
-        
+
         function renderCards(projects) {
             if (projects.length === 0) {
                 document.getElementById('gallery').innerHTML = `
-                    <div class="empty-state">
-                        <h3>🔍 未找到匹配作品</h3>
-                        <p>尝试使用其他关键词搜索</p>
-                    </div>
-                `;
+                    <div class="empty-state"><h3>🔍 未找到匹配作品</h3><p>尝试使用其他关键词搜索</p></div>`;
                 return;
             }
-            
             const cardsHTML = projects.map(project => createCard(project)).join('');
             document.getElementById('gallery').innerHTML = cardsHTML;
         }
-        
+
         function createCard(project) {
             const avatar = project.author.charAt(0).toUpperCase();
             const formattedTime = formatTime(project.time);
+            const fc = project.flowers;
 
             return `
                 <div class="card">
@@ -345,6 +268,7 @@
                                 <div class="submit-time">${formattedTime}</div>
                             </div>
                         </div>
+                        <div class="card-number">#${project.id}</div>
                     </div>
                     <div class="card-body">
                         <div class="card-title">🤖 我的机器人设计</div>
@@ -369,19 +293,41 @@
                             <span class="design-value">${escapeHtml(project.feedback) || '未填写'}</span>
                         </div>
                     </div>
+                    <div class="card-footer">
+                        <button class="flower-btn" onclick="giveFlower('${project.id}', this)" title="献花支持">
+                            <span class="fl-icon">🌸</span> 献花 <span class="flower-count">${fc}</span>
+                        </button>
+                    </div>
                 </div>
             `;
         }
-        
+
+        async function giveFlower(projectId, btnEl) {
+            btnEl.classList.add('flowered');
+            setTimeout(() => btnEl.classList.remove('flowered'), 500);
+
+            // Optimistic update
+            const countEl = btnEl.querySelector('.flower-count');
+            const newCount = (parseInt(countEl.textContent) || 0) + 1;
+            countEl.textContent = newCount;
+
+            try {
+                await fetch(FLOWER_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ '题目1': projectId })
+                });
+            } catch (e) {
+                console.error('献花失败:', e);
+                countEl.textContent = newCount - 1;
+            }
+        }
+
         function escapeHtml(text) {
             if (!text) return '';
-            return text
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;');
+            return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
         }
-        
+
         function formatTime(timeString) {
             if (!timeString) return '未知时间';
             try {
@@ -391,19 +337,12 @@
                 const hours = date.getHours().toString().padStart(2, '0');
                 const minutes = date.getMinutes().toString().padStart(2, '0');
                 return `${month}月${day}日 ${hours}:${minutes}`;
-            } catch {
-                return '未知时间';
-            }
+            } catch { return '未知时间'; }
         }
-        
+
         function filterCards() {
             const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
-            
-            if (!keyword) {
-                renderCards(allProjects);
-                return;
-            }
-            
+            if (!keyword) { renderCards(allProjects); return; }
             const filtered = allProjects.filter(project => {
                 return project.scene.toLowerCase().includes(keyword) ||
                        project.task.toLowerCase().includes(keyword) ||
@@ -412,16 +351,13 @@
                        project.feedback.toLowerCase().includes(keyword) ||
                        project.author.toLowerCase().includes(keyword);
             });
-            
             renderCards(filtered);
         }
-        
+
         document.getElementById('searchInput').addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') {
-                filterCards();
-            }
+            if (e.key === 'Enter') filterCards();
         });
-        
+
         loadProjects();
     </script>
 </body>
