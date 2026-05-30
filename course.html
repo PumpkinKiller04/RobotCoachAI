@@ -823,7 +823,7 @@
                         title: '环节一：见证闭环',
                         pages: [
                             {
-                                left: { type: 'knowledge', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节一：赛事直播 & 回放——见证闭环、拆解闭环</h3><h4 style="font-size: 1.3em;">1. 学习知识</h4><p style="font-size: 1.1em;">闭环三步：感知→决策→行动。多模态感知（第一集）提供输入；强化学习（第二集）训练决策；行动后再次进入感知，形成持续循环。</p><h4 style="font-size: 1.3em;">2. 动手求证</h4><p style="font-size: 1.1em;"><strong>看赛事回放，温习旧知</strong></p><p style="font-size: 1.1em;"><strong>1.初代机遇到障碍物会摔倒，现在能躲开，为什么？</strong></p><div class="multiple-choice"><label><input type="radio" name="q3_1a" value="a" onclick="toggleInput(\'q3_1a\', \'t3_1a_container\')"> A. 初代机只有单个摄像头，信息不足</label><label><input type="radio" name="q3_1a" value="b" onclick="toggleInput(\'q3_1a\', \'t3_1a_container\')"> B. 多模态感知综合判断，信息更准确</label><label><input type="radio" name="q3_1a" value="c" onclick="toggleInput(\'q3_1a\', \'t3_1a_container\')"> C. 其他：</label><span id="t3_1a_container" style="display: none;"><input type="text" name="t3_1a" placeholder="请填写其他原因" class="worksheet-input" style="width:150px;"></span></div><p style="font-size: 1.1em;"><strong>2.没学过躲失控机器人，它为何知道要躲？</strong></p><div class="multiple-choice"><label><input type="radio" name="q3_1b" value="a" onclick="toggleInput(\'q3_1b\', \'t3_1b_container\')"> A. 强化学习让它学会了判断并躲避物体的能力</label><label><input type="radio" name="q3_1b" value="b" onclick="toggleInput(\'q3_1b\', \'t3_1b_container\')"> B. 程序中预先写好了应对规则</label><label><input type="radio" name="q3_1b" value="c" onclick="toggleInput(\'q3_1b\', \'t3_1b_container\')"> C. 其他：</label><span id="t3_1b_container" style="display: none;"><input type="text" name="t3_1b" placeholder="请填写其他原因" class="worksheet-input" style="width:150px;"></span></div><script>function toggleInput(radioName, containerId) { var container = document.getElementById(containerId); var input = container ? container.querySelector(\'input\') : null; var selected = document.querySelector(\'input[name=\' + radioName + \']:checked\'); if (selected && selected.value === \'c\') { container.style.display = \'inline\'; } else { container.style.display = \'none\'; if (input) input.value = \'\'; } }</script>' },
+                                left: { type: 'knowledge', content: '<h3 style="font-size: 1.6em; margin-top: -10px;">环节一：赛事直播 & 回放——见证闭环、拆解闭环</h3><h4 style="font-size: 1.3em;">1. 学习知识</h4><p style="font-size: 1.1em;">闭环三步：感知→决策→行动。多模态感知（第一集）提供输入；强化学习（第二集）训练决策；行动后再次进入感知，形成持续循环。</p><h4 style="font-size: 1.3em;">2. 动手求证</h4><p style="font-size: 1.1em;"><strong>看赛事回放，温习旧知</strong></p><p style="font-size: 1.1em;"><strong>1.初代机遇到障碍物会摔倒，现在能躲开，为什么？</strong></p><div class="multiple-choice"><label><input type="radio" name="q3_1a" value="a"> A. 初代机只有单个摄像头，信息不足</label><label><input type="radio" name="q3_1a" value="b"> B. 多模态感知综合判断，信息更准确</label><label><input type="radio" name="q3_1a" value="c"> C. 其他：<input type="text" name="t3_1a" placeholder="请填写其他原因" class="worksheet-input" style="width:150px;"></label></div><p style="font-size: 1.1em;"><strong>2.没学过躲失控机器人，它为何知道要躲？</strong></p><div class="multiple-choice"><label><input type="radio" name="q3_1b" value="a"> A. 强化学习让它学会了判断并躲避物体的能力</label><label><input type="radio" name="q3_1b" value="b"> B. 程序中预先写好了应对规则</label><label><input type="radio" name="q3_1b" value="c"> C. 其他：<input type="text" name="t3_1b" placeholder="请填写其他原因" class="worksheet-input" style="width:150px;"></label></div>' },
                                 right: { type: 'activity', content: '<h4 style="font-size: 1.1em;">补全闭环图</h4><p style="font-size: 1em; color: #6b4423; margin-bottom: 8px;">拖动下方模块至图中对应位置：</p><iframe src="segment task/xunhuan/index.html" style="width:100%;height:420px;border:none;border-radius:8px;" scrolling="no"></iframe>' }
                             },
                             {
@@ -1393,7 +1393,7 @@
                 section5: ['t2_2a', 'ta2_2b'],
                 section6: ['obs1', 'obs2', 't2_3a', 'q2_3a', 'q2_3b'],
                 section7: ['t2_4a', 't2_4b', 't2_4b_score', 't2_4c', 't2_4c_score', 't2_4d', 'q2_4a'],
-                section8: ['q3_1a', 'q3_1b', 't3_1a', 't3_1b', 'q3_1c', 'q3_1d'],
+                section8: ['q3_1a', 'q3_1b', 'q3_1c', 'q3_1d'],
                 section9: ['q3_2a', 'cb_group1', 'q3_2e', 'q3_2f'],
                 section10: ['t3_3a', 't3_3b', 't3_3c', 't3_3d', 't3_3e', 'q3_3a', 'q3_3b'],
                 section11: ['t3_4a', 't3_4b', 't3_4c', 't3_4d', 't3_4e', 't3_4f', 't3_4g', 't3_4h', 't3_4i', 't3_4j', 't3_4k', 't3_4l', 't3_4m']
@@ -1711,7 +1711,7 @@ ${(() => {
             } else if (currentModule === 2) {
                 sectionNames = ['环节一：见证闭环', '环节二：闭环实验', '环节三：迁移与创作', '环节四：探索广场'];
                 fieldNamesMap = {
-                    8: ['q3_1a', 'q3_1b', 't3_1a', 't3_1b', 'q3_1c', 'q3_1d'],
+                    8: ['q3_1a', 'q3_1b', 'q3_1c', 'q3_1d'],
                     9: ['q3_2a', 't3_2b', 't3_2c', 't3_2d', 'q3_2e', 'q3_2f'],
                     10: ['t3_3a', 't3_3b', 't3_3c', 't3_3d', 't3_3e', 'q3_3a', 'q3_3b'],
                     11: ['t3_4a', 't3_4b', 't3_4c', 't3_4d', 't3_4e', 't3_4f', 't3_4g', 't3_4h', 't3_4i', 't3_4j', 't3_4k', 't3_4l', 't3_4m']
@@ -1842,10 +1842,6 @@ ${(() => {
                 }
             }
             
-            // 设置超时时间（5秒）
-            const timeoutPromise = (ms) => new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('请求超时')), ms));
-            
             const sectionsToLoad = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
             const promises = sectionsToLoad.map(section => {
                 return new Promise(async (resolve) => {
@@ -1857,11 +1853,7 @@ ${(() => {
                     console.log(`\n--- 加载环节${section} ---`);
                     console.log('请求URL:', readUrl);
                     try {
-                        // 添加超时控制
-                        const response = await Promise.race([
-                            fetch(readUrl),
-                            timeoutPromise(5000)
-                        ]);
+                        const response = await fetch(readUrl);
                         console.log('响应状态:', response.status);
                         if (response.ok) {
                             const data = await response.json();
@@ -2051,47 +2043,14 @@ ${(() => {
                 return { valid: false, missing: fieldNames };
             }
             
-            // 定义环节8中需要条件验证的字段映射
-            const conditionalFields = {
-                8: {
-                    't3_1a': 'q3_1a',  // t3_1a 只在 q3_1a 选 'c' 时需要填写
-                    't3_1b': 'q3_1b'   // t3_1b 只在 q3_1b 选 'c' 时需要填写
-                }
-            };
-            
             fieldNames.forEach((fieldName, idx) => {
                 const value = answers[idx + 1];
-                
-                // 如果是环节8的条件字段，跳过常规验证
-                if (section === 8 && conditionalFields[8][fieldName]) {
-                    return;
-                }
-                
                 if (!value || value.trim() === '') {
                     missing.push(fieldName);
                 }
             });
             
-            // 条件验证：当选择题选了C（其他）时，对应的输入框必须填写
-            if (section === 8 && conditionalFields[8]) {
-                const fieldIndex = {};
-                fieldNames.forEach((field, idx) => {
-                    fieldIndex[field] = idx;
-                });
-                
-                // 检查所有条件字段
-                Object.entries(conditionalFields[8]).forEach(([inputField, radioField]) => {
-                    if (fieldIndex[radioField] !== undefined && fieldIndex[inputField] !== undefined) {
-                        const radioValue = answers[fieldIndex[radioField] + 1];
-                        const inputValue = answers[fieldIndex[inputField] + 1];
-                        if (radioValue === 'c' && (!inputValue || inputValue.trim() === '')) {
-                            missing.push(inputField);
-                        }
-                    }
-                });
-            }
-            
-            return { valid: missing.length === 0, missing: [...new Set(missing)] };
+            return { valid: missing.length === 0, missing };
         }
 
         const savedAnswers = {};
