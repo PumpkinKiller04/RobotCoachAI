@@ -2961,6 +2961,10 @@ ${(() => {
                         id: pid,
                         author: item['姓名'] || item['姓名'] || '匿名',
                         scene: item['题目1'] || item['题目1'] || '',
+                        task: item['题目2'] || item['题目2'] || '',
+                        sensors: item['题目3'] || item['题目3'] || '',
+                        training: item['题目4'] || item['题目4'] || '',
+                        feedback: item['题目5'] || item['题目5'] || '',
                         flowers: flowerMap[pid] || 0
                     };
                 });
@@ -2969,14 +2973,22 @@ ${(() => {
                 works.sort(function(a, b) { return b.flowers - a.flowers; });
                 var top3 = works.slice(0, 3);
 
+                function esc(s) { return (s || '未填写').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
                 var medals = ['🥇', '🥈', '🥉'];
                 var html = '';
                 top3.forEach(function(w, i) {
                     html += '<div class="top-work-card">' +
-                        '<div class="tw-rank">' + medals[i] + '</div>' +
-                        '<div class="tw-author">' + (w.author || '匿名') + '</div>' +
-                        '<div class="tw-scene">' + (w.scene || '未填写') + '</div>' +
-                        '<div class="tw-flowers">🌸 ' + w.flowers + '</div>' +
+                        '<div class="tw-header">' +
+                            '<span class="tw-rank">' + medals[i] + '</span>' +
+                            '<span class="tw-author">' + esc(w.author) + '</span>' +
+                            '<span class="tw-flowers">🌸 ' + w.flowers + '</span>' +
+                        '</div>' +
+                        '<div class="tw-row"><span class="tw-label">场景：</span><span class="tw-value">' + esc(w.scene) + '</span></div>' +
+                        '<div class="tw-row"><span class="tw-label">任务：</span><span class="tw-value">' + esc(w.task) + '</span></div>' +
+                        '<div class="tw-row"><span class="tw-label">传感器：</span><span class="tw-value">' + esc(w.sensors) + '</span></div>' +
+                        '<div class="tw-row"><span class="tw-label">训练方法：</span><span class="tw-value">' + esc(w.training) + '</span></div>' +
+                        '<div class="tw-row"><span class="tw-label">反馈检查：</span><span class="tw-value">' + esc(w.feedback) + '</span></div>' +
                         '</div>';
                 });
 
