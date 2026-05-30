@@ -616,29 +616,28 @@
         .top-work-card {
             background: #fff;
             border-radius: 10px;
-            padding: 12px 10px;
+            padding: 10px 12px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            text-align: center;
-            flex: 1 1 100px;
-            min-width: 100px;
-            max-width: 150px;
             border: 1px solid #f0e0c8;
-            transition: transform 0.2s;
+            margin-bottom: 8px;
+            font-size: 12px;
         }
-        .top-work-card:hover { transform: translateY(-2px); }
-        .top-work-card .tw-rank {
-            font-size: 20px; margin-bottom: 4px;
+        .top-work-card .tw-header {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 6px; padding-bottom: 6px;
+            border-bottom: 1px solid #f0e0c8;
         }
-        .top-work-card .tw-author {
-            font-size: 12px; font-weight: 600; color: #8b5a2b; margin-bottom: 4px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        .top-work-card .tw-rank { font-size: 22px; }
+        .top-work-card .tw-author { font-size: 14px; font-weight: 700; color: #8b5a2b; }
+        .top-work-card .tw-flowers { margin-left: auto; color: #db2777; font-weight: 600; font-size: 13px; }
+        .top-work-card .tw-row {
+            display: flex; margin-bottom: 3px; line-height: 1.5;
         }
-        .top-work-card .tw-scene {
-            font-size: 10px; color: #888; margin-bottom: 2px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        .top-work-card .tw-label {
+            color: #6b4423; font-weight: 600; width: 60px; flex-shrink: 0; font-size: 11px;
         }
-        .top-work-card .tw-flowers {
-            font-size: 13px; color: #db2777; font-weight: 600;
+        .top-work-card .tw-value {
+            color: #333; font-size: 11px; flex: 1;
         }
     </style>
 </head>
