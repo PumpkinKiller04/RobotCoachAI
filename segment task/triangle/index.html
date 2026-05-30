@@ -39,7 +39,7 @@ body::before{
     stroke:#4ade80;
     stroke-width:3.5;
     transition:stroke .4s,opacity .4s;
-    filter:drop-shadow(0 0 3px rgba(74,222,128,.35));
+    filter:drop-shadow(0 0 3px rgba(74,222,128,.4));
 }
 .canvas-svg line.broken{
     stroke:rgba(255,255,255,0.08);
@@ -61,15 +61,15 @@ body::before{
 }
 .node .ni{font-size:21px;}
 .node .nl{font-size:11px;font-weight:700;color:#fff;margin-top:1px;letter-spacing:1px;text-shadow:0 1px 2px rgba(0,0,0,.3);}
-.node.sense{background:linear-gradient(145deg,#f87171,#dc2626);left:169px;top:18px;}
-.node.decision{background:linear-gradient(145deg,#22d3ee,#0891b2);left:308px;top:196px;}
-.node.action{background:linear-gradient(145deg,#fbbf24,#d97706);left:30px;top:196px;}
+.node.sense{background:linear-gradient(145deg,#f87171,#dc2626);left:169px;top:14px;}
+.node.decision{background:linear-gradient(145deg,#22d3ee,#0891b2);left:269px;top:199px;}
+.node.action{background:linear-gradient(145deg,#fbbf24,#d97706);left:69px;top:199px;}
 .node.off{
     filter:grayscale(1) brightness(.45);
     box-shadow:0 2px 8px rgba(0,0,0,.3);
 }
 
-/* ---- close buttons on nodes ---- */
+/* ---- close buttons ---- */
 .node-close{
     position:absolute;
     width:22px;height:22px;
@@ -89,7 +89,6 @@ body::before{
 .node-close.off{background:rgba(74,222,128,.9);}
 .node-close.off:hover{background:#4ade80;}
 
-/* ---- arrow close button on the loop line ---- */
 .arrow-close{
     position:absolute;
     width:20px;height:20px;
@@ -136,10 +135,7 @@ body::before{
 }
 .btn-reset:hover{background:rgba(255,255,255,0.1);color:#e2e8f0;}
 
-.hint-text{
-    color:#64748b;font-size:10px;text-align:center;
-    max-width:80px;line-height:1.4;
-}
+.hint-text{color:#64748b;font-size:10px;text-align:center;max-width:80px;line-height:1.4;}
 
 /* ---- robot ---- */
 .rb-ct{
@@ -265,12 +261,12 @@ body::before{
                     <polygon points="0 0, 7 2.5, 0 5" fill="#4ade80"/>
                 </marker>
             </defs>
-            <!-- 感知 → 决策 -->
-            <line id="arr1" x1="226" y1="62" x2="304" y2="210" marker-end="url(#ah)"/>
-            <!-- 决策 → 行动 -->
-            <line id="arr2" x1="300" y1="227" x2="100" y2="227" marker-end="url(#ah)"/>
-            <!-- 行动 → 感知 (闭环) -->
-            <line id="arr3" x1="98" y1="212" x2="222" y2="68" marker-end="url(#ah)"/>
+            <!-- 感知 → 决策（右下） -->
+            <line id="arr1" x1="215" y1="72" x2="279" y2="203" marker-end="url(#ah)"/>
+            <!-- 决策 → 行动（左） -->
+            <line id="arr2" x1="265" y1="230" x2="129" y2="230" marker-end="url(#ah)"/>
+            <!-- 行动 → 感知（左上，闭环） -->
+            <line id="arr3" x1="115" y1="203" x2="179" y2="72" marker-end="url(#ah)"/>
         </svg>
 
         <!-- 感知 -->
@@ -294,8 +290,8 @@ body::before{
             <button class="node-close" id="closeAction" onclick="toggleNode('action')" title="开关行动">&#x2715;</button>
         </div>
 
-        <!-- 闭环箭头关闭按钮（行动→感知连线中点） -->
-        <button class="arrow-close" id="closeLoop" style="left:143px;top:120px;" onclick="toggleLoop()" title="开关闭环箭头(行动→感知)">&#x2715;</button>
+        <!-- 闭环箭头关闭按钮（行动→感知连线中心） -->
+        <button class="arrow-close" id="closeLoop" style="left:136px;top:119px;" onclick="toggleLoop()" title="开关闭环箭头(行动→感知)">&#x2715;</button>
 
         <!-- robot -->
         <div class="rb-ct" id="robot">
@@ -326,10 +322,7 @@ body::before{
 
 <script>
 const state = {
-    senseOn: true,
-    decisionOn: true,
-    actionOn: true,
-    loopOn: true,
+    senseOn: true, decisionOn: true, actionOn: true, loopOn: true,
     running: false,
 };
 
@@ -366,10 +359,7 @@ function toggleLoop() {
 
 function resetAll() {
     if (state.running) return;
-    state.senseOn = true;
-    state.decisionOn = true;
-    state.actionOn = true;
-    state.loopOn = true;
+    state.senseOn = state.decisionOn = state.actionOn = state.loopOn = true;
     updateUI();
     robot.style.display = 'none';
     removeModal();
@@ -384,8 +374,6 @@ function updateUI() {
         el.classList.toggle('off', !isOn);
         el.innerHTML = isOn ? '&#x2715;' : '&#x2713;';
     }
-    // Arrows: an arrow is broken if either its source or target node is off,
-    // or (for arr3) if the loop itself is off
     arr1.classList.toggle('broken', !state.senseOn || !state.decisionOn);
     arr2.classList.toggle('broken', !state.decisionOn || !state.actionOn);
     arr3.classList.toggle('broken', !state.actionOn || !state.senseOn || !state.loopOn);
@@ -394,7 +382,7 @@ function updateUI() {
     if (!state.senseOn) h.textContent = '已关闭：感知 — 看不到障碍';
     else if (!state.decisionOn) h.textContent = '已关闭：决策 — 无法判断';
     else if (!state.actionOn) h.textContent = '已关闭：行动 — 无法移动';
-    else if (!state.loopOn) h.textContent = '已关闭：闭环箭头(行动→感知) — 跑完一圈后无法再次感知';
+    else if (!state.loopOn) h.textContent = '已关闭：闭环箭头(行动→感知) — 无法再次感知';
     else h.textContent = '点击节点或箭头上的 ✕ 关闭，再次点击恢复';
 }
 
@@ -402,56 +390,37 @@ function getNodeCenter(type) {
     const el = nodes[type];
     const r = el.getBoundingClientRect();
     const cr = canvas.getBoundingClientRect();
-    return {
-        x: r.left + r.width / 2 - cr.left,
-        y: r.top + r.height / 2 - cr.top,
-    };
+    return { x: r.left + r.width / 2 - cr.left, y: r.top + r.height / 2 - cr.top };
 }
 
-function posRobot(cp) {
-    robot.style.left = cp.x + 'px';
-    robot.style.top = cp.y + 'px';
-}
-
+function posRobot(cp) { robot.style.left = cp.x + 'px'; robot.style.top = cp.y + 'px'; }
 function showRobot() { robot.style.display = 'block'; }
 function hideRobot() { robot.style.display = 'none'; }
 
-function removeModal() {
-    document.querySelectorAll('.ov').forEach(el => el.remove());
-}
+function removeModal() { document.querySelectorAll('.ov').forEach(el => el.remove()); }
 
 function showModal(title, reason, detail) {
     removeModal();
     const ov = document.createElement('div');
     ov.className = 'ov';
-    ov.innerHTML = `
-        <div class="md warn">
-            <div class="md-icon">&#x26A0;&#xFE0F;</div>
-            <div class="md-title">${title}</div>
-            <div class="md-text">${detail}</div>
-            <div class="md-reason">${reason}</div>
-            <button class="md-btn" onclick="closeModalAndReset()">知道了</button>
-        </div>`;
+    ov.innerHTML = `<div class="md warn">
+        <div class="md-icon">&#x26A0;&#xFE0F;</div>
+        <div class="md-title">${title}</div>
+        <div class="md-text">${detail}</div>
+        <div class="md-reason">${reason}</div>
+        <button class="md-btn" onclick="closeModalAndReset()">知道了</button>
+    </div>`;
     document.body.appendChild(ov);
 }
 
-function closeModalAndReset() {
-    removeModal();
-    hideRobot();
-    state.running = false;
-    btnRun.disabled = false;
-}
+function closeModalAndReset() { removeModal(); hideRobot(); state.running = false; btnRun.disabled = false; }
 
 function showSuccess() {
     const t = document.createElement('div');
     t.className = 'ok-toast';
     t.textContent = '闭环运转正常！机器人持续循环中';
     document.body.appendChild(t);
-    setTimeout(() => {
-        t.style.opacity = '0';
-        t.style.transition = 'opacity .6s';
-        setTimeout(() => t.remove(), 600);
-    }, 1800);
+    setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .6s'; setTimeout(() => t.remove(), 600); }, 1800);
 }
 
 function animatePath(a, b, ms) {
@@ -460,10 +429,7 @@ function animatePath(a, b, ms) {
         function tick() {
             const p = Math.min((Date.now() - t0) / ms, 1);
             const ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
-            posRobot({
-                x: a.x + (b.x - a.x) * ease,
-                y: a.y + (b.y - a.y) * ease,
-            });
+            posRobot({ x: a.x + (b.x - a.x) * ease, y: a.y + (b.y - a.y) * ease });
             if (p >= 1) { resolve(); return; }
             requestAnimationFrame(tick);
         }
@@ -481,68 +447,40 @@ async function runSimulation() {
     const decision = getNodeCenter('decision');
     const action = getNodeCenter('action');
 
-    // Start at 感知
-    showRobot();
-    posRobot(sense);
-    await sleep(500);
+    showRobot(); posRobot(sense); await sleep(500);
 
-    // Check 感知
     if (!state.senseOn) {
-        showModal('感知关闭：看不到障碍',
-            '机器人无法获取环境信息，看不到前方有什么。',
-            '看不到障碍，直接撞上。');
+        showModal('感知关闭：看不到障碍', '机器人无法获取环境信息，看不到前方有什么。', '看不到障碍，直接撞上。');
         return;
     }
+    await animatePath(sense, decision, 900); await sleep(300);
 
-    // 感知 → 决策
-    await animatePath(sense, decision, 900);
-    await sleep(300);
-
-    // Check 决策
     if (!state.decisionOn) {
-        showModal('决策关闭：不知道怎么办',
-            '机器人看到了障碍物，但无法分析判断该做什么。',
-            '能看到障碍，但不知道怎么躲。');
+        showModal('决策关闭：不知道怎么办', '机器人看到了障碍物，但无法分析判断该做什么。', '能看到障碍，但不知道怎么躲。');
         return;
     }
+    await animatePath(decision, action, 900); await sleep(300);
 
-    // 决策 → 行动
-    await animatePath(decision, action, 900);
-    await sleep(300);
-
-    // Check 行动
     if (!state.actionOn) {
-        showModal('行动关闭：无法移动',
-            '机器人已经做好了判断，但执行模块失效，无法控制身体。',
-            '知道怎么躲，但无法移动。');
+        showModal('行动关闭：无法移动', '机器人已经做好了判断，但执行模块失效，无法控制身体。', '知道怎么躲，但无法移动。');
         return;
     }
 
-    // 行动 → 感知 (闭环)
-    // Check loop arrow: if broken, robot at action can't go back to sense
     if (!state.loopOn) {
-        showModal('闭环断裂：再次遇到障碍',
-            '机器人完成了一次应对，但"行动→感知"的回路断了——它无法从行动回到感知，不再观察环境变化。',
-            '再次遇到障碍，直接撞上去。');
+        showModal('闭环断裂：再次遇到障碍', '机器人完成了一次应对，但"行动→感知"的回路断了——无法从行动回到感知，不再观察环境变化。', '再次遇到障碍，直接撞上去。');
         return;
     }
 
-    await animatePath(action, sense, 900);
-    await sleep(300);
-
-    // All good
+    await animatePath(action, sense, 900); await sleep(300);
     showSuccess();
 
-    // Extra laps
     for (let lap = 1; lap <= 2; lap++) {
         await animatePath(sense, decision, 600);
         await animatePath(decision, action, 600);
         await animatePath(action, sense, 600);
     }
 
-    hideRobot();
-    state.running = false;
-    btnRun.disabled = false;
+    hideRobot(); state.running = false; btnRun.disabled = false;
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
