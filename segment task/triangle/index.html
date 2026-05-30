@@ -467,7 +467,7 @@ async function runSimulation() {
     await animatePath(sense, decision, 900); await sleep(300);
 
     if (!state.decisionOn) {
-        showModal('决策关闭：不知道怎么办', '机器人看到了障碍物，但无法分析判断该做什么。', '能看到障碍，但不知道怎么躲。');
+        showModal('决策关闭：不知道怎么办', '机器人看到了障碍物，但无法分析判断该做什么。', '能看到障碍，但不知道怎么躲。', '../../resource/决策关闭.mp4');
         return;
     }
     await animatePath(decision, action, 900); await sleep(300);
