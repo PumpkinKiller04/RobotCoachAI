@@ -473,12 +473,12 @@ async function runSimulation() {
     await animatePath(decision, action, 900); await sleep(300);
 
     if (!state.actionOn) {
-        showModal('行动关闭：无法移动', '机器人已经做好了判断，但执行模块失效，无法控制身体。', '知道怎么躲，但无法移动。');
+        showModal('行动关闭：无法移动', '机器人已经做好了判断，但执行模块失效，无法控制身体。', '知道怎么躲，但无法移动。', '../../resource/行动关闭.mp4');
         return;
     }
 
     if (!state.loopOn) {
-        showModal('闭环断裂：再次遇到障碍', '机器人完成了一次应对，但"行动→感知"的回路断了——无法从行动回到感知，不再观察环境变化。', '再次遇到障碍，直接撞上去。');
+        showModal('闭环断裂：再次遇到障碍', '机器人完成了一次应对，但"行动→感知"的回路断了——无法从行动回到感知，不再观察环境变化。', '再次遇到障碍，直接撞上去。', '../../resource/闭环断裂.mp4');
         return;
     }
 
