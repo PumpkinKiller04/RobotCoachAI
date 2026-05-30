@@ -543,13 +543,28 @@ const dts=document.querySelectorAll('.dt');
 let drag=null;
 
 // ========== DRAG & DROP ==========
+let touchStartX = 0, touchStartY = 0;
+let touchDrag = null;
+let touchTarget = null;
+
 mods.forEach(m=>{
     m.addEventListener('dragstart',e=>{
         if(m.classList.contains('used')){e.preventDefault();return;}
         drag=m;m.classList.add('dragging');e.dataTransfer.effectAllowed='move';
     });
     m.addEventListener('dragend',()=>{if(drag){drag.classList.remove('dragging');drag=null;}});
+    
+    // 触摸支持
+    m.addEventListener('touchstart',e=>{
+        if(m.classList.contains('used'))return;
+        const touch = e.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        touchDrag = m;
+        m.classList.add('dragging');
+    }, {passive: true});
 });
+
 dts.forEach(t=>{
     t.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';t.classList.add('hover');});
     t.addEventListener('dragleave',()=>t.classList.remove('hover'));
@@ -564,7 +579,48 @@ dts.forEach(t=>{
         drag.classList.add('used');drag.draggable=false;
         updBtn();updProg();
     });
+    
+    // 触摸支持
+    t.addEventListener('touchstart',e=>{
+        if(touchDrag && !S.placed[t.dataset.target]){
+            t.classList.add('hover');
+            touchTarget = t;
+        }
+    }, {passive: true});
+    t.addEventListener('touchend',e=>{
+        t.classList.remove('hover');
+        if(touchDrag && touchTarget === t && !S.placed[t.dataset.target]){
+            const mt = touchDrag.dataset.module;
+            const tt = t.dataset.target;
+            const n = mkNode(mt);
+            snapNode(n, t);
+            canvas.appendChild(n);
+            S.placed[tt] = {node: n, type: mt};
+            t.classList.add('filled');
+            touchDrag.classList.add('used');
+            touchDrag.draggable = false;
+            updBtn();
+            updProg();
+        }
+        touchTarget = null;
+    }, {passive: true});
 });
+
+// 全局触摸事件处理
+document.addEventListener('touchmove',e=>{
+    if(touchDrag){
+        e.preventDefault();
+    }
+}, {passive: false});
+
+document.addEventListener('touchend',e=>{
+    if(touchDrag){
+        touchDrag.classList.remove('dragging');
+        touchDrag = null;
+    }
+    dts.forEach(t => t.classList.remove('hover'));
+    touchTarget = null;
+}, {passive: true});
 btn.addEventListener('click',()=>{
     if(S.running)return;
     if(S.mode==='linear')doLinear();
