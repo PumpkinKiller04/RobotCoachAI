@@ -354,33 +354,6 @@
             const avatar = project.author.charAt(0).toUpperCase();
             const formattedTime = formatTime(project.time);
 
-            if (project.type === 'analysis') {
-                const answersHTML = project.answers.map((ans, idx) => `
-                    <div class="design-item">
-                        <span class="design-label">题目${ans.question}:</span>
-                        <span class="design-value">${escapeHtml(ans.answer)}</span>
-                    </div>
-                `).join('');
-
-                return `
-                <div class="card">
-                    <div class="card-header" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);">
-                        <div class="card-author">
-                            <div class="author-avatar">${avatar}</div>
-                            <div class="author-info">
-                                <div class="author-name">${escapeHtml(project.author)}</div>
-                                <div class="submit-time">${formattedTime}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-title">📝 分析解释答案</div>
-                        ${answersHTML}
-                    </div>
-                </div>
-            `;
-            }
-
             return `
                 <div class="card">
                     <div class="card-header">
