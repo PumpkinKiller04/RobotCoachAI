@@ -91,6 +91,28 @@ restartButton.addEventListener('click', restartGame);
 document.addEventListener('keydown', handleKeyDown);
 document.addEventListener('keyup', handleKeyUp);
 
+// 触摸事件支持
+canvas.addEventListener('touchstart', handleTouchStart, { passive: true });
+document.addEventListener('touchstart', handleGlobalTouchStart, { passive: true });
+
+// 处理画布触摸开始
+function handleTouchStart(event) {
+    event.preventDefault();
+    if (gameState === GAME_STATES.PLAYING && !robot.isJumping) {
+        jump();
+    }
+}
+
+// 处理全局触摸开始（用于开始游戏和重新开始）
+function handleGlobalTouchStart(event) {
+    if (gameState === GAME_STATES.START) {
+        gameState = GAME_STATES.PLAYING;
+        startScreenElement.style.display = 'none';
+    } else if (gameState === GAME_STATES.GAME_OVER) {
+        restartGame();
+    }
+}
+
 // 模式切换按钮事件
 document.getElementById('mode1Button').addEventListener('click', () => switchMode(GAME_MODES.PLAYER));
 document.getElementById('mode2Button').addEventListener('click', () => switchMode(GAME_MODES.AI_TRAINING));
