@@ -2050,7 +2050,33 @@ ${(() => {
                 }
             });
             
-            return { valid: missing.length === 0, missing };
+            // 条件验证：当选择题选了C（其他）时，对应的输入框必须填写
+            if (section === 8) {
+                const fieldIndex = {};
+                fieldNames.forEach((field, idx) => {
+                    fieldIndex[field] = idx;
+                });
+                
+                // 如果 q3_1a 选了 'c'，则 t3_1a 必须填写
+                if (fieldIndex['q3_1a'] !== undefined && fieldIndex['t3_1a'] !== undefined) {
+                    const q3_1aValue = answers[fieldIndex['q3_1a'] + 1];
+                    const t3_1aValue = answers[fieldIndex['t3_1a'] + 1];
+                    if (q3_1aValue === 'c' && (!t3_1aValue || t3_1aValue.trim() === '')) {
+                        missing.push('t3_1a');
+                    }
+                }
+                
+                // 如果 q3_1b 选了 'c'，则 t3_1b 必须填写
+                if (fieldIndex['q3_1b'] !== undefined && fieldIndex['t3_1b'] !== undefined) {
+                    const q3_1bValue = answers[fieldIndex['q3_1b'] + 1];
+                    const t3_1bValue = answers[fieldIndex['t3_1b'] + 1];
+                    if (q3_1bValue === 'c' && (!t3_1bValue || t3_1bValue.trim() === '')) {
+                        missing.push('t3_1b');
+                    }
+                }
+            }
+            
+            return { valid: missing.length === 0, missing: [...new Set(missing)] };
         }
 
         const savedAnswers = {};
