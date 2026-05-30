@@ -1759,24 +1759,18 @@ ${(() => {
             let reportData = [];
             const sectionsToLoad = currentModule === 0 ? [1, 2, 3] : (currentModule === 1 ? [4, 5, 6] : [8, 9, 10, 11]);
             
-            for (let i = 0; i < sectionsToLoad.length; i++) {
-                const section = sectionsToLoad[i];
+            const promises = sectionsToLoad.map((section, i) => {
                 const sectionIndex = currentModule === 0 ? section : i + 1;
-                
+
                 if (currentModule === 2 && section === 11) {
-                    reportData.push({
+                    return Promise.resolve({
                         sectionName: sectionNames[sectionIndex - 1],
-                        completed: true,
-                        score: 0,
-                        total: 0,
-                        isSummary: true
+                        completed: true, score: 0, total: 0, isSummary: true
                     });
-                    continue;
                 }
-                
-                try {
-                    const apiUrl = API_READ_URLS['section' + section];
-                    const response = await fetch(apiUrl);
+
+                const apiUrl = API_READ_URLS['section' + section];
+                return fetch(apiUrl).then(response => {
                     if (response.ok) {
                         const data = await response.json();
                         let submissions = [];
