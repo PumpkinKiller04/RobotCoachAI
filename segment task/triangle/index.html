@@ -461,24 +461,24 @@ async function runSimulation() {
     showRobot(); posRobot(sense); await sleep(500);
 
     if (!state.senseOn) {
-        showModal('感知关闭：看不到障碍', '机器人无法获取环境信息，看不到前方有什么。', '看不到障碍，直接撞上。', '../../resource/感知关闭.mp4');
+        showModal('感知关闭：看不到障碍', '机器人无法获取环境信息，看不到前方有什么。', '看不到障碍，直接撞上。', '/resource/感知关闭.mp4');
         return;
     }
     await animatePath(sense, decision, 900); await sleep(300);
 
     if (!state.decisionOn) {
-        showModal('决策关闭：不知道怎么办', '机器人看到了障碍物，但无法分析判断该做什么。', '能看到障碍，但不知道怎么躲。', '../../resource/决策关闭.mp4');
+        showModal('决策关闭：不知道怎么办', '机器人看到了障碍物，但无法分析判断该做什么。', '能看到障碍，但不知道怎么躲。', '/resource/决策关闭.mp4');
         return;
     }
     await animatePath(decision, action, 900); await sleep(300);
 
     if (!state.actionOn) {
-        showModal('行动关闭：无法移动', '机器人已经做好了判断，但执行模块失效，无法控制身体。', '知道怎么躲，但无法移动。', '../../resource/行动关闭.mp4');
+        showModal('行动关闭：无法移动', '机器人已经做好了判断，但执行模块失效，无法控制身体。', '知道怎么躲，但无法移动。', '/resource/行动关闭.mp4');
         return;
     }
 
     if (!state.loopOn) {
-        showModal('闭环断裂：再次遇到障碍', '机器人完成了一次应对，但"行动→感知"的回路断了——无法从行动回到感知，不再观察环境变化。', '再次遇到障碍，直接撞上去。', '../../resource/闭环断裂.mp4');
+        showModal('闭环断裂：再次遇到障碍', '机器人完成了一次应对，但"行动→感知"的回路断了——无法从行动回到感知，不再观察环境变化。', '再次遇到障碍，直接撞上去。', '/resource/闭环断裂.mp4');
         return;
     }
 
