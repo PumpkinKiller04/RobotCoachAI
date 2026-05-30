@@ -165,6 +165,90 @@
             font-size: 14px;
             line-height: 1.5;
         }
+        .card-actions {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            background: #fafafa;
+        }
+        .action-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 12px;
+        }
+        .like-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .like-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+        }
+        .like-btn.liked {
+            background: linear-gradient(135deg, #ccc 0%, #999 100%);
+        }
+        .comment-section {
+            margin-top: 10px;
+        }
+        .comment-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 8px;
+            resize: none;
+        }
+        .comment-btn {
+            float: right;
+            padding: 6px 16px;
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: transform 0.2s;
+        }
+        .comment-btn:hover {
+            transform: scale(1.05);
+        }
+        .comments-list {
+            margin-top: 15px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .comment-item {
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid #4ecdc4;
+        }
+        .comment-author {
+            font-weight: 600;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        .comment-content {
+            font-size: 14px;
+            color: #333;
+        }
+        .comment-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
         .empty-state {
             text-align: center;
             padding: 60px 20px;
