@@ -408,7 +408,7 @@ function showModal(title, reason, detail, videoSrc) {
     const ov = document.createElement('div');
     ov.className = 'ov';
     ov.innerHTML = `<div class="md warn">
-        ${videoSrc ? `<video src="${videoSrc}" autoplay playsinline loop style="width:100%;border-radius:8px;margin-bottom:8px;display:block;"></video>` : ''}
+        ${videoSrc ? `<video src="${videoSrc}" autoplay playsinline muted loop style="width:100%;border-radius:8px;margin-bottom:8px;display:block;"></video>` : ''}
         <div class="md-icon">&#x26A0;&#xFE0F;</div>
         <div class="md-title">${title}</div>
         <div class="md-text">${detail}</div>
@@ -416,11 +416,12 @@ function showModal(title, reason, detail, videoSrc) {
         <button class="md-btn" onclick="closeModalAndReset()">知道了</button>
     </div>`;
     document.body.appendChild(ov);
-    // Attempt autoplay with sound
+    // Attempt to play with sound (user gesture from "运行" button should allow it)
     const v = ov.querySelector('video');
     if (v) {
         v.muted = false;
-        v.play().catch(() => { v.muted = true; v.play(); });
+        v.currentTime = 0;
+        v.play().catch(() => { v.muted = true; v.currentTime = 0; v.play(); });
     }
 }
 
