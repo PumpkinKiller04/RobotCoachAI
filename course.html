@@ -2046,7 +2046,24 @@ ${(() => {
             fieldNames.forEach((fieldName, idx) => {
                 const value = answers[idx + 1];
                 if (!value || value.trim() === '') {
-                    missing.push(fieldName);
+                    // 对于环节8的t3_1a和t3_1b，只有在对应的选择题选了C时才需要填写
+                    if (section === 8) {
+                        if (fieldName === 't3_1a') {
+                            const q3_1aValue = answers[fieldNames.indexOf('q3_1a') + 1];
+                            if (q3_1aValue === 'c') {
+                                missing.push(fieldName);
+                            }
+                        } else if (fieldName === 't3_1b') {
+                            const q3_1bValue = answers[fieldNames.indexOf('q3_1b') + 1];
+                            if (q3_1bValue === 'c') {
+                                missing.push(fieldName);
+                            }
+                        } else {
+                            missing.push(fieldName);
+                        }
+                    } else {
+                        missing.push(fieldName);
+                    }
                 }
             });
             
