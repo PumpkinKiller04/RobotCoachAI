@@ -1582,79 +1582,16 @@
                 return;
             }
             
-            let reportPrompt = `请为学生生成一份精简的个性化学习报告（控制在150字以内）。
+            // Compute summary stats
+            var totalCorrect = reportData.reduce(function(sum, s) { return sum + (s.score || 0); }, 0);
+            var totalQ = reportData.reduce(function(sum, s) { return sum + (s.total || 0); }, 0);
+            var rate = totalQ > 0 ? Math.round(totalCorrect / totalQ * 100) : 0;
+            var level = rate >= 90 ? '非常优秀' : rate >= 80 ? '表现优秀' : rate >= 70 ? '表现良好' : rate >= 60 ? '及格' : '继续努力';
+            var medal = currentModule === 0 ? '白银勋章' : currentModule === 1 ? '黄金勋章' : '钻石勋章';
 
-学生：${username}
-课程：${modules[currentModule].title}
-
-【学习数据】
-${(() => {
-    const sectionNames = currentModule === 0 ? 
-        ['环节一：翻车现场', '环节二：感官升级', '环节三：多模态体验'] : 
-        (currentModule === 1 ? 
-            ['环节一：行为克隆', '环节二：手控驾驶', '环节三：AI试错'] :
-            ['环节一：见证闭环', '环节二：闭环实验', '环节三：迁移与创作', '环节四：探索广场']);
-    let result = '';
-    reportData.forEach((section, idx) => {
-        if (section && section.completed) {
-            const correct = section.score || 0;
-            const total = section.total || 0;
-            const rate = total > 0 ? Math.round(correct / total * 100) : 0;
-            result += `${sectionNames[idx]}: ${correct}/${total}题(${rate}%) `;
-        }
-    });
-    return result;
-})()}
-
-${(() => {
-    const totalCorrect = reportData.reduce((sum, s) => sum + (s.score || 0), 0);
-    const totalQuestionsAll = reportData.reduce((sum, s) => sum + (s.total || 0), 0);
-    const correctRate = totalQuestionsAll > 0 ? Math.round(totalCorrect / totalQuestionsAll * 100) : 0;
-    
-    let overallLevel = '继续努力';
-    if (correctRate >= 90) overallLevel = '非常优秀';
-    else if (correctRate >= 80) overallLevel = '表现优秀';
-    else if (correctRate >= 70) overallLevel = '表现良好';
-    else if (correctRate >= 60) overallLevel = '及格';
-    
-    let medal = '📚 青铜勋章';
-    if (currentModule === 0) {
-        medal = '🥈 白银勋章（导学单一完成）';
-    } else if (currentModule === 1) {
-        medal = '🥇 黄金勋章（导学单二完成）';
-    } else if (currentModule === 2) {
-        medal = '🥉 黄金勋章（导学单三完成）';
-        const hasAllModules = localStorage.getItem('module0Completed') && localStorage.getItem('module1Completed') && localStorage.getItem('module2Completed');
-        if (hasAllModules) {
-            medal = '⭐ 星耀徽章 + AI总教练称号';
-        }
-    }
-    
-    return `【总体评价】\n- 正确率：${correctRate}%（${totalCorrect}/${totalQuestionsAll}题）\n- 评定：${overallLevel}\n- 勋章：${medal}`;
-})()}
-
-【课程要点】
-${(() => {
-    if (currentModule === 0) {
-        return '单模态易出错，多模态更可靠；激光雷达测距，IMU感知姿态。';
-    } else if (currentModule === 1) {
-        return '行为克隆照抄示范不会应变，强化学习通过试错自己学会最优策略。';
-    } else {
-        return '闭环四环节：感知→决策→行动→再感知，再感知是关键。';
-    }
-})()}
-
-请按照以下格式生成学习报告（用中文，语气亲切鼓励，控制在150字以内）：
-
----
-
-**核心总结**：[1-2句总结表现，包含正确率、评定等级，以及恭喜学生完成所有环节获得对应勋章]
-
-**建议**：[1条最关键的改进建议]
-
----
-
-注意：报告要精简，根据学生的实际正确率数据来写，语气要鼓励性。`;
+            let reportPrompt = '学生：' + username + '，课程：' + modules[currentModule].title +
+                '。正确率' + rate + '%（' + totalCorrect + '/' + totalQ + '题），评定：' + level +
+                '，获得' + medal + '。请用中文写一份80字以内的鼓励性学习报告和建议。';
             
             try {
                 const model = localStorage.getItem('ai_model') || 'deepseek-ai/DeepSeek-V4-Flash';
