@@ -1371,10 +1371,7 @@
                     body: JSON.stringify(submitData)
                 });
                 if (response.ok) {
-                    alert('设计方案提交成功！\n\n即将前往探索广场欣赏其他同学的作品~');
-                    setTimeout(() => {
-                        window.location.href = 'segment task/guangchang/index.html';
-                    }, 1500);
+                    alert('设计方案提交成功！\n\n你的机器人设计已保存到探索广场~');
                 } else {
                     alert('提交失败，请重试');
                 }
