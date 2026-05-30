@@ -403,11 +403,12 @@ function hideRobot() { robot.style.display = 'none'; }
 
 function removeModal() { document.querySelectorAll('.ov').forEach(el => el.remove()); }
 
-function showModal(title, reason, detail) {
+function showModal(title, reason, detail, videoSrc) {
     removeModal();
     const ov = document.createElement('div');
     ov.className = 'ov';
     ov.innerHTML = `<div class="md warn">
+        ${videoSrc ? `<video src="${videoSrc}" autoplay playsinline muted loop style="width:100%;border-radius:8px;margin-bottom:8px;display:block;"></video>` : ''}
         <div class="md-icon">&#x26A0;&#xFE0F;</div>
         <div class="md-title">${title}</div>
         <div class="md-text">${detail}</div>
@@ -415,6 +416,12 @@ function showModal(title, reason, detail) {
         <button class="md-btn" onclick="closeModalAndReset()">知道了</button>
     </div>`;
     document.body.appendChild(ov);
+    // Attempt autoplay with sound
+    const v = ov.querySelector('video');
+    if (v) {
+        v.muted = false;
+        v.play().catch(() => { v.muted = true; v.play(); });
+    }
 }
 
 function closeModalAndReset() { removeModal(); hideRobot(); state.running = false; btnRun.disabled = false; }
@@ -454,7 +461,7 @@ async function runSimulation() {
     showRobot(); posRobot(sense); await sleep(500);
 
     if (!state.senseOn) {
-        showModal('感知关闭：看不到障碍', '机器人无法获取环境信息，看不到前方有什么。', '看不到障碍，直接撞上。');
+        showModal('感知关闭：看不到障碍', '机器人无法获取环境信息，看不到前方有什么。', '看不到障碍，直接撞上。', '../../resource/感知关闭.mp4');
         return;
     }
     await animatePath(sense, decision, 900); await sleep(300);
