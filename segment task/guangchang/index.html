@@ -569,6 +569,104 @@
             renderCards(filtered);
         }
         
+        async function likeProject(projectId) {
+            const username = localStorage.getItem('username') || '匿名用户';
+            
+            try {
+                const response = await fetch(LIKE_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        '项目ID': projectId,
+                        '类型': 'like',
+                        '献花者': username
+                    })
+                });
+                
+                if (response.ok) {
+                    const card = document.querySelector(`[data-project-id="${projectId}"]`);
+                    const likeBtn = card.querySelector('.like-btn');
+                    const likeCount = likeBtn.querySelector('span:last-child');
+                    const currentLikes = parseInt(likeCount.textContent) || 0;
+                    likeCount.textContent = currentLikes + 1;
+                    likeBtn.classList.add('liked');
+                    likeBtn.onclick = null;
+                    
+                    alert('献花成功！🌸');
+                    
+                    const project = allProjects.find(p => p.id === projectId);
+                    if (project) {
+                        project.likes++;
+                    }
+                } else {
+                    alert('献花失败，请重试');
+                }
+            } catch (error) {
+                console.error('献花失败:', error);
+                alert('网络错误，请重试');
+            }
+        }
+        
+        async function submitComment(projectId) {
+            const commentInput = document.getElementById(`comment-${projectId}`);
+            const commentContent = commentInput.value.trim();
+            
+            if (!commentContent) {
+                alert('请输入评论内容');
+                return;
+            }
+            
+            const username = localStorage.getItem('username') || '匿名用户';
+            
+            try {
+                const response = await fetch(LIKE_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        '项目ID': projectId,
+                        '类型': 'comment',
+                        '评论者': username,
+                        '评论内容': commentContent
+                    })
+                });
+                
+                if (response.ok) {
+                    const commentsList = document.getElementById(`comments-${projectId}`);
+                    const newComment = document.createElement('div');
+                    newComment.className = 'comment-item';
+                    newComment.innerHTML = `
+                        <div class="comment-author">${escapeHtml(username)}</div>
+                        <div class="comment-content">${escapeHtml(commentContent)}</div>
+                        <div class="comment-time">刚刚</div>
+                    `;
+                    
+                    commentsList.insertBefore(newComment, commentsList.firstChild);
+                    commentInput.value = '';
+                    
+                    if (commentsList.querySelector('p')) {
+                        commentsList.innerHTML = '';
+                        commentsList.appendChild(newComment);
+                    }
+                    
+                    alert('评论成功！');
+                    
+                    const project = allProjects.find(p => p.id === projectId);
+                    if (project) {
+                        project.comments.unshift({
+                            author: username,
+                            content: commentContent,
+                            time: new Date().toISOString()
+                        });
+                    }
+                } else {
+                    alert('评论失败，请重试');
+                }
+            } catch (error) {
+                console.error('评论失败:', error);
+                alert('网络错误，请重试');
+            }
+        }
+        
         document.getElementById('searchInput').addEventListener('keyup', (e) => {
             if (e.key === 'Enter') {
                 filterCards();
