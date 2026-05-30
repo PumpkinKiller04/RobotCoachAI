@@ -1770,9 +1770,23 @@ ${(() => {
                 }
 
                 const apiUrl = API_READ_URLS['section' + section];
-                return fetch(apiUrl).then(response => {
-                    if (response.ok) {
-                        const data = await response.json();
+                return fetch(apiUrl).then(function(r) {
+                    if (!r.ok) throw new Error('fail');
+                    return r.json();
+                }).then(function(data) {
+                    var subs = [];
+                    if (Array.isArray(data)) subs = data;
+                    else if (data && data.submissions && Array.isArray(data.submissions)) subs = data.submissions;
+                    var recs = subs.filter(function(item) { return (item['姓名'] || item['姓名']) === username; });
+                    if (recs.length > 0) {
+                        var rec = recs[0], fields = fieldNamesMap[section], ca = correctAnswersMap[section];
+                        var sd = { sectionName: sectionNames[sectionIndex - 1], completed: true, answers: {}, score: 0, total: 0 };
+                        fields.forEach(function(f) { sd.answers[f] = rec['题目' + (fields.indexOf(f) + 1)] || rec['题目' + (fields.indexOf(f) + 1)] || ''; });
+                        Object.keys(ca).forEach(function(q) { sd.total++; if (sd.answers[q] === ca[q]) sd.score++; });
+                        return sd;
+                    }
+                    return { sectionName: sectionNames[sectionIndex - 1], completed: false };
+                }).catch(function() { return { sectionName: sectionNames[sectionIndex - 1], completed: false, error: true }; });
                         let submissions = [];
                         
                         if (Array.isArray(data)) {
