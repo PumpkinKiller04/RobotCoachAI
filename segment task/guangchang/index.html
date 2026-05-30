@@ -11,385 +11,159 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Noto Sans SC', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-            background-attachment: fixed;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 40px 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            pointer-events: none;
         }
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            position: relative;
-            z-index: 1;
         }
         .header {
             text-align: center;
             margin-bottom: 50px;
-            animation: fadeInDown 0.6s ease-out;
         }
         .header h1 {
-            font-size: 42px;
+            font-size: 36px;
             color: white;
-            text-shadow: 2px 4px 20px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
             margin-bottom: 15px;
-            background: linear-gradient(135deg, #fff 0%, #ffe0f0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 700;
-            letter-spacing: 3px;
         }
         .header p {
             font-size: 18px;
             color: rgba(255,255,255,0.9);
-            font-weight: 400;
         }
         .search-bar {
             display: flex;
             justify-content: center;
             margin-bottom: 30px;
-            gap: 12px;
-            animation: fadeInUp 0.6s ease-out 0.1s both;
+            gap: 10px;
         }
         .search-input {
-            padding: 14px 24px;
-            width: 320px;
-            border: 2px solid rgba(255,255,255,0.2);
-            border-radius: 30px;
+            padding: 12px 20px;
+            width: 300px;
+            border: none;
+            border-radius: 25px;
             font-size: 16px;
-            background: rgba(255,255,255,0.95);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-            transition: all 0.3s ease;
-        }
-        .search-input:focus {
-            outline: none;
-            border-color: #f093fb;
-            box-shadow: 0 0 0 3px rgba(240, 147, 251, 0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .search-btn {
-            padding: 14px 32px;
+            padding: 12px 30px;
             background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             color: white;
             border: none;
-            border-radius: 30px;
+            border-radius: 25px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 24px rgba(245, 87, 108, 0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
         }
         .search-btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.5);
-        }
-        .search-btn:active {
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.5);
         }
         .stats-bar {
             display: flex;
             justify-content: center;
-            gap: 30px;
-            margin-bottom: 40px;
-            animation: fadeInUp 0.6s ease-out 0.2s both;
+            gap: 40px;
+            margin-bottom: 30px;
         }
         .stat-item {
-            background: rgba(255,255,255,0.12);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 20px 40px;
-            border-radius: 20px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 15px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.18);
-            transition: transform 0.3s ease, background 0.3s ease;
-        }
-        .stat-item:hover {
-            transform: translateY(-5px);
-            background: rgba(255,255,255,0.18);
         }
         .stat-number {
-            font-size: 36px;
+            font-size: 28px;
             font-weight: 700;
             color: white;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
         .stat-label {
             font-size: 14px;
-            color: rgba(255,255,255,0.85);
-            margin-top: 4px;
-            font-weight: 500;
+            color: rgba(255,255,255,0.8);
         }
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
         }
         .card {
             background: white;
-            border-radius: 24px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 12px 48px rgba(0,0,0,0.15);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: fadeInUp 0.6s ease-out;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
         .card:hover {
-            transform: translateY(-12px) scale(1.02);
-            box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.25);
         }
         .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 24px;
+            background: linear-gradient(135deg, #8b5a2b 0%, #a0522d 100%);
+            padding: 20px;
             color: white;
-            position: relative;
-            overflow: hidden;
-        }
-        .card-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 100px;
-            height: 100px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
         }
         .card-author {
             display: flex;
             align-items: center;
-            gap: 14px;
-            position: relative;
-            z-index: 1;
+            gap: 12px;
         }
         .author-avatar {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             background: rgba(255,255,255,0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
-            border: 3px solid rgba(255,255,255,0.3);
-            transition: transform 0.3s ease;
-        }
-        .card-author:hover .author-avatar {
-            transform: scale(1.1);
         }
         .author-info {
             display: flex;
             flex-direction: column;
         }
         .author-name {
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 600;
-            letter-spacing: 0.5px;
         }
         .submit-time {
             font-size: 12px;
-            opacity: 0.85;
-            margin-top: 2px;
+            opacity: 0.8;
         }
         .card-body {
-            padding: 24px;
+            padding: 20px;
         }
         .card-title {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
-            color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #f093fb;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .card-title::before {
-            content: '🤖';
-            font-size: 24px;
+            color: #8b5a2b;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #d4a574;
         }
         .design-item {
             display: flex;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
             align-items: flex-start;
-            gap: 12px;
         }
         .design-label {
-            width: 90px;
+            width: 85px;
             font-weight: 600;
-            color: #667eea;
+            color: #6b4423;
             flex-shrink: 0;
-            font-size: 14px;
-            padding: 8px 12px;
-            background: rgba(102, 126, 234, 0.1);
-            border-radius: 8px;
-            text-align: center;
         }
         .design-value {
             flex: 1;
             color: #333;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            padding: 10px 14px;
-            border-radius: 10px;
+            background: #fff8e7;
+            padding: 8px 12px;
+            border-radius: 8px;
             font-size: 14px;
-            line-height: 1.6;
-            border: 1px solid rgba(0,0,0,0.08);
-            transition: background 0.3s ease;
-        }
-        .design-value:hover {
-            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
-        }
-        .card-actions {
-            padding: 20px 24px;
-            border-top: 1px solid #f0f0f0;
-            background: linear-gradient(180deg, #fafafa 0%, #fff 100%);
-        }
-        .action-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 18px;
-        }
-        .like-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
-        }
-        .like-btn:hover:not(.liked) {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
-        }
-        .like-btn.liked {
-            background: linear-gradient(135deg, #e0e0e0 0%, #bdbdbd 100%);
-            box-shadow: none;
-            cursor: default;
-        }
-        .like-btn.liked span:first-child {
-            animation: bounce 0.5s ease;
-        }
-        .like-count {
-            font-weight: 700;
-            font-size: 15px;
-        }
-        .comment-section {
-            margin-top: 5px;
-        }
-        .comment-input-wrapper {
-            position: relative;
-        }
-        .comment-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 14px;
-            margin-bottom: 10px;
-            resize: none;
-            transition: all 0.3s ease;
-            min-height: 60px;
-        }
-        .comment-input:focus {
-            outline: none;
-            border-color: #4ecdc4;
-            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.15);
-        }
-        .comment-btn {
-            float: right;
-            padding: 8px 20px;
-            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
-        }
-        .comment-btn:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.4);
-        }
-        .comment-btn:active {
-            transform: translateY(-1px);
-        }
-        .comments-list {
-            margin-top: 20px;
-            max-height: 180px;
-            overflow-y: auto;
-            padding-right: 8px;
-        }
-        .comments-list::-webkit-scrollbar {
-            width: 6px;
-        }
-        .comments-list::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 3px;
-        }
-        .comments-list::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 3px;
-        }
-        .comments-list::-webkit-scrollbar-thumb:hover {
-            background: #999;
-        }
-        .comment-item {
-            padding: 14px;
-            background: white;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            border-left: 4px solid #4ecdc4;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .comment-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .comment-author {
-            font-weight: 600;
-            font-size: 13px;
-            color: #667eea;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .comment-author::before {
-            content: '👤';
-            font-size: 12px;
-        }
-        .comment-content {
-            font-size: 14px;
-            color: #333;
-            line-height: 1.6;
-        }
-        .comment-time {
-            font-size: 11px;
-            color: #999;
-            margin-top: 8px;
-            display: block;
+            line-height: 1.5;
         }
         .empty-state {
             text-align: center;
@@ -422,90 +196,19 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @keyframes bounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.3); }
-        }
         @media (max-width: 768px) {
-            body {
-                padding: 20px 15px;
-            }
             .header h1 {
                 font-size: 28px;
-                letter-spacing: 2px;
-            }
-            .header p {
-                font-size: 16px;
             }
             .gallery {
                 grid-template-columns: 1fr;
-                gap: 20px;
             }
             .stats-bar {
                 flex-wrap: wrap;
                 gap: 15px;
             }
-            .stat-item {
-                padding: 15px 25px;
-            }
-            .stat-number {
-                font-size: 28px;
-            }
             .search-input {
-                width: 220px;
-                padding: 12px 16px;
-            }
-            .search-btn {
-                padding: 12px 20px;
-            }
-            .card {
-                border-radius: 16px;
-            }
-            .card-header {
-                padding: 18px;
-            }
-            .card-body {
-                padding: 18px;
-            }
-            .card-actions {
-                padding: 15px 18px;
-            }
-        }
-        @media (max-width: 480px) {
-            .search-bar {
-                flex-direction: column;
-                align-items: center;
-            }
-            .search-input {
-                width: 100%;
-                max-width: 300px;
-            }
-            .stats-bar {
-                gap: 10px;
-            }
-            .stat-item {
-                padding: 12px 20px;
-                width: calc(50% - 5px);
+                width: 200px;
             }
         }
     </style>
@@ -543,24 +246,14 @@
     
     <script>
         const API_URL = 'https://quickform.cn/api/kzw1h47nrm/all';
-        const LIKE_API_URL = 'https://quickform.cn/api/6pnetifmia';
-        const LIKE_API_URL_ALL = 'https://quickform.cn/api/6pnetifmia/all';
         let allProjects = [];
-        let likeData = {};
         
         async function loadProjects() {
             try {
-                const [projectsResponse, likeResponse] = await Promise.all([
-                    fetch(API_URL),
-                    fetch(LIKE_API_URL_ALL)
-                ]);
-                
-                if (projectsResponse.ok && likeResponse.ok) {
-                    const projectsData = await projectsResponse.json();
-                    const likeResponseData = await likeResponse.json();
-                    
-                    processLikeData(likeResponseData);
-                    processData(projectsData);
+                const response = await fetch(API_URL);
+                if (response.ok) {
+                    const data = await response.json();
+                    processData(data);
                 } else {
                     document.getElementById('gallery').innerHTML = `
                         <div class="empty-state">
@@ -580,37 +273,6 @@
             }
         }
         
-        function processLikeData(data) {
-            likeData = {};
-            let submissions = [];
-            
-            if (Array.isArray(data)) {
-                submissions = data;
-            } else if (data && data.submissions && Array.isArray(data.submissions)) {
-                submissions = data.submissions;
-            } else if (data && data.data && Array.isArray(data.data)) {
-                submissions = data.data;
-            }
-            
-            submissions.forEach(item => {
-                const projectId = item['项目ID'] || item['\u9879\u76EEID'] || '';
-                if (projectId) {
-                    if (!likeData[projectId]) {
-                        likeData[projectId] = { likes: 0, comments: [] };
-                    }
-                    if (item['类型'] === 'like') {
-                        likeData[projectId].likes++;
-                    } else if (item['类型'] === 'comment') {
-                        likeData[projectId].comments.push({
-                            author: item['评论者'] || '匿名',
-                            content: item['评论内容'],
-                            time: item.submitted_at || item.created_at || new Date().toISOString()
-                        });
-                    }
-                }
-            });
-        }
-        
         function processData(data) {
             let submissions = [];
 
@@ -628,14 +290,11 @@
                 return timeB.localeCompare(timeA);
             });
 
-            allProjects = submissions.map((item, index) => {
+            allProjects = submissions.map(item => {
                 const typeField = item['题目6'] || item['\u9898\u76ee6'] || '';
                 const isDesign = typeField === '设计方案';
-                const projectId = item.id || item._id || `project_${index}_${Date.now()}`;
-                const projectLikeData = likeData[projectId] || { likes: 0, comments: [] };
 
                 return {
-                    id: projectId,
                     author: item['姓名'] || item['\u59d3\u540d'] || '匿名创作者',
                     scene: item['题目1'] || item['\u9898\u76ee1'] || '',
                     task: item['题目2'] || item['\u9898\u76ee2'] || '',
@@ -643,9 +302,7 @@
                     training: item['题目4'] || item['\u9898\u76ee4'] || '',
                     feedback: item['题目5'] || item['\u9898\u76ee5'] || '',
                     time: item.submitted_at || item.created_at || new Date().toISOString(),
-                    type: isDesign ? 'design' : 'analysis',
-                    likes: projectLikeData.likes,
-                    comments: projectLikeData.comments
+                    type: isDesign ? 'design' : 'analysis'
                 };
             });
 
@@ -678,16 +335,8 @@
             const avatar = project.author.charAt(0).toUpperCase();
             const formattedTime = formatTime(project.time);
 
-            const commentsHTML = project.comments ? project.comments.map((c, idx) => `
-                <div class="comment-item">
-                    <div class="comment-author">${escapeHtml(c.author || '匿名')}</div>
-                    <div class="comment-content">${escapeHtml(c.content)}</div>
-                    <div class="comment-time">${formatTime(c.time)}</div>
-                </div>
-            `).join('') : '';
-
             return `
-                <div class="card" data-project-id="${project.id}">
+                <div class="card">
                     <div class="card-header">
                         <div class="card-author">
                             <div class="author-avatar">${avatar}</div>
@@ -718,21 +367,6 @@
                         <div class="design-item">
                             <span class="design-label">反馈检查项:</span>
                             <span class="design-value">${escapeHtml(project.feedback) || '未填写'}</span>
-                        </div>
-                    </div>
-                    <div class="card-actions">
-                        <div class="action-row">
-                            <button class="like-btn" onclick="likeProject('${project.id}')">
-                                <span>🌸</span>
-                                <span>${project.likes || 0}</span>
-                            </button>
-                        </div>
-                        <div class="comment-section">
-                            <textarea class="comment-input" rows="2" id="comment-${project.id}" placeholder="写下你的评论..."></textarea>
-                            <button class="comment-btn" onclick="submitComment('${project.id}')">发表评论</button>
-                            <div class="comments-list" id="comments-${project.id}">
-                                ${commentsHTML || '<p style="color:#999;font-size:13px;">暂无评论，快来发表第一条评论吧！</p>'}
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -780,104 +414,6 @@
             });
             
             renderCards(filtered);
-        }
-        
-        async function likeProject(projectId) {
-            const username = localStorage.getItem('username') || '匿名用户';
-            
-            try {
-                const response = await fetch(LIKE_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        '项目ID': projectId,
-                        '类型': 'like',
-                        '献花者': username
-                    })
-                });
-                
-                if (response.ok) {
-                    const card = document.querySelector(`[data-project-id="${projectId}"]`);
-                    const likeBtn = card.querySelector('.like-btn');
-                    const likeCount = likeBtn.querySelector('span:last-child');
-                    const currentLikes = parseInt(likeCount.textContent) || 0;
-                    likeCount.textContent = currentLikes + 1;
-                    likeBtn.classList.add('liked');
-                    likeBtn.onclick = null;
-                    
-                    alert('献花成功！🌸');
-                    
-                    const project = allProjects.find(p => p.id === projectId);
-                    if (project) {
-                        project.likes++;
-                    }
-                } else {
-                    alert('献花失败，请重试');
-                }
-            } catch (error) {
-                console.error('献花失败:', error);
-                alert('网络错误，请重试');
-            }
-        }
-        
-        async function submitComment(projectId) {
-            const commentInput = document.getElementById(`comment-${projectId}`);
-            const commentContent = commentInput.value.trim();
-            
-            if (!commentContent) {
-                alert('请输入评论内容');
-                return;
-            }
-            
-            const username = localStorage.getItem('username') || '匿名用户';
-            
-            try {
-                const response = await fetch(LIKE_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        '项目ID': projectId,
-                        '类型': 'comment',
-                        '评论者': username,
-                        '评论内容': commentContent
-                    })
-                });
-                
-                if (response.ok) {
-                    const commentsList = document.getElementById(`comments-${projectId}`);
-                    const newComment = document.createElement('div');
-                    newComment.className = 'comment-item';
-                    newComment.innerHTML = `
-                        <div class="comment-author">${escapeHtml(username)}</div>
-                        <div class="comment-content">${escapeHtml(commentContent)}</div>
-                        <div class="comment-time">刚刚</div>
-                    `;
-                    
-                    commentsList.insertBefore(newComment, commentsList.firstChild);
-                    commentInput.value = '';
-                    
-                    if (commentsList.querySelector('p')) {
-                        commentsList.innerHTML = '';
-                        commentsList.appendChild(newComment);
-                    }
-                    
-                    alert('评论成功！');
-                    
-                    const project = allProjects.find(p => p.id === projectId);
-                    if (project) {
-                        project.comments.unshift({
-                            author: username,
-                            content: commentContent,
-                            time: new Date().toISOString()
-                        });
-                    }
-                } else {
-                    alert('评论失败，请重试');
-                }
-            } catch (error) {
-                console.error('评论失败:', error);
-                alert('网络错误，请重试');
-            }
         }
         
         document.getElementById('searchInput').addEventListener('keyup', (e) => {
