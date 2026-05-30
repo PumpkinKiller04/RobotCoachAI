@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>闭环模拟器</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    font-family:'Microsoft YaHei','PingFang SC',sans-serif;
+    font-size:13px;
+    background:linear-gradient(160deg, #1a1d2e 0%, #1e2235 40%, #1c1f30 100%);
+    width:560px;
+    height:360px;
+    overflow:hidden;
+}
+body::before{
+    content:'';
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background-image:radial-gradient(rgba(255,255,255,0.04) 1px,transparent 1px);
+    background-size:20px 20px;
+    pointer-events:none;z-index:0;
+}
+
+.container{position:relative;z-index:1;width:560px;height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+
+/* ---- canvas ---- */
+.canvas-wrap{
+    position:relative;
+    width:420px;height:260px;flex-shrink:0;
+}
+.canvas-svg{
+    position:absolute;top:0;left:0;width:100%;height:100%;
+    pointer-events:none;
+}
+.canvas-svg line{
+    stroke:rgba(255,255,255,0.18);
+    stroke-width:2.5;
+    transition:stroke .4s;
+}
+.canvas-svg line.broken{
+    stroke:rgba(255,255,255,0.06);
+    stroke-dasharray:8 6;
+}
+
+/* ---- nodes ---- */
+.node{
+    position:absolute;
+    width:60px;height:60px;
+    border-radius:50%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    box-shadow:0 4px 18px rgba(0,0,0,.4);
+    z-index:10;
+    transition:all .3s;
+    user-select:none;
+}
+.node .ni{font-size:20px;}
+.node .nl{font-size:10px;font-weight:700;color:#fff;margin-top:1px;letter-spacing:1px;text-shadow:0 1px 2px rgba(0,0,0,.3);}
+.node.sense{background:linear-gradient(145deg,#f87171,#dc2626);left:180px;top:16px;}
+.node.decision{background:linear-gradient(145deg,#22d3ee,#0891b2);left:310px;top:184px;}
+.node.action{background:linear-gradient(145deg,#fbbf24,#d97706);left:50px;top:184px;}
+.node.off{
+    filter:grayscale(1) brightness(.5);
+    box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+
+/* ---- close buttons on nodes ---- */
+.node-close{
+    position:absolute;
+    width:20px;height:20px;
+    border-radius:50%;
+    background:rgba(239,68,68,.85);
+    color:#fff;
+    font-size:12px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    z-index:30;
+    top:-6px;right:-6px;
+    transition:all .2s;
+    border:none;
+    line-height:1;
+}
+.node-close:hover{transform:scale(1.15);background:#ef4444;}
+.node-close.off{background:rgba(74,222,128,.85);}
+.node-close.off:hover{background:#4ade80;}
+
+/* ---- arrow close button ---- */
+.arrow-close{
+    position:absolute;
+    width:18px;height:18px;
+    border-radius:50%;
+    background:rgba(239,68,68,.85);
+    color:#fff;
+    font-size:11px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    z-index:30;
+    transition:all .2s;
+    border:none;
+    line-height:1;
+}
+.arrow-close:hover{transform:scale(1.15);background:#ef4444;}
+.arrow-close.off{background:rgba(74,222,128,.85);}
+.arrow-close.off:hover{background:#4ade80;}
+
+/* ---- label tags ---- */
+.label-tag{
+    position:absolute;
+    font-size:12px;font-weight:600;
+    color:#e2e8f0;
+    pointer-events:none;
+    z-index:5;
+}
+.label-tag.t1{left:260px;top:86px;color:#22d3ee;}
+.label-tag.t2{left:198px;top:220px;color:#fbbf24;}
+.label-tag.t3{left:150px;top:86px;color:#f87171;}
+
+/* ---- side panel ---- */
+.side-panel{
+    position:absolute;
+    right:14px;top:50%;transform:translateY(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+    z-index:20;
+}
+.btn-run{
+    padding:8px 22px;border:none;border-radius:10px;
+    font-size:13px;font-weight:600;
+    cursor:pointer;transition:all .25s;
+    background:linear-gradient(135deg,#34d399,#22c55e);
+    color:#fff;
+    box-shadow:0 2px 10px rgba(34,197,94,.25);
+    letter-spacing:0.5px;
+}
+.btn-run:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 4px 18px rgba(34,197,94,.4);}
+.btn-run:disabled{background:linear-gradient(135deg,#334155,#2d3748);color:#64748b;cursor:not-allowed;box-shadow:none;}
+
+.btn-reset{
+    padding:6px 16px;border:1px solid rgba(255,255,255,0.15);
+    border-radius:8px;
+    font-size:11px;font-weight:500;
+    cursor:pointer;transition:all .25s;
+    background:rgba(255,255,255,0.05);
+    color:#94a3b8;
+}
+.btn-reset:hover{background:rgba(255,255,255,0.1);color:#e2e8f0;}
+
+.hint-text{
+    color:#64748b;font-size:10px;text-align:center;
+    max-width:70px;line-height:1.4;
+}
+
+/* ---- robot ---- */
+.rb-ct{
+    position:absolute;
+    z-index:50;pointer-events:none;
+    transform:translate(-50%,-75%);
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,.3));
+    display:none;
+}
+.rb{display:flex;flex-direction:column;align-items:center;}
+.rb-head{
+    width:18px;height:15px;
+    background:#4ade80;border:1.5px solid #22c55e;
+    position:relative;margin-bottom:1px;border-radius:3px;
+    box-shadow:0 0 6px rgba(74,222,128,.3);
+}
+.rb-eye{
+    position:absolute;width:9px;height:3px;
+    background:#064e3b;top:5px;left:50%;transform:translateX(-50%);border-radius:1px;
+}
+.rb-body{
+    width:26px;height:20px;
+    background:#4ade80;border:1.5px solid #22c55e;
+    border-radius:3px;position:relative;
+    box-shadow:0 0 6px rgba(74,222,128,.3);
+}
+.rb-body-inner{
+    position:absolute;top:4px;left:5px;width:16px;height:5px;
+    background:#22c55e;border-radius:2px;
+}
+.rb-arm{
+    position:absolute;width:6px;height:13px;
+    background:#4ade80;border:1.5px solid #22c55e;
+    border-radius:2px;top:3px;
+}
+.rb-arm.l{left:-7px;transform-origin:top center;animation:armL .26s ease-in-out infinite alternate;}
+.rb-arm.r{right:-7px;transform-origin:top center;animation:armR .26s ease-in-out infinite alternate;}
+.rb-legs{display:flex;gap:5px;margin-top:2px;}
+.rb-leg{
+    width:8px;height:11px;
+    background:#4ade80;border:1.5px solid #22c55e;
+    border-radius:2px;
+}
+.rb-leg.l{transform-origin:top center;animation:legL .26s ease-in-out infinite alternate;}
+.rb-leg.r{transform-origin:top center;animation:legR .26s ease-in-out infinite alternate;}
+.rb-shadow{
+    width:22px;height:4px;background:rgba(0,0,0,.3);
+    border-radius:50%;
+    animation:shad .26s ease-in-out infinite alternate;
+}
+@keyframes armL{0%{transform:rotate(-18deg)}100%{transform:rotate(18deg)}}
+@keyframes armR{0%{transform:rotate(18deg)}100%{transform:rotate(-18deg)}}
+@keyframes legL{0%{transform:rotate(-10deg)}100%{transform:rotate(10deg)}}
+@keyframes legR{0%{transform:rotate(10deg)}100%{transform:rotate(-10deg)}}
+@keyframes shad{0%{transform:scaleX(1);opacity:.3}100%{transform:scaleX(.7);opacity:.12}}
+
+/* ---- overlay / modal ---- */
+.ov{
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background:rgba(10,12,18,.8);
+    backdrop-filter:blur(4px);
+    display:flex;align-items:center;justify-content:center;
+    z-index:1000;
+    animation:fadeIn .3s;
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.md{
+    background:linear-gradient(160deg,#1e293b,#1a2235);
+    border-radius:14px;
+    padding:22px 20px;max-width:300px;width:92%;
+    text-align:center;
+    box-shadow:0 16px 40px rgba(0,0,0,.5);
+    color:#e2e8f0;
+}
+.md.warn{border:2px solid rgba(239,68,68,.3);}
+.md-icon{font-size:32px;margin-bottom:8px;}
+.md-title{font-size:17px;font-weight:700;margin-bottom:8px;color:#f87171;}
+.md-text{font-size:13px;line-height:1.7;color:#cbd5e1;margin-bottom:6px;}
+.md-reason{
+    background:rgba(239,68,68,0.08);padding:10px 12px;
+    border-radius:8px;margin:10px 0;
+    font-size:12px;line-height:1.6;color:#fca5a5;
+    text-align:left;border:1px solid rgba(239,68,68,.15);
+}
+.md-btn{
+    padding:10px 28px;border:none;border-radius:8px;
+    font-size:13px;font-weight:600;cursor:pointer;
+    transition:all .3s;
+    background:linear-gradient(135deg,#f59e0b,#d97706);
+    color:#fff;
+    box-shadow:0 4px 14px rgba(245,158,11,.3);
+}
+.md-btn:hover{transform:translateY(-2px);}
+
+/* ---- toast ---- */
+.ok-toast{
+    position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+    background:rgba(22,163,74,.9);
+    color:#fff;padding:12px 24px;border-radius:8px;
+    font-size:14px;font-weight:600;z-index:800;
+    box-shadow:0 8px 24px rgba(0,0,0,.4);
+    animation:fadeIn .4s;
+    letter-spacing:0.5px;
+}
+
+/* ---- bottom hint ---- */
+.btm-hint{
+    position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+    background:rgba(15,17,25,.85);
+    color:#94a3b8;padding:5px 14px;border-radius:12px;
+    font-size:10px;z-index:100;
+    border:1px solid rgba(255,255,255,0.08);
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="canvas-wrap" id="canvas">
+        <svg class="canvas-svg" viewBox="0 0 420 260">
+            <defs>
+                <marker id="ah" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto">
+                    <polygon points="0 0, 7 2.5, 0 5" fill="rgba(255,255,255,0.18)"/>
+                </marker>
+            </defs>
+            <line id="arr1" x1="235" y1="60" x2="305" y2="195" marker-end="url(#ah)"/>
+            <line id="arr2" x1="305" y1="214" x2="115" y2="214" marker-end="url(#ah)"/>
+            <line id="arr3" x1="115" y1="195" x2="230" y2="65" marker-end="url(#ah)"/>
+        </svg>
+
+        <!-- 感知 -->
+        <div class="node sense" id="nodeSense">
+            <div class="ni">&#x1F441;&#xFE0F;</div>
+            <div class="nl">感知</div>
+            <button class="node-close" id="closeSense" onclick="toggleNode('sense')" title="关闭感知">&#x2715;</button>
+        </div>
+
+        <!-- 决策 -->
+        <div class="node decision" id="nodeDecision">
+            <div class="ni">&#x1F9E0;</div>
+            <div class="nl">决策</div>
+            <button class="node-close" id="closeDecision" onclick="toggleNode('decision')" title="关闭决策">&#x2715;</button>
+        </div>
+
+        <!-- 行动 -->
+        <div class="node action" id="nodeAction">
+            <div class="ni">&#x26A1;</div>
+            <div class="nl">行动</div>
+            <button class="node-close" id="closeAction" onclick="toggleNode('action')" title="关闭行动">&#x2715;</button>
+        </div>
+
+        <!-- loop arrow close button (centered on the 行动→感知 line) -->
+        <button class="arrow-close" id="closeLoop" style="left:150px;top:112px;" onclick="toggleLoop()" title="关闭闭环箭头">&#x2715;</button>
+
+        <div class="label-tag t1">&#x2192;</div>
+        <div class="label-tag t2">&#x2190;</div>
+        <div class="label-tag t3">&#x2196;</div>
+
+        <!-- robot -->
+        <div class="rb-ct" id="robot">
+            <div class="rb">
+                <div class="rb-head"><div class="rb-eye"></div></div>
+                <div class="rb-body">
+                    <div class="rb-body-inner"></div>
+                    <div class="rb-arm l"></div>
+                    <div class="rb-arm r"></div>
+                </div>
+                <div class="rb-legs">
+                    <div class="rb-leg l"></div>
+                    <div class="rb-leg r"></div>
+                </div>
+            </div>
+            <div class="rb-shadow"></div>
+        </div>
+    </div>
+
+    <div class="btm-hint">点击节点或箭头上的 &#x2715; 关闭，再次点击恢复</div>
+</div>
+
+<div class="side-panel">
+    <button class="btn-run" id="btnRun" onclick="runSimulation()">运 行</button>
+    <button class="btn-reset" onclick="resetAll()">重置</button>
+    <div class="hint-text">关闭一个环节看看</div>
+</div>
+
+<script>
+// State
+const state = {
+    senseOn: true,
+    decisionOn: true,
+    actionOn: true,
+    loopOn: true,
+    running: false,
+};
+
+// DOM refs
+const canvas = document.getElementById('canvas');
+const robot = document.getElementById('robot');
+const btnRun = document.getElementById('btnRun');
+const arr1 = document.getElementById('arr1');
+const arr2 = document.getElementById('arr2');
+const arr3 = document.getElementById('arr3');
+
+// Node & button refs
+const nodes = {
+    sense: document.getElementById('nodeSense'),
+    decision: document.getElementById('nodeDecision'),
+    action: document.getElementById('nodeAction'),
+};
+const closes = {
+    sense: document.getElementById('closeSense'),
+    decision: document.getElementById('closeDecision'),
+    action: document.getElementById('closeAction'),
+    loop: document.getElementById('closeLoop'),
+};
+
+function toggleNode(type) {
+    if (state.running) return;
+    state[type + 'On'] = !state[type + 'On'];
+    updateUI();
+}
+
+function toggleLoop() {
+    if (state.running) return;
+    state.loopOn = !state.loopOn;
+    updateUI();
+}
+
+function resetAll() {
+    if (state.running) return;
+    state.senseOn = true;
+    state.decisionOn = true;
+    state.actionOn = true;
+    state.loopOn = true;
+    updateUI();
+    robot.style.display = 'none';
+    removeModal();
+}
+
+function updateUI() {
+    // Nodes
+    for (const [type, el] of Object.entries(nodes)) {
+        el.classList.toggle('off', !state[type + 'On']);
+    }
+    // Close buttons - show ✓ when off
+    for (const [type, el] of Object.entries(closes)) {
+        const isOn = type === 'loop' ? state.loopOn : state[type + 'On'];
+        el.classList.toggle('off', !isOn);
+        el.innerHTML = isOn ? '&#x2715;' : '&#x2713;';
+    }
+    // Arrows
+    arr1.classList.toggle('broken', !state.senseOn || !state.decisionOn);
+    arr2.classList.toggle('broken', !state.decisionOn || !state.actionOn);
+    arr3.classList.toggle('broken', !state.actionOn || !state.loopOn || !state.senseOn);
+
+    // Update hint
+    const h = document.querySelector('.btm-hint');
+    if (!state.senseOn) h.textContent = '已关闭：感知 — 机器人将看不到障碍';
+    else if (!state.decisionOn) h.textContent = '已关闭：决策 — 机器人将无法判断';
+    else if (!state.actionOn) h.textContent = '已关闭：行动 — 机器人将无法移动';
+    else if (!state.loopOn) h.textContent = '已关闭：闭环箭头 — 机器人无法再次感知';
+    else h.textContent = '点击节点或箭头上的 ✕ 关闭，再次点击恢复';
+}
+
+// Node center positions (canvas-relative)
+function getNodeCenter(type) {
+    const el = nodes[type];
+    const r = el.getBoundingClientRect();
+    const cr = canvas.getBoundingClientRect();
+    return {
+        x: r.left + r.width / 2 - cr.left,
+        y: r.top + r.height / 2 - cr.top,
+    };
+}
+
+function posRobot(cp) {
+    robot.style.left = cp.x + 'px';
+    robot.style.top = cp.y + 'px';
+}
+
+function showRobot() { robot.style.display = 'block'; }
+function hideRobot() { robot.style.display = 'none'; }
+
+// Modal helpers
+function removeModal() {
+    document.querySelectorAll('.ov').forEach(el => el.remove());
+}
+
+function showModal(title, reason, detail) {
+    removeModal();
+    const ov = document.createElement('div');
+    ov.className = 'ov';
+    ov.innerHTML = `
+        <div class="md warn">
+            <div class="md-icon">&#x26A0;&#xFE0F;</div>
+            <div class="md-title">${title}</div>
+            <div class="md-text">${detail}</div>
+            <div class="md-reason">${reason}</div>
+            <button class="md-btn" onclick="closeModalAndReset()">知道了</button>
+        </div>`;
+    document.body.appendChild(ov);
+}
+
+function closeModalAndReset() {
+    removeModal();
+    hideRobot();
+    state.running = false;
+    btnRun.disabled = false;
+}
+
+function showSuccess() {
+    const t = document.createElement('div');
+    t.className = 'ok-toast';
+    t.textContent = '闭环运转正常！机器人持续循环中';
+    document.body.appendChild(t);
+    setTimeout(() => {
+        t.style.opacity = '0';
+        t.style.transition = 'opacity .6s';
+        setTimeout(() => t.remove(), 600);
+    }, 1800);
+}
+
+// Animation: move robot from point A to B over ms duration
+function animatePath(a, b, ms) {
+    return new Promise(resolve => {
+        const t0 = Date.now();
+        function tick() {
+            const p = Math.min((Date.now() - t0) / ms, 1);
+            const ease = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
+            posRobot({
+                x: a.x + (b.x - a.x) * ease,
+                y: a.y + (b.y - a.y) * ease,
+            });
+            if (p >= 1) { resolve(); return; }
+            requestAnimationFrame(tick);
+        }
+        tick();
+    });
+}
+
+// Main simulation
+async function runSimulation() {
+    if (state.running) return;
+    state.running = true;
+    btnRun.disabled = true;
+    removeModal();
+
+    const sense = getNodeCenter('sense');
+    const decision = getNodeCenter('decision');
+    const action = getNodeCenter('action');
+
+    // Start at 感知
+    showRobot();
+    posRobot(sense);
+    await sleep(500);
+
+    // Check 感知
+    if (!state.senseOn) {
+        showModal(
+            '感知关闭：看不到障碍',
+            '机器人无法获取环境信息，看不到前方有什么。',
+            '看不到障碍，直接撞上。'
+        );
+        return;
+    }
+
+    // Move 感知 → 决策
+    await animatePath(sense, decision, 900);
+    await sleep(300);
+
+    // Check 决策
+    if (!state.decisionOn) {
+        showModal(
+            '决策关闭：不知道怎么办',
+            '机器人看到了障碍物，但无法分析判断该做什么。',
+            '能看到障碍，但不知道怎么躲。'
+        );
+        return;
+    }
+
+    // Move 决策 → 行动
+    await animatePath(decision, action, 900);
+    await sleep(300);
+
+    // Check 行动
+    if (!state.actionOn) {
+        showModal(
+            '行动关闭：无法移动',
+            '机器人已经做好了判断，但执行模块失效，无法控制身体。',
+            '知道怎么躲，但无法移动。'
+        );
+        return;
+    }
+
+    // Move 行动 → 感知 (loop back)
+    await animatePath(action, sense, 900);
+    await sleep(300);
+
+    // Check loop arrow
+    if (!state.loopOn) {
+        showModal(
+            '闭环断裂：再次遇到障碍',
+            '机器人完成了一次应对，但"行动→感知"的回环断了，它不再观察环境变化。',
+            '再次遇到障碍，直接撞上去。'
+        );
+        return;
+    }
+
+    // All good - loop complete
+    showSuccess();
+
+    // Continue looping a few more times
+    for (let lap = 1; lap <= 2; lap++) {
+        await animatePath(sense, decision, 600);
+        await animatePath(decision, action, 600);
+        await animatePath(action, sense, 600);
+    }
+
+    hideRobot();
+    state.running = false;
+    btnRun.disabled = false;
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+</script>
+</body>
+</html>
