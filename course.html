@@ -1842,6 +1842,10 @@ ${(() => {
                 }
             }
             
+            // 设置超时时间（5秒）
+            const timeoutPromise = (ms) => new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('请求超时')), ms));
+            
             const sectionsToLoad = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
             const promises = sectionsToLoad.map(section => {
                 return new Promise(async (resolve) => {
@@ -1853,7 +1857,11 @@ ${(() => {
                     console.log(`\n--- 加载环节${section} ---`);
                     console.log('请求URL:', readUrl);
                     try {
-                        const response = await fetch(readUrl);
+                        // 添加超时控制
+                        const response = await Promise.race([
+                            fetch(readUrl),
+                            timeoutPromise(5000)
+                        ]);
                         console.log('响应状态:', response.status);
                         if (response.ok) {
                             const data = await response.json();
